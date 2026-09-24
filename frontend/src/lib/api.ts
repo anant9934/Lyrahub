@@ -49,4 +49,5 @@ export default api;
 export const apiGet = (url: string) => api.get(url).then(r => r.data);
 export const apiPost = (url: string, data: any) => api.post(url, data).then(r => r.data);
 export const apiPut = (url: string, data: any) => api.put(url, data).then(r => r.data);
+export const apiPatch = (url: string, data: any) => api.patch(url, data).then(r => r.data);
 export const apiDelete = (url: string) => api.delete(url).then(r => r.data);
