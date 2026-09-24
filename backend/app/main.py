@@ -1,0 +1,41 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+from app.core.rbac import init_casbin, get_enforcer
+from app.core.config import get_settings
+from app.modules.auth.router import router as auth_router
+from app.modules.admin.router import router as admin_router
+
+settings = get_settings()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    enforcer = await init_casbin()
+    # Seed Casbin for superadmin
+    await enforcer.add_policy("Admin", "roles", "create")
+    await enforcer.add_grouping_policy(settings.SUPERADMIN_EMAIL, "Admin")
+    yield
+    # Shutdown
+    pass
+
+app = FastAPI(
+    title="AI/ML Department Hub API",
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+from app.modules.health.router import router as health_router
+
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(admin_router, prefix="/api/v1/admin", tags=["admin"])
+app.include_router(health_router, prefix="/api/v1/health", tags=["health"])
