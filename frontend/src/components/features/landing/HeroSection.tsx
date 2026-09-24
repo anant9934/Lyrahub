@@ -1,45 +1,75 @@
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
-
-const ParticleHuman = dynamic(() => import('./ParticleHuman'), { ssr: false });
+import Image from 'next/image';
 
 export default function HeroSection() {
   return (
-    <section className="w-full bg-sage pt-32 pb-20 relative overflow-hidden">
-      {/* Decorative background elements can go here if needed */}
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          
+    <section className="w-full bg-sage relative overflow-hidden min-h-[90vh] flex flex-col">
+      {/* Content */}
+      <div className="flex-1 flex flex-col relative">
+        {/* Text content */}
+        <div className="max-w-7xl mx-auto px-6 pt-32 pb-8 md:pb-0 relative z-10 w-full">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-ink leading-[1.1]">
+              Mapping the brightest minds in{' '}
+              <br className="hidden md:block" />
+              <span className="text-amber">Machine Learning.</span>
+            </h1>
 
+            <p className="mt-6 text-base md:text-lg text-ink/70 mx-auto leading-relaxed max-w-2xl">
+              <strong className="text-ink font-semibold">
+                Centralize. Evaluate. Elevate.
+              </strong>
+              <br className="hidden sm:block" />
+              {' '}Replace scattered spreadsheets and endless emails with one
+              intelligent workspace. From midnight hackathon deployments to
+              final placements, Lyrahub is the single source of truth for
+              every skill, project, and achievement.
+            </p>
 
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-ink leading-tight">
-            Mapping the brightest minds in <br className="hidden md:block" />
-            <span className="text-amber">Machine Learning.</span>
-          </h1>
-
-          <p className="mt-6 max-w-2xl text-lg text-ink-700 mx-auto leading-relaxed">
-            <strong className="text-ink font-semibold">Centralize. Evaluate. Elevate.</strong><br/>
-            Replace scattered spreadsheets and endless emails with one intelligent workspace. From midnight hackathon deployments to final placements, Lyrahub is the single source of truth for every skill, project, and achievement.
-          </p>
-
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <Link href="/login" className="bg-ink text-surface px-6 py-3 rounded-btn font-medium hover:bg-ink-700 transition w-full sm:w-auto shadow-lg shadow-ink/20">
-              Enter the Hub
-            </Link>
-            <Link href="#documentation" className="border border-border bg-surface text-ink px-6 py-3 rounded-btn font-medium hover:bg-canvas-alt transition w-full sm:w-auto">
-              View Documentation
-            </Link>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/login"
+                className="bg-ink text-surface px-7 py-3.5 rounded-btn font-medium hover:bg-ink/85 transition-colors w-full sm:w-auto shadow-lg shadow-ink/15"
+              >
+                Enter the Hub
+              </Link>
+              <Link
+                href="#documentation"
+                className="border border-border bg-surface text-ink px-7 py-3.5 rounded-btn font-medium hover:bg-canvas-alt transition-colors w-full sm:w-auto"
+              >
+                View Documentation
+              </Link>
+            </div>
           </div>
-          
+        </div>
+
+        {/* Hero Figure — full-bleed static image with seamless blend */}
+        <div className="relative w-full mt-4 md:mt-8 flex-1 min-h-[320px] md:min-h-[500px]">
+          {/* Top edge blend: sage gradient fading into the image */}
+          <div
+            className="absolute top-0 left-0 right-0 h-24 z-10 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to bottom, #94BD88 0%, transparent 100%)',
+            }}
+          />
+          <Image
+            src="/hero-figure.jpg"
+            alt="A human silhouette composed of data particles and network connections, representing the intelligent mapping of student talent"
+            fill
+            priority
+            className="object-cover object-top"
+            sizes="100vw"
+          />
+          {/* Subtle color overlay to unify any remaining color mismatch */}
+          <div
+            className="absolute inset-0 pointer-events-none mix-blend-color"
+            style={{ backgroundColor: 'rgba(148, 189, 136, 0.08)' }}
+          />
         </div>
       </div>
-      
-      <div className="relative mt-12 md:mt-16 max-w-6xl mx-auto h-[520px] md:h-[640px]">
-        <ParticleHuman />
-      </div>
-      
+
       {/* Soft gradient transition to the next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-canvas to-transparent pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-canvas to-transparent pointer-events-none z-10" />
     </section>
   );
 }
