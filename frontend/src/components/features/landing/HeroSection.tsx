@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 const ParticleHuman = dynamic(() => import('./ParticleHuman'), { ssr: false });
 
