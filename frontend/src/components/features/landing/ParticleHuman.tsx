@@ -1,209 +1,221 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-// Lyrahub Tokens
-const SAGE_COLOR = '#94BD88';
-const DARK_GREEN = '#1E3A2F';
-const MID_GREEN = '#7AA36E';
-const AMBER = '#EE8E1E';
-
-const SPRING = 0.02;
-const FRICTION = 0.88;
-const INTERACTION_RADIUS = 90;
-const STRENGTH = 3.5;
+// Color Distribution Constants
+const COLOR_DARK = '#1E3A2F'; // 88%
+const COLOR_MID = '#7AA36E';  // 9%
+const COLOR_ACCENT = '#EE8E1E'; // 3%
 
 interface Particle {
   x: number;
   y: number;
-  originalX: number;
-  originalY: number;
+  ox: number;
+  oy: number;
   vx: number;
   vy: number;
   size: number;
-  opacity: number;
+  baseOpacity: number;
   depth: number;
   color: string;
   wanderPhase: number;
-  isWanderer: boolean;
+  wanderAmp: number;
 }
 
 export default function ParticleHuman() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [fallbackImage, setFallbackImage] = useState(false);
-
   const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number>(0);
-  
-  // Interaction state
-  const mouseRef = useRef({ x: -9999, y: -9999 });
-  const targetMouseRef = useRef({ x: -9999, y: -9999 });
-  const isInteractingRef = useRef(false);
 
-  // Performance guards
+  // Interaction State
+  const mouseRef = useRef({ x: -9999, y: -9999, targetX: -9999, targetY: -9999, active: false });
   const isVisibleRef = useRef(true);
   const prefersReducedMotionRef = useRef(false);
 
   useEffect(() => {
-    // Check reduced motion
     prefersReducedMotionRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    const ctx = canvas.getContext('2d', { alpha: false }); // false for performance if we fill background, but we need transparent background. Wait, hero is sage. 
-    // Actually, hero is sage, so we can use alpha: true to just blend, or alpha: false and fill with SAGE_COLOR. Let's use alpha: true.
-    if (!ctx) {
-      setFallbackImage(true);
-      return;
-    }
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
 
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let width = container.clientWidth;
-    let height = container.clientHeight;
-    let isMobile = width < 640;
-
-    // Set up Intersection Observer
+    // Intersection Observer
     const observer = new IntersectionObserver(
-      (entries) => {
-        isVisibleRef.current = entries[0].isIntersecting;
-      },
-      { threshold: 0 }
+      (entries) => { isVisibleRef.current = entries[0].isIntersecting; },
+      { threshold: 0.1 }
     );
     observer.observe(canvas);
 
-    // Document hidden check
-    const handleVisibilityChange = () => {
-      isVisibleRef.current = !document.hidden;
-    };
+    const handleVisibilityChange = () => { isVisibleRef.current = !document.hidden; };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let isMobile = false;
+
+    const getParticleCount = (w: number) => {
+      if (w > 1280) return 8000;
+      if (w >= 1024) return 6000;
+      if (w >= 640) return 3500;
+      return 1500;
+    };
+
+    const generateParticles = () => {
+      // Offscreen canvas for sampling
+      const offCanvas = document.createElement('canvas');
+      offCanvas.width = width;
+      offCanvas.height = height;
+      const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
+      if (!offCtx) return;
+
+      offCtx.fillStyle = '#000000';
+
+      const cx = width * 0.58;
+      const cy = height * 0.32;
+      const headRh = height * 0.08;
+      const headRw = height * 0.06;
+
+      // 1. HEAD
+      offCtx.save();
+      offCtx.translate(cx, cy);
+      offCtx.rotate(-8 * Math.PI / 180);
+      offCtx.beginPath();
+      offCtx.ellipse(0, 0, headRw, headRh, 0, 0, Math.PI * 2);
+      offCtx.fill();
+      offCtx.restore();
+
+      // 2. NECK
+      const neckW = height * 0.03;
+      offCtx.beginPath();
+      offCtx.rect(cx - neckW / 2, cy + headRh * 0.8, neckW, height * 0.1);
+      offCtx.fill();
+
+      // 3. SHOULDERS + TORSO
+      const torsoTopY = cy + headRh * 0.8 + height * 0.05;
+      const topW = height * 0.22;
+      const bottomW = height * 0.34;
+      offCtx.save();
+      offCtx.translate(cx, torsoTopY);
+      offCtx.rotate(-8 * Math.PI / 180); // lean matching head
+      offCtx.beginPath();
+      offCtx.moveTo(-topW / 2, 0);
+      offCtx.lineTo(topW / 2, 0);
+      offCtx.lineTo(bottomW / 2, height - torsoTopY);
+      offCtx.lineTo(-bottomW / 2, height - torsoTopY);
+      offCtx.fill();
+      offCtx.restore();
+
+      // 4. ARM OUTLINE (subtle left shoulder)
+      offCtx.save();
+      offCtx.translate(cx, torsoTopY);
+      offCtx.rotate(-8 * Math.PI / 180);
+      offCtx.beginPath();
+      offCtx.ellipse(-topW / 2 - headRw * 0.5, height * 0.08, headRw * 1.5, height * 0.15, 0, 0, Math.PI * 2);
+      offCtx.fill();
+      offCtx.restore();
+
+      // 5. DISSOLUTION ZONE
+      const gradStartX = width * 0.65;
+      const gradEndX = width * 0.85;
+      
+      const imgData = offCtx.getImageData(0, 0, width, height);
+      const data = imgData.data;
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (x > gradStartX) {
+            const alphaFactor = 1 - Math.min(1, (x - gradStartX) / (gradEndX - gradStartX));
+            const i = (y * width + x) * 4 + 3;
+            if (data[i] > 0) {
+              data[i] = Math.floor(data[i] * alphaFactor);
+            }
+          }
+        }
+      }
+      offCtx.putImageData(imgData, 0, 0);
+
+      // Sampling
+      const candidates: { x: number; y: number }[] = [];
+      const finalData = offCtx.getImageData(0, 0, width, height).data;
+
+      for (let y = 0; y < height; y += 2) {
+        for (let x = 0; x < width; x += 2) {
+          const alpha = finalData[(y * width + x) * 4 + 3];
+          if (alpha > 128) {
+            candidates.push({ x, y });
+          }
+        }
+      }
+
+      // Fisher-Yates Shuffle
+      for (let i = candidates.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+      }
+
+      const targetCount = getParticleCount(width);
+      const count = Math.min(targetCount, candidates.length);
+      const newParticles: Particle[] = [];
+
+      for (let i = 0; i < count; i++) {
+        const p = candidates[i];
+        
+        const colorRand = Math.random();
+        let color = COLOR_DARK;
+        if (colorRand > 0.97) color = COLOR_ACCENT;
+        else if (colorRand > 0.88) color = COLOR_MID;
+
+        const depthRand = Math.random();
+        let depth = 0.7;
+        if (depthRand > 0.9) depth = 1.3;
+        else if (depthRand > 0.6) depth = 1.0;
+
+        let baseOpacity = (0.5 + Math.random() * 0.45) * depth;
+        if (baseOpacity < 0.35) baseOpacity = 0.35;
+        if (baseOpacity > 1) baseOpacity = 1;
+
+        const size = (0.6 + Math.random() * 1.6) * depth;
+        
+        let wanderAmp = 0;
+        if (Math.random() < 0.06) {
+          wanderAmp = Math.random() * 3.5;
+        }
+
+        newParticles.push({
+          x: p.x, y: p.y,
+          ox: p.x, oy: p.y,
+          vx: 0, vy: 0,
+          size,
+          baseOpacity,
+          depth,
+          color,
+          wanderPhase: Math.random() * Math.PI * 2,
+          wanderAmp
+        });
+      }
+
+      particlesRef.current = newParticles;
+    };
+
     const resizeCanvas = () => {
-      width = container.clientWidth;
-      height = container.clientHeight;
+      const rect = container.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
       isMobile = width < 640;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      
+
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      
+
       ctx.scale(dpr, dpr);
-      initParticles();
-    };
-
-    const getParticleCount = () => {
-      if (width > 1024) return 4500;
-      if (width >= 640) return 2500;
-      return 1200;
-    };
-
-    const generateProceduralSilhouette = (count: number, w: number, h: number) => {
-      const particles: Particle[] = [];
-      const centerX = w / 2;
-      const centerY = h / 2 + 50;
-
-      for (let i = 0; i < count; i++) {
-        // Procedural distribution: Head (ellipse) and Torso (trapezoid)
-        let x, y;
-        if (Math.random() < 0.25) {
-          // Head
-          const angle = Math.random() * Math.PI * 2;
-          const r = Math.sqrt(Math.random()) * 60;
-          x = centerX + Math.cos(angle) * r;
-          y = centerY - 140 + Math.sin(angle) * r * 1.2;
-        } else {
-          // Torso
-          const t = Math.random();
-          const u = Math.random();
-          const wOff = 120 + t * 60; 
-          x = centerX + (u * 2 - 1) * wOff;
-          y = centerY - 40 + t * 250;
-        }
-
-        particles.push(createParticle(x, y));
-      }
-      return particles;
-    };
-
-    const createParticle = (x: number, y: number): Particle => {
-      const depth = 0.5 + Math.random(); // 0.5 to 1.5
-      const randColor = Math.random();
-      let color = DARK_GREEN;
-      if (randColor > 0.98) color = AMBER;
-      else if (randColor > 0.9) color = MID_GREEN;
-
-      return {
-        x, y,
-        originalX: x,
-        originalY: y,
-        vx: 0, vy: 0,
-        size: (0.8 + Math.random() * 1.2) * depth,
-        opacity: Math.min(0.9, (0.35 + Math.random() * 0.55) * depth),
-        depth,
-        color,
-        wanderPhase: Math.random() * Math.PI * 2,
-        isWanderer: Math.random() < 0.05
-      };
-    };
-
-    const initParticles = () => {
-      const count = getParticleCount();
-      
-      const img = new Image();
-      img.src = '/particle-human.png';
-      
-      img.onload = () => {
-        const offCanvas = document.createElement('canvas');
-        const offCtx = offCanvas.getContext('2d');
-        if (!offCtx) {
-          particlesRef.current = generateProceduralSilhouette(count, width, height);
-          return;
-        }
-        
-        // We want to fit the image in the center, covering a good portion
-        const scale = Math.min(width / img.width, height / img.height) * 0.8;
-        const dw = img.width * scale;
-        const dh = img.height * scale;
-        const dx = (width - dw) / 2;
-        const dy = (height - dh) / 2 + 30; // offset down a bit
-        
-        offCanvas.width = width;
-        offCanvas.height = height;
-        offCtx.drawImage(img, dx, dy, dw, dh);
-        
-        const imgData = offCtx.getImageData(0, 0, width, height).data;
-        const particles: Particle[] = [];
-        
-        let attempts = 0;
-        const maxAttempts = count * 50;
-        
-        while (particles.length < count && attempts < maxAttempts) {
-          const px = Math.floor(Math.random() * width);
-          const py = Math.floor(Math.random() * height);
-          const i = (py * width + px) * 4;
-          
-          // Check alpha channel
-          if (imgData[i + 3] > 50) {
-            particles.push(createParticle(px, py));
-          }
-          attempts++;
-        }
-        
-        if (particles.length === 0) {
-          particlesRef.current = generateProceduralSilhouette(count, width, height);
-        } else {
-          particlesRef.current = particles;
-        }
-      };
-      
-      img.onerror = () => {
-        particlesRef.current = generateProceduralSilhouette(count, width, height);
-        if (prefersReducedMotionRef.current) drawStatic();
-      };
+      generateParticles();
     };
 
     let resizeTimer: any;
@@ -213,11 +225,10 @@ export default function ParticleHuman() {
         resizeCanvas();
       }, 200);
     };
-
     window.addEventListener('resize', onResize);
 
-    // Interaction handling
-    const updateMouse = (e: MouseEvent | TouchEvent) => {
+    // Mouse Interaction
+    const handleMouseMove = (e: MouseEvent | TouchEvent) => {
       const rect = canvas.getBoundingClientRect();
       let clientX, clientY;
       
@@ -226,7 +237,6 @@ export default function ParticleHuman() {
           clientX = e.touches[0].clientX;
           clientY = e.touches[0].clientY;
         } else {
-          isInteractingRef.current = false;
           return;
         }
       } else {
@@ -234,31 +244,36 @@ export default function ParticleHuman() {
         clientY = (e as MouseEvent).clientY;
       }
       
-      targetMouseRef.current = {
-        x: clientX - rect.left,
-        y: clientY - rect.top
-      };
-      isInteractingRef.current = true;
+      mouseRef.current.targetX = clientX - rect.left;
+      mouseRef.current.targetY = clientY - rect.top;
+      mouseRef.current.active = true;
     };
 
-    const handleMouseLeave = () => {
-      isInteractingRef.current = false;
+    const handleMouseEnter = () => { mouseRef.current.active = true; };
+    const handleMouseLeave = () => { mouseRef.current.active = false; };
+    const handleTouchStart = () => { mouseRef.current.active = true; };
+    let touchEndTimer: any;
+    const handleTouchEnd = () => { 
+      clearTimeout(touchEndTimer);
+      touchEndTimer = setTimeout(() => { mouseRef.current.active = false; }, 400);
     };
 
-    canvas.addEventListener('mousemove', updateMouse);
-    canvas.addEventListener('touchmove', updateMouse, { passive: true });
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseenter', handleMouseEnter);
     canvas.addEventListener('mouseleave', handleMouseLeave);
-    canvas.addEventListener('touchend', handleMouseLeave);
+    canvas.addEventListener('touchmove', handleMouseMove, { passive: true });
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
+    canvas.addEventListener('touchend', handleTouchEnd);
 
+    resizeCanvas();
+
+    let frameCount = 0;
+    
     const drawStatic = () => {
-      const ctx = canvasRef.current?.getContext('2d');
-      if (!ctx) return;
       ctx.clearRect(0, 0, width, height);
-      const particles = particlesRef.current;
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
+      for (const p of particlesRef.current) {
+        ctx.globalAlpha = p.baseOpacity;
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.opacity;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -275,75 +290,85 @@ export default function ParticleHuman() {
 
       if (!isVisibleRef.current) return;
 
-      // Lerp mouse
-      if (isInteractingRef.current) {
-        // ~80ms smoothing. At 60fps, lerp factor ~0.2
-        mouseRef.current.x += (targetMouseRef.current.x - mouseRef.current.x) * 0.2;
-        mouseRef.current.y += (targetMouseRef.current.y - mouseRef.current.y) * 0.2;
+      if (isMobile) {
+        frameCount++;
+        if (frameCount % 2 !== 0) return; // ~45fps limit on mobile
+      }
+
+      // Cursor smoothing
+      if (mouseRef.current.active) {
+        mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.15;
+        mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.15;
       } else {
-        // move mouse far away
         mouseRef.current.x = -9999;
         mouseRef.current.y = -9999;
       }
 
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
+      
+      // Calculate centroid (approximate based on head and body offset)
+      const centerX = width * 0.58;
+      const centerY = height * 0.5;
 
-      // Trail effect
-      if (isMobile) {
-        ctx.clearRect(0, 0, width, height);
-      } else {
-        ctx.fillStyle = `rgba(148, 189, 136, 0.15)`; // SAGE_COLOR with alpha
-        ctx.fillRect(0, 0, width, height);
-      }
+      const breath = 1 + 0.008 * Math.sin(time * 0.0006);
 
+      ctx.clearRect(0, 0, width, height);
+      
       const particles = particlesRef.current;
-      const breathingScale = 1 + 0.015 * Math.sin(time * 0.0004);
-      const cx = width / 2;
-      const cy = height / 2;
-
-      // Precalculate a few things
-      ctx.lineCap = 'round';
+      const nearParticles: Particle[] = [];
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
 
         // Breathing & Wander target
-        let targetX = cx + (p.originalX - cx) * breathingScale;
-        let targetY = cy + (p.originalY - cy) * breathingScale;
+        let targetX = centerX + (p.ox - centerX) * breath;
+        let targetY = centerY + (p.oy - centerY) * breath;
 
-        if (p.isWanderer) {
-          p.wanderPhase += 0.0003 * 16; // approx time delta
-          targetX += Math.cos(p.wanderPhase) * 4;
-          targetY += Math.sin(p.wanderPhase) * 4;
+        if (p.wanderAmp > 0) {
+          p.wanderPhase += 0.0004;
+          targetX += Math.cos(p.wanderPhase) * p.wanderAmp;
+          targetY += Math.sin(p.wanderPhase * 1.3) * p.wanderAmp;
         }
 
-        // Mouse interaction
+        // Interaction
         const dx = p.x - mx;
         const dy = p.y - my;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const radius = INTERACTION_RADIUS * p.depth;
+        const distSq = dx * dx + dy * dy;
+        const radius = 90 * p.depth;
+        const radiusSq = radius * radius;
 
-        if (isInteractingRef.current && dist < radius) {
-          const force = (1 - dist / radius) * STRENGTH;
-          p.vx += (dx / dist) * force * p.depth;
-          p.vy += (dy / dist) * force * p.depth;
+        if (distSq < radiusSq && distSq > 0.01) {
+          const dist = Math.sqrt(distSq);
+          const falloff = 1 - dist / radius;
+          const force = falloff * falloff * 6 * p.depth;
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
         }
 
-        // Spring back
-        p.vx += (targetX - p.x) * SPRING;
-        p.vy += (targetY - p.y) * SPRING;
+        // Return physics
+        p.vx += (targetX - p.x) * 0.022;
+        p.vy += (targetY - p.y) * 0.022;
+        p.vx *= 0.90;
+        p.vy *= 0.90;
         
-        // Friction
-        p.vx *= FRICTION;
-        p.vy *= FRICTION;
-        
+        // Velocity cap
+        const speedSq = p.vx * p.vx + p.vy * p.vy;
+        if (speedSq > 144) { // 12 * 12
+          const speed = Math.sqrt(speedSq);
+          p.vx = (p.vx / speed) * 12;
+          p.vy = (p.vy / speed) * 12;
+        }
+
         p.x += p.vx;
         p.y += p.vy;
 
-        // Draw particle
+        if (p.depth > 1.0 && !isMobile) {
+          nearParticles.push(p);
+        }
+
+        ctx.globalAlpha = p.baseOpacity;
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.opacity;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -351,61 +376,57 @@ export default function ParticleHuman() {
 
       // Network lines
       if (!isMobile) {
-        ctx.strokeStyle = DARK_GREEN;
-        ctx.globalAlpha = 0.06;
-        ctx.lineWidth = 1;
-        
-        const limit = Math.min(300, particles.length);
-        for (let i = 0; i < limit; i++) {
-          const p1 = particles[i];
-          for (let j = i + 1; j < limit; j++) {
-            const p2 = particles[j];
-            const dx = p1.x - p2.x;
-            const dy = p1.y - p2.y;
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i < nearParticles.length; i++) {
+          const pi = nearParticles[i];
+          for (let j = i + 1; j < nearParticles.length; j++) {
+            const pj = nearParticles[j];
+            const dx = pi.x - pj.x;
+            const dy = pi.y - pj.y;
             const distSq = dx * dx + dy * dy;
             
-            if (distSq < 324) { // 18 * 18
+            if (distSq < 900) {
+              const alpha = (1 - distSq / 900) * 0.15;
+              ctx.strokeStyle = `rgba(30, 58, 47, ${alpha})`;
               ctx.beginPath();
-              ctx.moveTo(p1.x, p1.y);
-              ctx.lineTo(p2.x, p2.y);
+              ctx.moveTo(pi.x, pi.y);
+              ctx.lineTo(pj.x, pj.y);
               ctx.stroke();
             }
           }
         }
       }
-      
-      ctx.globalAlpha = 1.0;
+
+      ctx.globalAlpha = 1;
     };
 
-    resizeCanvas();
-    animationRef.current = requestAnimationFrame(animate);
+    if (prefersReducedMotionRef.current) {
+      drawStatic();
+    } else {
+      animationRef.current = requestAnimationFrame(animate);
+    }
 
     return () => {
       window.removeEventListener('resize', onResize);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       observer.disconnect();
-      canvas.removeEventListener('mousemove', updateMouse);
-      canvas.removeEventListener('touchmove', updateMouse);
+      canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('mouseenter', handleMouseEnter);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
-      canvas.removeEventListener('touchend', handleMouseLeave);
+      canvas.removeEventListener('touchmove', handleMouseMove);
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchend', handleTouchEnd);
       cancelAnimationFrame(animationRef.current);
     };
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full relative mt-16 md:mt-20 max-w-6xl mx-auto flex items-center justify-center">
-      {/* Screen reader only description */}
-      <p className="sr-only">Interactive particle visualization of a human silhouette representing students in the hub.</p>
-      
-      {fallbackImage ? (
-        <img src="/particle-human.png" alt="Student Silhouette" className="opacity-80 w-full max-w-md mx-auto" />
-      ) : (
-        <canvas 
-          ref={canvasRef} 
-          className="w-full h-[520px] md:h-[640px] touch-none outline-none" 
-          aria-hidden="true" 
-        />
-      )}
+    <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-auto">
+      <canvas 
+        ref={canvasRef} 
+        className="absolute inset-0 w-full h-full touch-none outline-none" 
+        aria-hidden="true" 
+      />
     </div>
   );
 }

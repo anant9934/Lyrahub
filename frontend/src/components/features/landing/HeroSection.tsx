@@ -1,5 +1,7 @@
-import ParticleHuman from './ParticleHuman';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const ParticleHuman = dynamic(() => import('./ParticleHuman'), { ssr: false });
 
 export default function HeroSection() {
   return (
@@ -32,7 +34,9 @@ export default function HeroSection() {
         </div>
       </div>
       
-      <ParticleHuman />
+      <div className="relative mt-12 md:mt-16 max-w-6xl mx-auto h-[520px] md:h-[640px]">
+        <ParticleHuman />
+      </div>
       
       {/* Soft gradient transition to the next section */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-canvas to-transparent pointer-events-none"></div>
