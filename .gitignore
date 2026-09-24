@@ -1,0 +1,30 @@
+# Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Python
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+*.log
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Uploads
+uploads/
+*.sqlite
