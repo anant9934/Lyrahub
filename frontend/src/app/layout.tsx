@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: "Centralize, evaluate, and elevate AI/ML talent. The single source of truth for student rankings, projects, and placements.",
 };
 
+import { AuthProvider } from "@/lib/auth-context";
+import { QueryProvider } from "@/lib/query-provider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -16,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="antialiased bg-canvas text-ink">
-        {children}
+        <QueryProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );
