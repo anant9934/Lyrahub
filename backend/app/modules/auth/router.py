@@ -34,8 +34,6 @@ async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     student = Student(
         id=uuid.uuid4(),
         user_id=user.id,
-        first_name="New",
-        last_name="User",
         reg_no=f"REG{uuid.uuid4().hex[:6].upper()}"
     )
     db.add(student)
