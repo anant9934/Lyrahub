@@ -6,12 +6,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/lib/auth-context";
+import api from "@/lib/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,21 +25,14 @@ export default function LoginPage() {
       formData.append("username", email);
       formData.append("password", password);
       
-      const res = await fetch("http://localhost:8000/api/v1/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData,
+      const { data } = await api.post("/auth/login", formData, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
       });
 
-      if (!res.ok) {
-        throw new Error("Invalid credentials");
-      }
-
-      const data = await res.json();
-      localStorage.setItem("access_token", data.access_token);
+      await login(data);
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.detail?.title || "Invalid credentials");
     }
   };
 

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/lib/auth-context";
+import api from "@/lib/api";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -13,40 +15,27 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const { login } = useAuth();
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     try {
-      const res = await fetch("http://localhost:8000/api/v1/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to register. Email might be in use.");
-      }
+      await api.post("/auth/register", { email, password });
 
       // Automatically log them in
       const formData = new URLSearchParams();
       formData.append("username", email);
       formData.append("password", password);
       
-      const loginRes = await fetch("http://localhost:8000/api/v1/auth/login", {
-        method: "POST",
+      const { data } = await api.post("/auth/login", formData, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData,
       });
       
-      if (loginRes.ok) {
-        const data = await loginRes.json();
-        localStorage.setItem("access_token", data.access_token);
-        router.push("/dashboard");
-      } else {
-        router.push("/login");
-      }
+      await login(data);
+      router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.detail?.title || "Failed to register");
     }
   };
 
