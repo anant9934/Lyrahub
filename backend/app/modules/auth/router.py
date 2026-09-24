@@ -35,7 +35,7 @@ async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     student = Student(
         id=uuid.uuid4(),
         user_id=user.id,
-        reg_no=f"REG{uuid.uuid4().hex[:6].upper()}"
+        reg_no=user_in.reg_no if user_in.reg_no else f"REG{uuid.uuid4().hex[:6].upper()}"
     )
     db.add(student)
     
@@ -102,7 +102,26 @@ async def refresh_token(
 
 @router.get("/me", response_model=UserResponse)
 async def get_me(current_user: User = Depends(get_current_active_user)):
-    return current_user
+    from app.core.rbac import get_enforcer
+    enforcer = get_enforcer()
+    roles = []
+    if enforcer:
+        try:
+            group_roles = await enforcer.get_implicit_roles_for_user(current_user.email)
+            roles = [{"name": r} for r in group_roles]
+        except Exception:
+            # fallback if casbin isn't fully loaded
+            pass
+    # We must attach it to the Pydantic model response
+    # We can convert current_user to a dict or just set it
+    user_dict = {
+        "id": current_user.id,
+        "email": current_user.email,
+        "is_active": current_user.is_active,
+        "created_at": current_user.created_at,
+        "roles": roles
+    }
+    return user_dict
 
 @router.post("/logout", status_code=200)
 async def logout(current_user: User = Depends(get_current_active_user)):

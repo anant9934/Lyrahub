@@ -14,12 +14,18 @@ class TokenData(BaseModel):
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
+    full_name: Optional[str] = None
+    reg_no: Optional[str] = None
+
+class Role(BaseModel):
+    name: str
 
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
     is_active: bool
     created_at: datetime
+    roles: Optional[list[Role]] = []
 
     model_config = {"from_attributes": True}
 

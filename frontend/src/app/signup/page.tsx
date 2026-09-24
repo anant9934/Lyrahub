@@ -12,6 +12,8 @@ import api from "@/lib/api";
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [regNo, setRegNo] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -21,7 +23,12 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
     try {
-      await api.post("/auth/register", { email, password });
+      await api.post("/auth/register", { 
+        email, 
+        password,
+        full_name: fullName,
+        reg_no: regNo
+      });
 
       // Automatically log them in
       const formData = new URLSearchParams();
@@ -57,6 +64,28 @@ export default function SignupPage() {
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-ink-700" htmlFor="full_name">Full Name</label>
+              <Input
+                id="full_name"
+                type="text"
+                placeholder="John Doe"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-ink-700" htmlFor="reg_no">Registration Number</label>
+              <Input
+                id="reg_no"
+                type="text"
+                placeholder="21AIML999"
+                value={regNo}
+                onChange={(e) => setRegNo(e.target.value)}
                 required
               />
             </div>
