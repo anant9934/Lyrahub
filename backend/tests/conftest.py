@@ -1,8 +1,9 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
 from app.main import app
+import asyncio
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 async def async_client():
     from asgi_lifespan import LifespanManager
     async with LifespanManager(app, startup_timeout=30):
