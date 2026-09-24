@@ -43,3 +43,15 @@ app.include_router(admin_router, prefix="/api/v1/admin", tags=["admin"])
 app.include_router(health_router, prefix="/api/v1/health", tags=["health"])
 app.include_router(students_router, prefix="/api/v1/students", tags=["students"])
 app.include_router(skills_router, prefix="/api/v1/skills", tags=["skills"])
+
+from app.modules.files.router import router as files_router
+app.include_router(files_router, prefix="/api/v1/files", tags=["files"])
+
+from app.modules.ranking.router import router as ranking_router
+app.include_router(ranking_router, prefix="/api/v1/ranking", tags=["ranking"])
+
+from app.modules.events.router import router as events_router
+app.include_router(events_router, prefix="/api/v1/events", tags=["events"])
+
+from app.modules.achievements.router import router as achievements_router
+app.include_router(achievements_router, prefix="/api/v1/achievements", tags=["achievements"])
