@@ -30,6 +30,7 @@ async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
         is_active=True
     )
     db.add(user)
+    await db.flush()
     
     student = Student(
         id=uuid.uuid4(),
