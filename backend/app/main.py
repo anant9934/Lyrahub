@@ -35,7 +35,11 @@ app.add_middleware(
 )
 
 from app.modules.health.router import router as health_router
+from app.modules.students.router import router as students_router
+from app.modules.skills.router import router as skills_router
 
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(admin_router, prefix="/api/v1/admin", tags=["admin"])
 app.include_router(health_router, prefix="/api/v1/health", tags=["health"])
+app.include_router(students_router, prefix="/api/v1/students", tags=["students"])
+app.include_router(skills_router, prefix="/api/v1/skills", tags=["skills"])
