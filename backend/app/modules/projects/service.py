@@ -198,7 +198,9 @@ async def create_project(
     if status_val == "completed" and not end_date_val:
         end_date_val = datetime.utcnow().date()
 
+    now = datetime.utcnow()
     project = Project(
+        id=uuid.uuid4(),
         title=data.title,
         slug=slug,
         summary=data.summary,
@@ -219,7 +221,9 @@ async def create_project(
         client_name=data.client_name,
         cover_image_url=data.cover_image_url,
         is_public=data.is_public,
-        created_by=current_user.id
+        created_by=current_user.id,
+        created_at=now,
+        updated_at=now
     )
     db.add(project)
     await db.flush()
@@ -230,9 +234,11 @@ async def create_project(
         student = s_res.scalar_one_or_none()
         if student:
             mem = ProjectMember(
+                id=uuid.uuid4(),
                 project_id=project.id,
                 student_id=student.id,
-                role="lead"
+                role="lead",
+                joined_at=now
             )
             db.add(mem)
 
@@ -353,9 +359,11 @@ async def add_member(
         raise HTTPException(status_code=409, detail="Student is already a member of this project")
 
     member = ProjectMember(
+        id=uuid.uuid4(),
         project_id=project_id,
         student_id=data.student_id,
-        role=data.role or "contributor"
+        role=data.role or "contributor",
+        joined_at=datetime.utcnow()
     )
     db.add(member)
     db.add(AuditLog(

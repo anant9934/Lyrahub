@@ -2,6 +2,7 @@ import json
 import logging
 from datetime import datetime
 from typing import List, Optional, Tuple, Dict, Any
+import uuid
 from uuid import UUID
 from fastapi import HTTPException
 from sqlalchemy import select, func, and_, or_
@@ -89,11 +90,14 @@ async def register_alumni(db: AsyncSession, data: schema.AlumniRegisterRequest) 
     if not graduation_year:
         graduation_year = datetime.utcnow().year
 
+    now = datetime.utcnow()
     # Create user
     user = User(
+        id=uuid.uuid4(),
         email=data.email,
         password_hash=get_password_hash(data.password),
-        is_active=True
+        is_active=True,
+        created_at=now
     )
     db.add(user)
     await db.flush()
@@ -108,6 +112,7 @@ async def register_alumni(db: AsyncSession, data: schema.AlumniRegisterRequest) 
 
     # Create Alumni profile
     alumni = Alumni(
+        id=uuid.uuid4(),
         user_id=user.id,
         reg_no=data.reg_no,
         full_name=full_name,
@@ -127,7 +132,9 @@ async def register_alumni(db: AsyncSession, data: schema.AlumniRegisterRequest) 
         open_to_mentorship=data.open_to_mentorship,
         open_to_hiring=data.open_to_hiring,
         willing_to_visit=data.willing_to_visit,
-        privacy_level=data.privacy_level or "public"
+        privacy_level=data.privacy_level or "public",
+        created_at=now,
+        updated_at=now
     )
     db.add(alumni)
     await db.flush()
@@ -293,12 +300,14 @@ async def add_experience(
         raise HTTPException(status_code=404, detail="Alumni profile not found for current user")
 
     exp = AlumniExperience(
+        id=uuid.uuid4(),
         alumni_id=alumni.id,
         company=data.company,
         role=data.role,
         start_date=data.start_date,
         end_date=data.end_date,
-        description=data.description
+        description=data.description,
+        created_at=datetime.utcnow()
     )
     db.add(exp)
     db.add(AuditLog(
