@@ -66,5 +66,9 @@ app.include_router(alumni_router, prefix="/api/v1/alumni", tags=["alumni"])
 from app.modules.stories.router import router as stories_router
 app.include_router(stories_router, prefix="/api/v1/stories", tags=["stories"])
 
+from app.modules.testimonials.router import router as testimonials_router
+app.include_router(testimonials_router, prefix="/api/v1/testimonials", tags=["testimonials"])
+
+
 
 
