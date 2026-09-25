@@ -308,3 +308,116 @@ class Achievement(Base):
         Index("idx_achieve_date", "achieved_on"),
         Index("idx_achieve_tags", "tags", postgresql_using="gin"),
     )
+
+# ==========================================
+# PHASE 4B: PROJECTS & ALUMNI
+# ==========================================
+
+class Project(Base):
+    __tablename__ = "projects"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = Column(String(300), nullable=False)
+    slug = Column(String(350), unique=True, nullable=False)
+    summary = Column(String(500))
+    description = Column(String)
+    tech_stack = Column(JSONB, default=list)        # ["PyTorch", "FastAPI"]
+    domain = Column(String(50))                    # cv, nlp, llm, mlops, robotics, etc.
+    status = Column(String(20), default="ongoing") # ongoing, completed, abandoned, archived
+    github_url = Column(String(500))
+    demo_url = Column(String(500))
+    paper_url = Column(String(500))
+    mentor_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    external_mentor = Column(String(200))
+    start_date = Column(Date)
+    end_date = Column(Date)
+    outcomes = Column(String)
+    awards = Column(String(300))
+    revenue_generated = Column(Numeric(10, 2))
+    client_name = Column(String(200))
+    cover_image_url = Column(String)
+    is_public = Column(Boolean, default=True)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
+
+    __table_args__ = (
+        Index("idx_projects_domain_status", "domain", "status"),
+        Index("idx_projects_mentor", "mentor_id"),
+        Index("idx_projects_tech_stack", "tech_stack", postgresql_using="gin"),
+    )
+
+class ProjectMember(Base):
+    __tablename__ = "project_members"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=False)
+    role = Column(String(50), default="contributor") # lead, contributor, advisor
+    joined_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_proj_member_unique", "project_id", "student_id", unique=True),
+    )
+
+class ProjectDocument(Base):
+    __tablename__ = "project_documents"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=False)
+    doc_type = Column(String(50), nullable=False)    # report, presentation, poster, paper
+    file_url = Column(String, nullable=False)
+    uploaded_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    uploaded_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_proj_doc_project", "project_id"),
+    )
+
+class Alumni(Base):
+    __tablename__ = "alumni"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True, nullable=False)
+    reg_no = Column(String(20), unique=True, nullable=True)
+    full_name = Column(String(200), nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
+    phone = Column(String(20))
+    graduation_year = Column(Integer, nullable=False)
+    program = Column(String(50))                   # B.Tech CSE (AI & ML), M.Tech (ML & AI)
+    degree = Column(String(20))                    # B.Tech, M.Tech
+    current_company = Column(String(200))
+    current_role = Column(String(200))
+    location = Column(String(200))
+    linkedin_url = Column(String(500))
+    github_url = Column(String(500))
+    portfolio_url = Column(String(500))
+    bio = Column(String)
+    is_verified = Column(Boolean, default=False)
+    verified_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    verified_at = Column(DateTime(timezone=True))
+    open_to_mentorship = Column(Boolean, default=False)
+    open_to_hiring = Column(Boolean, default=False)
+    willing_to_visit = Column(Boolean, default=False)
+    privacy_level = Column(String(20), default="public")   # public, alumni_only, private
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
+
+    __table_args__ = (
+        Index("idx_alumni_grad_year", "graduation_year"),
+        Index("idx_alumni_company", "current_company"),
+    )
+
+class AlumniExperience(Base):
+    __tablename__ = "alumni_experience"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    alumni_id = Column(UUID(as_uuid=True), ForeignKey("alumni.id"), nullable=False)
+    company = Column(String(200), nullable=False)
+    role = Column(String(200), nullable=False)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=True)                          # nullable = current
+    description = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_alumni_exp_alumni", "alumni_id"),
+    )
+

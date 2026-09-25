@@ -64,7 +64,7 @@ def run_migrations_offline() -> None:
 
 
 def include_object(object, name, type_, reflected, compare_to):
-    if type_ == "table" and name == "casbin_rule":
+    if name and "casbin_rule" in name:
         return False
     return True
 
@@ -75,34 +75,28 @@ def do_run_migrations(connection: Connection) -> None:
         context.run_migrations()
 
 
-async def run_async_migrations() -> None:
-    """In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
-
-    configuration = config.get_section(config.config_ini_section, {})
-    configuration["sqlalchemy.url"] = os.environ["DATABASE_URL"]
-
-    connectable = async_engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
-
-    async with connectable.connect() as connection:
-        await connection.run_sync(do_run_migrations)
-
-    await connectable.dispose()
-
+from sqlalchemy import create_engine
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode."""
+    """Run migrations in 'online' mode using synchronous psycopg2 to avoid macOS asyncpg loop hangs."""
+    db_url = os.environ.get("DATABASE_URL", "")
+    sync_url = db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://").replace("ssl=require", "sslmode=require")
+    connectable = create_engine(sync_url, poolclass=pool.NullPool)
 
-    asyncio.run(run_async_migrations())
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            include_object=include_object,
+            compare_type=True
+        )
+
+        with context.begin_transaction():
+            context.run_migrations()
 
 
 if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+
