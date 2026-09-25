@@ -64,7 +64,7 @@ def run_migrations_offline() -> None:
 
 
 def include_object(object, name, type_, reflected, compare_to):
-    if name and "casbin_rule" in name:
+    if name and ("casbin_rule" in name or "mv_current_rankings" in name):
         return False
     return True
 

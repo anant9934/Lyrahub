@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer, Numeric, Index, Date
+from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer, Numeric, Index, Date, CheckConstraint, text
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
@@ -420,4 +420,128 @@ class AlumniExperience(Base):
     __table_args__ = (
         Index("idx_alumni_exp_alumni", "alumni_id"),
     )
+
+# ==========================================
+# PHASE 4C: STORIES, TESTIMONIALS & GROUPS
+# ==========================================
+
+class SuccessStory(Base):
+    __tablename__ = "success_stories"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    slug = Column(String(300), unique=True, nullable=False)
+    title = Column(String(300), nullable=False)
+    subtitle = Column(String(400))
+    story_type = Column(String(30), nullable=False) # 'student', 'alumni'
+    person_id = Column(UUID(as_uuid=True), nullable=False) # student_id OR alumni_id
+    person_name = Column(String(200)) # denormalized for display
+    person_photo_url = Column(String)
+    current_role = Column(String(200))
+    current_company = Column(String(200))
+    batch_year = Column(Integer)
+    program = Column(String(100))
+    summary = Column(String) # short teaser (200 chars)
+    full_story = Column(String) # markdown body
+    featured_image_url = Column(String)
+    video_url = Column(String(500))
+    tags = Column(JSONB, default=list)
+    is_published = Column(Boolean, default=False)
+    published_at = Column(DateTime(timezone=True), nullable=True)
+    featured = Column(Boolean, default=False)
+    views_count = Column(Integer, default=0)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("idx_stories_type_pub", "story_type", "is_published"),
+        Index("idx_stories_featured", "featured", postgresql_where=text("featured = true")),
+        Index("idx_stories_batch_year", "batch_year"),
+        Index("idx_stories_tags", "tags", postgresql_using="gin"),
+    )
+
+class Testimonial(Base):
+    __tablename__ = "testimonials"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    author_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True) # nullable if external
+    author_type = Column(String(20), nullable=False) # 'student', 'faculty', 'alumni', 'recruiter', 'external'
+    author_name = Column(String(200), nullable=False)
+    author_role = Column(String(200)) # "SDE at Google", "Parent", etc.
+    author_photo_url = Column(String)
+    rating = Column(Integer, CheckConstraint("rating BETWEEN 1 AND 5", name="check_testimonial_rating"), nullable=True)
+    text = Column(String, nullable=False)
+    context = Column(String(100)) # 'about_department', 'about_course', 'about_faculty', 'about_placement'
+    context_id = Column(UUID(as_uuid=True), nullable=True)
+    is_published = Column(Boolean, default=False)
+    is_featured = Column(Boolean, default=False)
+    display_order = Column(Integer, default=0)
+    moderated_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    moderated_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("idx_testimonials_pub_feat", "is_published", "is_featured"),
+        Index("idx_testimonials_author_type", "author_type"),
+    )
+
+class Group(Base):
+    __tablename__ = "groups"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    slug = Column(String(200), unique=True, nullable=False)
+    name = Column(String(200), nullable=False)
+    tagline = Column(String(300))
+    description = Column(String)
+    group_type = Column(String(30), nullable=False) # 'interest_group', 'club', 'society', 'chapter'
+    category = Column(String(50), nullable=False) # 'technical', 'cultural', 'sports', 'social', 'professional'
+    cover_image_url = Column(String)
+    logo_url = Column(String)
+    founded_on = Column(Date)
+    faculty_advisor_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    student_lead_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=True)
+    contact_email = Column(String(255))
+    contact_phone = Column(String(20))
+    social_links = Column(JSONB, default=dict) # {"instagram": "...", "twitter": "..."}
+    meeting_schedule = Column(String(200))
+    meeting_venue = Column(String(200))
+    membership_open = Column(Boolean, default=True)
+    membership_fee = Column(Numeric(10, 2), default=0)
+    is_official = Column(Boolean, default=False) # verified by admin
+    is_active = Column(Boolean, default=True)
+    tags = Column(JSONB, default=list)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("idx_groups_type_active", "group_type", "is_active"),
+        Index("idx_groups_category", "category"),
+        Index("idx_groups_tags", "tags", postgresql_using="gin"),
+    )
+
+class GroupMember(Base):
+    __tablename__ = "group_members"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=False)
+    role = Column(String(50), default="member") # 'member', 'core', 'lead', 'advisor'
+    joined_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    left_at = Column(DateTime(timezone=True), nullable=True)
+    is_active = Column(Boolean, default=True)
+
+    __table_args__ = (
+        Index("idx_group_member_unique", "group_id", "student_id", unique=True),
+    )
+
+class GroupEvent(Base):
+    __tablename__ = "group_events"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=False)
+    event_id = Column(UUID(as_uuid=True), ForeignKey("events.id"), nullable=False)
+
+    __table_args__ = (
+        Index("idx_group_event_unique", "group_id", "event_id", unique=True),
+    )
+
 
