@@ -56,3 +56,7 @@ app.include_router(events_router, prefix="/api/v1/events", tags=["events"])
 
 from app.modules.achievements.router import router as achievements_router
 app.include_router(achievements_router, prefix="/api/v1/achievements", tags=["achievements"])
+
+from app.modules.projects.router import router as projects_router
+app.include_router(projects_router, prefix="/api/v1/projects", tags=["projects"])
+
