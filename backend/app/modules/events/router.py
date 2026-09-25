@@ -4,14 +4,31 @@ from typing import List, Optional
 from datetime import datetime
 from uuid import UUID
 
-from app.db.session import get_db
-from app.modules.auth.dependencies import get_current_user
+from app.core.dependencies import get_current_user
+from app.core.database import get_db
 from app.models import User, Event, AuditLog, EventRegistration, Student, EventFeedback
 from . import schema
 from . import service
-from sqlalchemy import select, update
+from sqlalchemy import select
+from app.core.rbac import get_enforcer
 
-router = APIRouter(prefix="/events", tags=["events"])
+async def _get_role(user: User) -> str:
+    """Return the highest Casbin role for user, defaulting to 'student'."""
+    try:
+        enforcer = get_enforcer()
+        if enforcer:
+            roles = await enforcer.get_implicit_roles_for_user(user.email)
+            if "Admin" in roles or "admin" in roles:
+                return "admin"
+            if "HOD" in roles or "hod" in roles:
+                return "hod"
+            if "Faculty" in roles or "faculty" in roles:
+                return "faculty"
+    except Exception:
+        pass
+    return "student"
+
+router = APIRouter(tags=["events"])
 
 @router.get("", response_model=schema.EventListResponse)
 async def list_events(
@@ -26,8 +43,10 @@ async def list_events(
     current_user: Optional[User] = Depends(get_current_user)
 ):
     force_published = True
-    if current_user and current_user.role in ["faculty", "hod", "admin"]:
-        force_published = False
+    if current_user:
+        role = await _get_role(current_user)
+        if role in ["faculty", "hod", "admin"]:
+            force_published = False
         
     items, total = await service.get_events(
         db, status_filter, event_type, category, mode, search, page, page_size, force_published
@@ -45,7 +64,8 @@ async def create_event(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    if current_user.role not in ["faculty", "hod", "admin"]:
+    role = await _get_role(current_user)
+    if role not in ["faculty", "hod", "admin"]:
         raise HTTPException(status_code=403, detail="Only faculty or admins can create events")
     return await service.create_event(db, data, current_user.id)
 
@@ -56,7 +76,8 @@ async def publish_event(
     current_user: User = Depends(get_current_user)
 ):
     event = await service.get_event_by_id_or_slug(db, str(event_id))
-    if str(event.organizer_id) != str(current_user.id) and current_user.role not in ["hod", "admin"]:
+    role = await _get_role(current_user)
+    if str(event.organizer_id) != str(current_user.id) and role not in ["hod", "admin"]:
         raise HTTPException(status_code=403, detail="Not authorized")
         
     event.status = "published"
@@ -80,7 +101,8 @@ async def mark_attendance(
     current_user: User = Depends(get_current_user)
 ):
     event = await service.get_event_by_id_or_slug(db, str(event_id))
-    if str(event.organizer_id) != str(current_user.id) and current_user.role not in ["hod", "admin"]:
+    role = await _get_role(current_user)
+    if str(event.organizer_id) != str(current_user.id) and role not in ["hod", "admin"]:
         raise HTTPException(status_code=403, detail="Not authorized")
         
     res = await db.execute(select(EventRegistration).where(

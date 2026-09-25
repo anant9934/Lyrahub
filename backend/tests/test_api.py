@@ -6,7 +6,7 @@ import uuid
 async def test_read_main(async_client: AsyncClient):
     response = await async_client.get("/api/v1/health/live")
     assert response.status_code == 200
-    assert response.json() == {"status": "up"}
+    assert response.json() == {"status": "ok"}
 
 @pytest.mark.asyncio
 async def test_ready(async_client: AsyncClient):

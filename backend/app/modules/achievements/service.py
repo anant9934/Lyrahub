@@ -36,12 +36,12 @@ async def get_achievements(
     items = await db.execute(query)
     return items.scalars().all(), total_res
 
-async def create_achievement(db: AsyncSession, data: AchievementCreate, current_user):
+async def create_achievement(db: AsyncSession, data: AchievementCreate, current_user, role: str = "student"):
     is_verified = False
     person_id = data.person_id
     person_type = "student"
     
-    if current_user.role in ["hod", "admin"]:
+    if role in ["hod", "admin"]:
         is_verified = True
         if not person_id:
             raise HTTPException(status_code=400, detail="Must specify person_id")
@@ -52,8 +52,8 @@ async def create_achievement(db: AsyncSession, data: AchievementCreate, current_
             res = await db.execute(select(User).where(User.id == person_id))
             if not res.scalars().first():
                 raise HTTPException(status_code=404, detail="Person not found")
-            person_type = "faculty" # simplify for now
-    elif current_user.role == "faculty":
+            person_type = "faculty"
+    elif role == "faculty":
         # Faculty submitting for a student
         if not person_id:
             person_id = current_user.id

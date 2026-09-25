@@ -94,10 +94,10 @@ async def create_event(db: AsyncSession, data: EventCreate, organizer_id):
     setattr(event, "registration_count", 0)
     return event
 
-async def update_event(db: AsyncSession, event_id, data: EventUpdate, user):
+async def update_event(db: AsyncSession, event_id, data: EventUpdate, user, role: str = "student"):
     event = await get_event_by_id_or_slug(db, str(event_id))
     
-    if str(event.organizer_id) != str(user.id) and user.role not in ["hod", "admin"]:
+    if str(event.organizer_id) != str(user.id) and role not in ["hod", "admin"]:
         raise HTTPException(status_code=403, detail="Not authorized to edit this event")
         
     update_data = data.model_dump(exclude_unset=True)

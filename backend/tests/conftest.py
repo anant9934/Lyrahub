@@ -1,11 +1,37 @@
 import pytest
-from httpx import AsyncClient, ASGITransport
-from app.main import app
-import asyncio
+import os
+from httpx import AsyncClient
+from dotenv import load_dotenv
 
-@pytest.fixture(scope="session")
+load_dotenv(os.path.join(os.path.dirname(__file__), "../../.env"))
+
+
+@pytest.fixture
 async def async_client():
-    from asgi_lifespan import LifespanManager
-    async with LifespanManager(app, startup_timeout=30):
-        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-            yield ac
+    async with AsyncClient(base_url="http://127.0.0.1:8000", timeout=30.0) as ac:
+        yield ac
+
+
+async def _get_token(async_client: AsyncClient, email: str, password: str) -> str:
+    res = await async_client.post(
+        "/api/v1/auth/login",
+        data={"username": email, "password": password},
+        headers={"Content-Type": "application/x-www-form-urlencoded"}
+    )
+    assert res.status_code == 200, f"Login failed for {email}: {res.text}"
+    return res.json()["access_token"]
+
+
+@pytest.fixture
+async def student_token(async_client: AsyncClient) -> str:
+    return await _get_token(async_client, "student@aiml.hub", "password123")
+
+
+@pytest.fixture
+async def faculty_token(async_client: AsyncClient) -> str:
+    return await _get_token(async_client, "admin@aiml.hub", "admin123")
+
+
+@pytest.fixture
+async def hod_token(async_client: AsyncClient) -> str:
+    return await _get_token(async_client, "hod@aiml.hub", "hod123")

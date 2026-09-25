@@ -13,9 +13,10 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     # Startup
     enforcer = await init_casbin()
-    # Seed Casbin for superadmin
+    # Seed Casbin for superadmin and test roles
     await enforcer.add_policy("Admin", "roles", "create")
     await enforcer.add_grouping_policy(settings.SUPERADMIN_EMAIL, "Admin")
+    await enforcer.add_grouping_policy("hod@aiml.hub", "HOD")
     yield
     # Shutdown
     pass
