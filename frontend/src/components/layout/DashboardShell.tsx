@@ -1,10 +1,15 @@
 "use client"
 
 import { useState } from "react"
+import dynamic from "next/dynamic"
 import { DashboardSidebar } from "./DashboardSidebar"
 import { TopBar } from "./TopBar"
-import { AIDAAssistant } from "../features/ai/AIDAAssistant"
 import { Sparkles } from "lucide-react"
+
+const AIDAAssistant = dynamic(
+  () => import("../features/ai/AIDAAssistant").then((mod) => mod.AIDAAssistant),
+  { ssr: false }
+)
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

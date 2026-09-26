@@ -28,20 +28,22 @@ import {
   Activity,
   Layers,
 } from "lucide-react"
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  AreaChart,
-  Area,
-} from "recharts"
+import dynamic from "next/dynamic"
+
+const PlacementChart = dynamic(
+  () => import("@/components/dashboard/DashboardCharts").then((m) => m.PlacementChart),
+  { ssr: false, loading: () => <div className="h-64 w-full animate-pulse bg-neutral-100 rounded-lg" /> }
+)
+
+const UserDistributionChart = dynamic(
+  () => import("@/components/dashboard/DashboardCharts").then((m) => m.UserDistributionChart),
+  { ssr: false, loading: () => <div className="w-48 h-48 animate-pulse bg-neutral-100 rounded-full" /> }
+)
+
+const SystemActivityChart = dynamic(
+  () => import("@/components/dashboard/DashboardCharts").then((m) => m.SystemActivityChart),
+  { ssr: false, loading: () => <div className="h-60 w-full animate-pulse bg-neutral-100 rounded-lg" /> }
+)
 
 export default function DashboardPage() {
   const { user } = useAuth()
@@ -536,23 +538,7 @@ function HODDashboardView({ approvals }: { approvals: any }) {
           </div>
 
           <div className="h-64 w-full pt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={placementData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F0F0" />
-                <XAxis dataKey="year" tickLine={false} tick={{ fontSize: 11, fill: "#888888" }} />
-                <YAxis tickLine={false} tick={{ fontSize: 11, fill: "#888888" }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#FFFFFF",
-                    borderColor: "#E5E5E5",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                  }}
-                />
-                <Bar dataKey="placed" fill="#2563EB" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="notPlaced" fill="#93C5FD" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <PlacementChart data={placementData} />
           </div>
         </div>
 
@@ -939,21 +925,7 @@ function AdminDashboardView() {
 
           <div className="flex flex-col sm:flex-row items-center justify-around gap-6 pt-2">
             <div className="w-48 h-48 relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={userDistribution}
-                    innerRadius={55}
-                    outerRadius={80}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {userDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+              <UserDistributionChart data={userDistribution} />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                 <span className="text-lg font-bold text-[#111111]">1,435</span>
                 <span className="text-[10px] text-[#777777]">Users</span>
@@ -1026,35 +998,7 @@ function AdminDashboardView() {
         </div>
 
         <div className="h-60 w-full pt-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={activityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="activityGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F0F0" />
-              <XAxis dataKey="date" tickLine={false} tick={{ fontSize: 11, fill: "#888888" }} />
-              <YAxis tickLine={false} tick={{ fontSize: 11, fill: "#888888" }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#FFFFFF",
-                  borderColor: "#E5E5E5",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="count"
-                stroke="#2563EB"
-                strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#activityGrad)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <SystemActivityChart data={activityData} />
         </div>
       </div>
     </div>

@@ -6,6 +6,8 @@ import { GraduationCap, BookOpen, Layers, Award, Sparkles, PlusCircle } from 'lu
 import api from '@/lib/api';
 import { ProgramCard, Program } from '@/components/features/programs/ProgramCard';
 import { useAuth } from '@/lib/auth-context';
+import { PublicNav } from '@/components/layout/PublicNav';
+import { PublicFooter } from '@/components/layout/PublicFooter';
 
 export default function ProgramsPage() {
   const { user } = useAuth();
@@ -35,8 +37,10 @@ export default function ProgramsPage() {
   }, [degreeFilter]);
 
   return (
-    <div className="min-h-screen bg-white py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-white text-[#111111] flex flex-col">
+      <PublicNav />
+      <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <div className="relative overflow-hidden rounded-2xl bg-[#111111] text-white p-8 md:p-12 mb-10 shadow-subtle">
           <div className="max-w-3xl relative z-10">
@@ -124,6 +128,8 @@ export default function ProgramsPage() {
           </div>
         )}
       </div>
+      </main>
+      <PublicFooter />
     </div>
   );
 }

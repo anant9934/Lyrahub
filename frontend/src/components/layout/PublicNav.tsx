@@ -13,9 +13,9 @@ export function PublicNav() {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },
-    { label: "People", href: "/leadership" },
+    { label: "People", href: "/people" },
     { label: "Programs", href: "/programs" },
-    { label: "Research", href: "/projects" },
+    { label: "Research", href: "/research" },
     { label: "Events", href: "/events" },
     { label: "Contact", href: "/contact" },
   ]
@@ -25,8 +25,8 @@ export function PublicNav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="text-xl font-bold tracking-tight text-[#111111]">
-            Lyrahub
+          <span className="text-base font-bold tracking-[0.08em] text-[#111111] uppercase">
+            AIMETRA
           </span>
         </Link>
 
@@ -54,7 +54,7 @@ export function PublicNav() {
         <div className="hidden md:flex items-center gap-3">
           <Link href="/login">
             <Button size="sm" className="rounded-full px-5 bg-[#111111] text-white hover:bg-neutral-800">
-              Login
+              Sign In
             </Button>
           </Link>
         </div>
@@ -85,7 +85,7 @@ export function PublicNav() {
           ))}
           <div className="pt-3 border-t border-[#E5E5E5]">
             <Link href="/login" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full bg-[#111111] text-white">Login</Button>
+              <Button className="w-full bg-[#111111] text-white">Sign In</Button>
             </Link>
           </div>
         </div>

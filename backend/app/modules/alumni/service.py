@@ -6,6 +6,7 @@ import uuid
 from uuid import UUID
 from fastapi import HTTPException
 from sqlalchemy import select, func, and_, or_
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Alumni, AlumniExperience, Student, User, AuditLog
@@ -17,45 +18,57 @@ from . import schema
 logger = logging.getLogger(__name__)
 
 
-async def _enrich_alumni(db: AsyncSession, alumni: Alumni) -> schema.AlumniResponse:
+async def _batch_enrich_alumni(db: AsyncSession, alumni_list: List[Alumni]) -> List[schema.AlumniResponse]:
+    if not alumni_list:
+        return []
+    alumni_ids = [a.id for a in alumni_list]
+
+    # Batch query all experiences in a single query
     exp_res = await db.execute(
         select(AlumniExperience)
-        .where(AlumniExperience.alumni_id == alumni.id)
+        .where(AlumniExperience.alumni_id.in_(alumni_ids))
         .order_by(AlumniExperience.start_date.desc())
     )
-    experiences = [
-        schema.AlumniExperienceResponse.model_validate(e)
-        for e in exp_res.scalars().all()
-    ]
+    exps_by_alumni: dict[UUID, list] = {aid: [] for aid in alumni_ids}
+    for e in exp_res.scalars().all():
+        exps_by_alumni[e.alumni_id].append(schema.AlumniExperienceResponse.model_validate(e))
 
-    return schema.AlumniResponse(
-        id=alumni.id,
-        user_id=alumni.user_id,
-        reg_no=alumni.reg_no,
-        full_name=alumni.full_name,
-        email=alumni.email,
-        phone=alumni.phone,
-        graduation_year=alumni.graduation_year,
-        program=alumni.program,
-        degree=alumni.degree,
-        current_company=alumni.current_company,
-        current_role=alumni.current_role,
-        location=alumni.location,
-        linkedin_url=alumni.linkedin_url,
-        github_url=alumni.github_url,
-        portfolio_url=alumni.portfolio_url,
-        bio=alumni.bio,
-        is_verified=alumni.is_verified if alumni.is_verified is not None else False,
-        verified_by=alumni.verified_by,
-        verified_at=alumni.verified_at,
-        open_to_mentorship=alumni.open_to_mentorship if alumni.open_to_mentorship is not None else False,
-        open_to_hiring=alumni.open_to_hiring if alumni.open_to_hiring is not None else False,
-        willing_to_visit=alumni.willing_to_visit if alumni.willing_to_visit is not None else False,
-        privacy_level=alumni.privacy_level or "public",
-        created_at=alumni.created_at,
-        updated_at=alumni.updated_at,
-        experiences=experiences
-    )
+    items = []
+    for alumni in alumni_list:
+        items.append(schema.AlumniResponse(
+            id=alumni.id,
+            user_id=alumni.user_id,
+            reg_no=alumni.reg_no,
+            full_name=alumni.full_name,
+            email=alumni.email,
+            phone=alumni.phone,
+            graduation_year=alumni.graduation_year,
+            program=alumni.program,
+            degree=alumni.degree,
+            current_company=alumni.current_company,
+            current_role=alumni.current_role,
+            location=alumni.location,
+            linkedin_url=alumni.linkedin_url,
+            github_url=alumni.github_url,
+            portfolio_url=alumni.portfolio_url,
+            bio=alumni.bio,
+            is_verified=alumni.is_verified if alumni.is_verified is not None else False,
+            verified_by=alumni.verified_by,
+            verified_at=alumni.verified_at,
+            open_to_mentorship=alumni.open_to_mentorship if alumni.open_to_mentorship is not None else False,
+            open_to_hiring=alumni.open_to_hiring if alumni.open_to_hiring is not None else False,
+            willing_to_visit=alumni.willing_to_visit if alumni.willing_to_visit is not None else False,
+            privacy_level=alumni.privacy_level or "public",
+            created_at=alumni.created_at,
+            updated_at=alumni.updated_at,
+            experiences=exps_by_alumni.get(alumni.id, [])
+        ))
+    return items
+
+
+async def _enrich_alumni(db: AsyncSession, alumni: Alumni) -> schema.AlumniResponse:
+    res = await _batch_enrich_alumni(db, [alumni])
+    return res[0]
 
 
 async def register_alumni(db: AsyncSession, data: schema.AlumniRegisterRequest) -> schema.AlumniResponse:
@@ -148,7 +161,14 @@ async def register_alumni(db: AsyncSession, data: schema.AlumniRegisterRequest) 
         resource_type="alumni",
         payload={"id": str(alumni.id), "email": alumni.email, "reg_no": alumni.reg_no}
     ))
-    await db.commit()
+    try:
+        await db.commit()
+    except IntegrityError as e:
+        await db.rollback()
+        err_msg = str(e).lower()
+        if "reg_no" in err_msg:
+            raise HTTPException(status_code=409, detail="Alumni with this registration number already exists")
+        raise HTTPException(status_code=409, detail="User or alumni with these details already exists")
     await db.refresh(alumni)
 
     return await _enrich_alumni(db, alumni)
@@ -369,7 +389,7 @@ async def get_mentors(db: AsyncSession) -> List[schema.AlumniResponse]:
 
 
 async def get_stats(db: AsyncSession) -> schema.AlumniStatsResponse:
-    redis = get_redis()
+    redis = await get_redis()
     cache_key = "alumni:stats"
     if redis:
         try:

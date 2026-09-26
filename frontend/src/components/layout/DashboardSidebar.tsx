@@ -135,11 +135,11 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
       {/* Brand Header */}
       <div className="h-16 flex items-center px-6 border-b border-[#E5E5E5] gap-3">
         <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-[#111111] flex items-center justify-center text-white text-xs font-bold">
-            L
+          <div className="w-7 h-7 rounded-md bg-[#111111] flex items-center justify-center text-white text-[9px] font-bold tracking-tight">
+            AM
           </div>
-          <span className="font-semibold text-base tracking-tight text-[#111111]">
-            Lyrahub
+          <span className="font-bold text-sm tracking-[0.1em] text-[#111111] uppercase">
+            AIMETRA
           </span>
         </Link>
       </div>

@@ -44,9 +44,9 @@ export default function Navbar() {
                 <Sparkles className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <span className="text-lg font-bold text-ink tracking-tight">Lyrahub</span>
+                <span className="text-sm font-bold text-ink tracking-[0.1em] uppercase">AIMETRA</span>
                 <span className="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary uppercase">
-                  AI/ML Dept
+                  AI &amp; ML
                 </span>
               </div>
             </Link>

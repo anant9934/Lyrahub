@@ -7,30 +7,32 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           
           <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center space-x-2 mb-4">
-              <span className="text-xl">🎓</span>
-              <span className="text-ink font-semibold">Lyrahub</span>
+            <div className="mb-4">
+              <span className="text-sm font-bold tracking-[0.1em] text-ink uppercase">AIMETRA</span>
+              <p className="mt-0.5 text-[10px] font-medium tracking-wider text-ink-400 uppercase">
+                AI &amp; ML Education, Talent, Research &amp; Analytics
+              </p>
             </div>
             <p className="text-sm text-ink-500">
-              Mapping the brightest minds in Machine Learning.
+              The intelligence layer connecting an AI &amp; ML academic ecosystem.
             </p>
           </div>
 
           <div>
-            <h4 className="font-semibold text-ink mb-4">Products</h4>
+            <h4 className="font-semibold text-ink mb-4">Intelligence</h4>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-sm text-ink-500 hover:text-ink transition-colors">LMS Platform</Link></li>
-              <li><Link href="#" className="text-sm text-ink-500 hover:text-ink transition-colors">AI Tutor</Link></li>
-              <li><Link href="#" className="text-sm text-ink-500 hover:text-ink transition-colors">Analytics</Link></li>
+              <li><Link href="/ranking" className="text-sm text-ink-500 hover:text-ink transition-colors">Student Rankings</Link></li>
+              <li><Link href="/projects" className="text-sm text-ink-500 hover:text-ink transition-colors">Research &amp; Projects</Link></li>
+              <li><Link href="/opportunities" className="text-sm text-ink-500 hover:text-ink transition-colors">Opportunities</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold text-ink mb-4">Company</h4>
+            <h4 className="font-semibold text-ink mb-4">Institution</h4>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-sm text-ink-500 hover:text-ink transition-colors">About Us</Link></li>
-              <li><Link href="#" className="text-sm text-ink-500 hover:text-ink transition-colors">Careers</Link></li>
-              <li><Link href="#" className="text-sm text-ink-500 hover:text-ink transition-colors">Contact</Link></li>
+              <li><Link href="/leadership" className="text-sm text-ink-500 hover:text-ink transition-colors">Leadership</Link></li>
+              <li><Link href="/programs" className="text-sm text-ink-500 hover:text-ink transition-colors">Programs</Link></li>
+              <li><Link href="/alumni" className="text-sm text-ink-500 hover:text-ink transition-colors">Alumni Network</Link></li>
             </ul>
           </div>
 
@@ -47,7 +49,7 @@ export default function Footer() {
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between">
           <p className="text-sm text-ink-500 mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Uni Dale. All rights reserved.
+            &copy; {new Date().getFullYear()} AIMETRA. Department of AI &amp; ML. All rights reserved.
           </p>
           <div className="flex items-center space-x-4">
             <Link href="#" className="text-ink-400 hover:text-ink transition-colors">

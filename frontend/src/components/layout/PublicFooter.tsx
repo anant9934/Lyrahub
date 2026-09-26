@@ -6,16 +6,19 @@ export function PublicFooter() {
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           <div className="col-span-2">
-            <span className="text-lg font-bold tracking-tight text-[#111111]">
-              Lyrahub
+            <span className="text-sm font-bold tracking-[0.1em] text-[#111111] uppercase">
+              AIMETRA
             </span>
-            <p className="mt-2 text-xs leading-relaxed text-[#777777] max-w-sm">
-              The unified academic intelligence operating system for the AI &
-              Machine Learning Department. Centralizing students, faculty, research,
-              events, rankings, and career opportunities.
+            <p className="mt-1 text-[10px] font-medium tracking-wider text-[#888888] uppercase">
+              AI &amp; ML Education, Talent, Research &amp; Analytics
+            </p>
+            <p className="mt-3 text-xs leading-relaxed text-[#777777] max-w-sm">
+              The intelligence layer connecting an AI &amp; ML academic ecosystem.
+              Bringing students, faculty, projects, research, opportunities and
+              institutional knowledge into one connected environment.
             </p>
             <div className="mt-4 text-xs text-[#888888]">
-              Department of Artificial Intelligence & Machine Learning
+              Department of Artificial Intelligence &amp; Machine Learning
               <br />
               Innovation Campus, Academic Block 4
             </div>
@@ -23,7 +26,7 @@ export function PublicFooter() {
 
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-[#111111]">
-              Academics
+              Education
             </h4>
             <ul className="mt-3 space-y-2 text-xs">
               <li>
@@ -38,7 +41,7 @@ export function PublicFooter() {
               </li>
               <li>
                 <Link href="/opportunities" className="hover:text-[#111111]">
-                  Internships & Training
+                  Internships &amp; Training
                 </Link>
               </li>
               <li>
@@ -56,17 +59,17 @@ export function PublicFooter() {
             <ul className="mt-3 space-y-2 text-xs">
               <li>
                 <Link href="/projects" className="hover:text-[#111111]">
-                  Research & Capstones
+                  Research &amp; Projects
                 </Link>
               </li>
               <li>
                 <Link href="/events" className="hover:text-[#111111]">
-                  Events & Hackathons
+                  Events &amp; Hackathons
                 </Link>
               </li>
               <li>
                 <Link href="/groups" className="hover:text-[#111111]">
-                  Clubs & SIGs
+                  Clubs &amp; SIGs
                 </Link>
               </li>
               <li>
@@ -107,7 +110,7 @@ export function PublicFooter() {
         </div>
 
         <div className="mt-10 border-t border-[#E5E5E5] pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#888888]">
-          <p>© {new Date().getFullYear()} Lyrahub. AI/ML Department. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} AIMETRA. Department of AI &amp; ML. All rights reserved.</p>
           <div className="flex gap-4 mt-2 sm:mt-0">
             <Link href="/privacy" className="hover:text-[#111111]">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-[#111111]">Terms of Service</Link>

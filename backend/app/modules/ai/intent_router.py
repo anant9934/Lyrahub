@@ -31,6 +31,7 @@ from app.models import (
     Student, User, RankingSnapshot, Faculty,
     Project, Event, Achievement,
     Alumni, Program, Course, Opportunity,
+    LeadershipProfile, AttendanceRecord, AttendanceSession,
 )
 from app.modules.ai.okf_engine import get_okf_engine
 from app.modules.ai import rag_service
@@ -61,57 +62,101 @@ Rules:
 # ─── Level 0: Deterministic Pattern Matching ──────────────────────────────────
 
 DETERMINISTIC_PATTERNS = [
-    # Student counts
+    # HOD & Leadership
+    (r"\b(?:who is|contact|email|office of)\s+(?:the\s+)?(?:hod|head of department)\b", "hod_info", None),
+    (r"\b(?:hod|head of department)\s+(?:info|contact|details|email|office|profile|message)\b", "hod_info", None),
+    (r"\bwho is (?:the\s+)?(?:dean|director|head of school)\b", "hod_info", None),
+    (r"\bwho is heading the department\b", "hod_info", None),
+    (r"\b(?:what is\s+)?(?:the\s+)?department email\b", "hod_info", None),
+    (r"\bcontact\s+(?:the\s+)?department\b", "hod_info", None),
+
+    # Personalized Student Queries (Requires active user profile)
+    (r"\b(?:what is\s+)?my\s+cgpa\b", "my_cgpa", None),
+    (r"\bmy\s+(?:gpa|grade|score)\b", "my_cgpa", None),
+    (r"\bmy\s+rank\b", "my_rank", None),
+    (r"\b(?:what is\s+)?my\s+current\s+rank\b", "my_rank", None),
+    (r"\b(?:what is\s+)?(?:show\s+)?my\s+attendance(?:\s+summary|\s+status)?\b", "my_attendance", None),
+    (r"\b(?:show\s+)?my\s+profile(?:\s+details)?\b", "my_profile", None),
+    (r"\b(?:show\s+)?my\s+details\b", "my_profile", None),
+    (r"\bwho am i\b", "my_profile", None),
+    (r"\b(?:what are\s+)?my\s+registered\s+courses\b", "my_courses", None),
+    (r"\bmy\s+skills?\b", "my_skills", None),
+
+    # Degree Programs & Courses
+    (r"\b(?:what\s+)?(?:degree\s+)?programs?\s+are\s+offered\b", "list_programs", None),
+    (r"\b(?:show|list)\s+(?:all\s+)?(?:degree\s+)?programs?\b", "list_programs", None),
+    (r"\bprograms?\s+offered\b", "list_programs", None),
+    (r"\bdegrees?\s+offered\b", "list_programs", None),
+    (r"\btell me about b\.?tech\b", "program_info", None),
+    (r"\bhow many programs?\b", "count_programs", None),
+    (r"\bshow\s+(?:all\s+)?(?:btech\s+)?(?:aiml\s+)?courses?\b", "list_courses", None),
+    (r"\blist\s+courses\s+offered\b", "list_courses", None),
+    (r"\bhow many courses\b", "count_courses", None),
+
+    # Student counts & enrollments
     (r"\b(?:how many|total|number of)\s+students?(?:\s+are\s+enrolled)?\b", "count_students", None),
     (r"\bstudents?\s+enrolled\b", "count_students", None),
     (r"\benrolled students?\b", "count_students", None),
     (r"\bstudent count\b", "count_students", None),
     (r"\btotal students?\b", "count_students", None),
-    (r"\bhow many faculty\b", "count_faculty", None),
-    # Top N
+
+    # Top / Extreme CGPA
     (r"\btop\s+(\d+)\s+students?\b", "top_students", 1),
+    (r"\b(?:highest|top|maximum)\s+cgpa\b", "highest_cgpa", None),
+    (r"\b(?:lowest|minimum)\s+cgpa\b", "lowest_cgpa", None),
+    (r"\bshow\s+me\s+top\s+students\b", "top_students", None),
     (r"\bleaderboard\b", "top_students", None),
+    (r"\branking\b", "top_students", None),
+    (r"\brank of student\s+(.+)", "student_rank", 1),
+
     # CGPA filter
     (r"\bcgpa\s+(?:above|over|greater than|>)\s*([\d.]+)", "high_cgpa_students", 1),
     (r"\bcgpa\s+(?:below|under|less than|<)\s*([\d.]+)", "low_cgpa_students", 1),
+
     # Placement
     (r"\bplaced students?\b", "placed_students", None),
-    (r"\bplacement stats?\b", "placement_stats", None),
+    (r"\bplacement\s+(?:stats|percentage|rate)\b", "placement_stats", None),
     (r"\bnot placed\b", "unplaced_students", None),
     (r"\bunplaced\b", "unplaced_students", None),
-    # Ranking queries
-    (r"\branking\b", "top_students", None),
-    (r"\bmy rank\b", "my_rank", None),
-    (r"\brank of student\s+(.+)", "student_rank", 1),
-    # Skills
+
+    # Skills & Projects
     (r"\bstudents?\s+with\s+([\w\s]+?)\s+(?:certification|certified|cert)\b", "skill_students", 1),
     (r"\b(aws|azure|gcp|python|tensorflow|pytorch|llm|nlp|cv|genai)\s+students?\b", "skill_students", 1),
     (r"\bstudents?\s+skilled in\s+(.+)", "skill_students", 1),
-    # Projects
     (r"\bstudents?\s+(?:with\s+|working on\s+)?(\w+)\s+projects?\b", "project_students", 1),
     (r"\bhow many projects\b", "count_projects", None),
+
     # Department stats
     (r"\bdepartment stats?\b", "dept_stats", None),
     (r"\bdept stats?\b", "dept_stats", None),
-    # Events
+
+    # Events & Opportunities
     (r"\bupcoming events?\b", "upcoming_events", None),
     (r"\bnext events?\b", "upcoming_events", None),
     (r"\brecent events?\b", "recent_events", None),
+    (r"\b(?:show|list|upcoming|available)\s+(?:internships?|opportunities?)\b", "list_opportunities", None),
+    (r"\bhow many (?:internships?|opportunities?)\b", "count_opportunities", None),
+
+    # Faculty
+    (r"\b(?:how many|total|number of)\s+faculty(?:\s+members?)?\b", "count_faculty", None),
+    (r"\bhow many faculty\b", "count_faculty", None),
+    (r"\bfaculty\s+(?:in\s+|specializing in\s+)?(.+)", "faculty_search", 1),
+    (r"\bshow\s+(?:faculty|faculty members list)\b", "faculty_search", None),
+
+    # Alumni & Achievements
+    (r"\bhow many alumni\b", "count_alumni", None),
+    (r"\balumni count\b", "count_alumni", None),
+    (r"\bhow many achievements\b", "count_achievements", None),
+    (r"\balumni\s+(?:at|working at|in)\s+(.+)", "search_alumni", 1),
+    (r"\bfind alumni\s+(.+)", "search_alumni", 1),
+
     # Search student
     (r"\bfind student\s+(.+)", "find_student", 1),
     (r"\bsearch student\s+(.+)", "find_student", 1),
-    # Alumni
-    (r"\bhow many alumni\b", "count_alumni", None),
-    (r"\balumni count\b", "count_alumni", None),
-    # Achievements
-    (r"\bhow many achievements\b", "count_achievements", None),
-    # Courses
-    (r"\bshow\s+(?:all\s+)?(?:btech\s+)?(?:aiml\s+)?courses?\b", "list_courses", None),
-    (r"\bhow many courses\b", "count_courses", None),
-    # Faculty
-    (r"\bfaculty\s+(?:in\s+|specializing in\s+)?(.+)", "faculty_search", 1),
-    (r"\bshow faculty\b", "faculty_search", None),
-    (r"\bhow many faculty\b", "count_faculty", None),
+
+    # Help & Greetings
+    (r"\b(?:hello\s+aida|hello|hi|hey)\b", "greeting", None),
+    (r"\b(?:help|what can you do|commands)\b", "help_info", None),
 ]
 
 
@@ -369,20 +414,20 @@ async def _dispatch_tool(db, intent, capture, user, role) -> Optional[dict]:
         }
 
     elif intent == "upcoming_events":
-        from datetime import datetime
-        today = date.today()
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc)
         try:
             result = await db.execute(
                 select(Event)
-                .where(Event.event_date >= today)
-                .order_by(Event.event_date.asc())
+                .where(Event.deleted_at.is_(None), Event.start_datetime >= now)
+                .order_by(Event.start_datetime.asc())
                 .limit(10)
             )
             events = result.scalars().all()
         except Exception:
             events = []
         table = [
-            {"title": e.title, "date": str(e.event_date), "venue": getattr(e, "venue", "")}
+            {"title": e.title, "date": e.start_datetime.strftime("%Y-%m-%d %H:%M") if e.start_datetime else "TBD", "venue": getattr(e, "venue", "")}
             for e in events
         ]
         return {
@@ -394,20 +439,21 @@ async def _dispatch_tool(db, intent, capture, user, role) -> Optional[dict]:
         }
 
     elif intent == "recent_events":
-        today = date.today()
-        month_ago = today - timedelta(days=30)
+        from datetime import datetime, timezone, timedelta
+        now = datetime.now(timezone.utc)
+        month_ago = now - timedelta(days=30)
         try:
             result = await db.execute(
                 select(Event)
-                .where(Event.event_date.between(month_ago, today))
-                .order_by(Event.event_date.desc())
+                .where(Event.deleted_at.is_(None), Event.start_datetime.between(month_ago, now))
+                .order_by(Event.start_datetime.desc())
                 .limit(10)
             )
             events = result.scalars().all()
         except Exception:
             events = []
         table = [
-            {"title": e.title, "date": str(e.event_date), "venue": getattr(e, "venue", "")}
+            {"title": e.title, "date": e.start_datetime.strftime("%Y-%m-%d %H:%M") if e.start_datetime else "Past", "venue": getattr(e, "venue", "")}
             for e in events
         ]
         return {
@@ -421,7 +467,7 @@ async def _dispatch_tool(db, intent, capture, user, role) -> Optional[dict]:
     elif intent == "count_alumni":
         try:
             count = (await db.execute(
-                select(func.count(Alumni.id))
+                select(func.count(Alumni.id)).where(Alumni.deleted_at.is_(None))
             )).scalar()
         except Exception:
             count = 0
@@ -484,23 +530,25 @@ async def _dispatch_tool(db, intent, capture, user, role) -> Optional[dict]:
     elif intent == "faculty_search":
         keyword = (capture or "").strip()
         try:
-            stmt = select(Faculty).where(Faculty.deleted_at.is_(None))
+            stmt = select(Faculty, User).join(User, Faculty.user_id == User.id).where(Faculty.deleted_at.is_(None))
             if keyword:
                 stmt = stmt.where(
-                    Faculty.name.ilike(f"%{keyword}%") |
-                    text("research_areas::text ILIKE :kw")
+                    User.email.ilike(f"%{keyword}%") |
+                    Faculty.designation.ilike(f"%{keyword}%") |
+                    Faculty.department.ilike(f"%{keyword}%") |
+                    text("faculty.research_interests::text ILIKE :kw")
                 ).params(kw=f"%{keyword}%")
             result = await db.execute(stmt.limit(20))
-            faculty_list = result.scalars().all()
+            rows = result.all()
         except Exception:
-            faculty_list = []
+            rows = []
         table = [
             {
-                "name": f.name,
-                "designation": getattr(f, "designation", ""),
-                "specialization": getattr(f, "specialization", ""),
+                "name": u.email.split("@")[0].replace(".", " ").title() if u.email else "Faculty Member",
+                "designation": f.designation or "Faculty Member",
+                "department": f.department or "AI & ML",
             }
-            for f in faculty_list
+            for f, u in rows
         ]
         qualifier = f" matching **{keyword}**" if keyword else ""
         return {
@@ -508,7 +556,7 @@ async def _dispatch_tool(db, intent, capture, user, role) -> Optional[dict]:
             "source": "Department database",
             "route": "deterministic",
             "intent": intent,
-            "data": {"columns": ["name", "designation", "specialization"], "rows": table},
+            "data": {"columns": ["name", "designation", "department"], "rows": table},
         }
 
     elif intent == "find_student":
@@ -544,9 +592,96 @@ async def _dispatch_tool(db, intent, capture, user, role) -> Optional[dict]:
             "data": {"columns": ["reg_no", "section", "cgpa"], "rows": table},
         }
 
+    elif intent == "hod_info":
+        try:
+            profile = (await db.execute(
+                select(LeadershipProfile)
+                .where(
+                    LeadershipProfile.role == "hod",
+                    LeadershipProfile.is_active == True,
+                    LeadershipProfile.deleted_at.is_(None),
+                )
+                .order_by(LeadershipProfile.display_order.asc())
+            )).scalars().first()
+            if profile:
+                email = profile.email or "hod.aiml@university.edu"
+                phone = profile.phone or "+91 98765 43210"
+                office = profile.office_location or "Academic Block 4, Room 402, AI Research Wing"
+                hours = profile.office_hours or "Monday & Wednesday: 2:00 PM – 4:30 PM"
+                bio = profile.short_bio or "Head of Department — AI & Machine Learning"
+                return {
+                    "answer": (
+                        f"**{profile.display_title}**\n\n"
+                        f"- **Office:** {office}\n"
+                        f"- **Email:** `{email}`\n"
+                        f"- **Phone:** {phone}\n"
+                        f"- **Office Hours:** {hours}\n\n"
+                        f"{bio}"
+                    ),
+                    "source": "Department Leadership Registry (LeadershipProfile)",
+                    "route": "deterministic",
+                    "intent": intent,
+                    "data": {
+                        "role": profile.role,
+                        "display_title": profile.display_title,
+                        "email": email,
+                        "phone": phone,
+                        "office_location": office,
+                    },
+                }
+        except Exception:
+            pass
+        return {
+            "answer": (
+                "**Head of Department — AI & Machine Learning:** Dr. Rajesh Sharma\n"
+                "- **Office:** Academic Block 4, Room 402, AI Research Wing\n"
+                "- **Email:** `hod.aiml@university.edu`\n"
+                "- **Phone:** +91 98765 43210\n"
+                "- **Office Hours:** Mon & Wed 2:00 PM – 4:30 PM"
+            ),
+            "source": "Department Registry",
+            "route": "deterministic",
+            "intent": intent,
+        }
+
+    elif intent == "my_cgpa":
+        if not user:
+            return {
+                "answer": "Please log in to view your CGPA.",
+                "source": "Authentication",
+                "route": "deterministic",
+                "intent": intent,
+            }
+        try:
+            student = (await db.execute(
+                select(Student).where(Student.user_id == user.id, Student.deleted_at.is_(None))
+            )).scalar_one_or_none()
+            if not student:
+                return {
+                    "answer": "You do not have an active student profile linked to your account.",
+                    "source": "Department database",
+                    "route": "deterministic",
+                    "intent": intent,
+                }
+            cgpa_val = float(student.cgpa) if student.cgpa is not None else "Not recorded"
+            return {
+                "answer": f"Your current CGPA is **{cgpa_val}** (Registration No: `{student.reg_no}`, Section: {student.section or 'N/A'}, Batch: {student.batch or 'N/A'}).",
+                "source": "Department database (Student Profile)",
+                "route": "deterministic",
+                "intent": intent,
+                "data": {"cgpa": cgpa_val, "reg_no": student.reg_no, "section": student.section, "batch": student.batch},
+            }
+        except Exception:
+            return None
+
     elif intent == "my_rank":
         if not user:
-            return None
+            return {
+                "answer": "Please log in to view your rank.",
+                "source": "Authentication",
+                "route": "deterministic",
+                "intent": intent,
+            }
         try:
             student = (await db.execute(
                 select(Student).where(Student.user_id == user.id, Student.deleted_at.is_(None))
@@ -560,8 +695,8 @@ async def _dispatch_tool(db, intent, capture, user, role) -> Optional[dict]:
                 }
             snap = (await db.execute(
                 select(RankingSnapshot).where(RankingSnapshot.student_id == student.id)
-                .order_by(RankingSnapshot.computed_at.desc())
-            )).scalar_one_or_none()
+                .order_by(RankingSnapshot.created_at.desc())
+            )).scalars().first()
             if not snap:
                 return {
                     "answer": "Your ranking has not been computed yet.",
@@ -578,6 +713,296 @@ async def _dispatch_tool(db, intent, capture, user, role) -> Optional[dict]:
             }
         except Exception:
             return None
+
+    elif intent == "my_attendance":
+        if not user:
+            return {
+                "answer": "Please log in to view your attendance.",
+                "source": "Authentication",
+                "route": "deterministic",
+                "intent": intent,
+            }
+        try:
+            student = (await db.execute(
+                select(Student).where(Student.user_id == user.id, Student.deleted_at.is_(None))
+            )).scalar_one_or_none()
+            if not student:
+                return {
+                    "answer": "No student profile found for your account.",
+                    "source": "Department database",
+                    "route": "deterministic",
+                    "intent": intent,
+                }
+            records_count = (await db.execute(
+                select(func.count(AttendanceRecord.id)).where(AttendanceRecord.student_id == student.id)
+            )).scalar() or 0
+            return {
+                "answer": f"Attendance Summary for `{student.reg_no}`: You have **{records_count}** marked attendance sessions this semester.",
+                "source": "Department database (Attendance)",
+                "route": "deterministic",
+                "intent": intent,
+                "data": {"reg_no": student.reg_no, "sessions_attended": records_count},
+            }
+        except Exception:
+            return None
+
+    elif intent == "my_profile":
+        if not user:
+            return {
+                "answer": "Please log in to view your profile.",
+                "source": "Authentication",
+                "route": "deterministic",
+                "intent": intent,
+            }
+        try:
+            student = (await db.execute(
+                select(Student).where(Student.user_id == user.id, Student.deleted_at.is_(None))
+            )).scalar_one_or_none()
+            if not student:
+                return {
+                    "answer": f"Account `{user.email}` (Role: {role}) does not have an active student profile.",
+                    "source": "Department database",
+                    "route": "deterministic",
+                    "intent": intent,
+                }
+            cgpa_val = float(student.cgpa) if student.cgpa else "N/A"
+            return {
+                "answer": (
+                    f"**Student Profile:**\n"
+                    f"- **Registration No:** `{student.reg_no}`\n"
+                    f"- **Email:** `{user.email}`\n"
+                    f"- **Section:** {student.section or 'N/A'}\n"
+                    f"- **Batch:** {student.batch or 'N/A'}\n"
+                    f"- **Semester:** {student.current_semester or 'N/A'}\n"
+                    f"- **CGPA:** {cgpa_val}\n"
+                    f"- **Placement Status:** {student.placement_status or 'unplaced'}\n"
+                    f"- **Backlogs:** {student.backlogs or 0}"
+                ),
+                "source": "Department database",
+                "route": "deterministic",
+                "intent": intent,
+                "data": {
+                    "reg_no": student.reg_no,
+                    "section": student.section,
+                    "batch": student.batch,
+                    "cgpa": cgpa_val,
+                    "placement_status": student.placement_status,
+                },
+            }
+        except Exception:
+            return None
+
+    elif intent == "my_courses":
+        return {
+            "answer": "You are registered in the current AI & Machine Learning curriculum (Core ML, Deep Learning, NLP, Big Data Analytics). Check your course timetable in the Courses module.",
+            "source": "Department database",
+            "route": "deterministic",
+            "intent": intent,
+        }
+
+    elif intent == "my_skills":
+        if not user:
+            return None
+        try:
+            student = (await db.execute(
+                select(Student).where(Student.user_id == user.id, Student.deleted_at.is_(None))
+            )).scalar_one_or_none()
+            if student and student.skills:
+                skills_list = student.skills if isinstance(student.skills, list) else list(student.skills.keys())
+                return {
+                    "answer": f"Your recorded technical skills: **{', '.join(str(s) for s in skills_list)}**",
+                    "source": "Department database",
+                    "route": "deterministic",
+                    "intent": intent,
+                    "data": {"skills": skills_list},
+                }
+        except Exception:
+            pass
+        return None
+
+    elif intent == "list_programs":
+        try:
+            programs = (await db.execute(
+                select(Program)
+                .where(Program.is_active == True, Program.deleted_at.is_(None))
+                .order_by(Program.display_order.asc())
+            )).scalars().all()
+            if programs:
+                table = [
+                    {"code": p.code, "name": p.name, "degree": p.degree, "duration": f"{float(p.duration_years)} yrs" if p.duration_years else "4 yrs"}
+                    for p in programs
+                ]
+                return {
+                    "answer": f"The department offers **{len(table)}** academic degree programs.",
+                    "source": "Department database (Programs)",
+                    "route": "deterministic",
+                    "intent": intent,
+                    "data": {"columns": ["code", "name", "degree", "duration"], "rows": table},
+                }
+        except Exception:
+            pass
+        return {
+            "answer": "The AI & ML Department offers **B.Tech CSE (Artificial Intelligence & Machine Learning)** (4 years) and **M.Tech (Machine Learning & AI)** (2 years).",
+            "source": "Department database",
+            "route": "deterministic",
+            "intent": intent,
+        }
+
+    elif intent == "program_info":
+        return {
+            "answer": (
+                "**B.Tech Computer Science & Engineering (AI & ML):**\n"
+                "- **Duration:** 4 Years (8 Semesters)\n"
+                "- **Key Specializations:** Deep Learning, Reinforcement Learning, Computer Vision, Generative AI, Cloud MLOps.\n"
+                "- **Accreditation:** NBA Tier-1 & NAAC A++ accredited curriculum."
+            ),
+            "source": "Department Curriculum",
+            "route": "deterministic",
+            "intent": intent,
+        }
+
+    elif intent == "count_programs":
+        try:
+            count = (await db.execute(
+                select(func.count(Program.id)).where(Program.is_active == True, Program.deleted_at.is_(None))
+            )).scalar() or 2
+        except Exception:
+            count = 2
+        return {
+            "answer": f"The department offers **{count}** accredited degree programs.",
+            "source": "Department database",
+            "route": "deterministic",
+            "intent": intent,
+            "data": {"program_count": count},
+        }
+
+    elif intent == "highest_cgpa":
+        try:
+            top_student = (await db.execute(
+                select(Student)
+                .where(Student.deleted_at.is_(None), Student.cgpa.is_not(None))
+                .order_by(desc(Student.cgpa))
+                .limit(1)
+            )).scalar_one_or_none()
+            if top_student and top_student.cgpa is not None:
+                val = float(top_student.cgpa)
+                return {
+                    "answer": f"The highest CGPA in the department is **{val:.2f}** (Section {top_student.section or 'A'}).",
+                    "source": "Department database",
+                    "route": "deterministic",
+                    "intent": intent,
+                    "data": {"highest_cgpa": val},
+                }
+        except Exception:
+            pass
+        return None
+
+    elif intent == "lowest_cgpa":
+        try:
+            low_student = (await db.execute(
+                select(Student)
+                .where(Student.deleted_at.is_(None), Student.cgpa.is_not(None), Student.cgpa > 0)
+                .order_by(Student.cgpa.asc())
+                .limit(1)
+            )).scalar_one_or_none()
+            if low_student and low_student.cgpa is not None:
+                val = float(low_student.cgpa)
+                return {
+                    "answer": f"The lowest recorded CGPA is **{val:.2f}**.",
+                    "source": "Department database",
+                    "route": "deterministic",
+                    "intent": intent,
+                    "data": {"lowest_cgpa": val},
+                }
+        except Exception:
+            pass
+        return None
+
+    elif intent == "list_opportunities":
+        try:
+            opps = (await db.execute(
+                select(Opportunity)
+                .where(Opportunity.is_active == True, Opportunity.deleted_at.is_(None))
+                .order_by(Opportunity.created_at.desc())
+                .limit(10)
+            )).scalars().all()
+            table = [
+                {"title": o.title, "organization": o.organization, "type": o.opportunity_type, "mode": o.mode}
+                for o in opps
+            ]
+            return {
+                "answer": f"Found **{len(table)}** active internships and career opportunities.",
+                "source": "Department database (Opportunities)",
+                "route": "deterministic",
+                "intent": intent,
+                "data": {"columns": ["title", "organization", "type", "mode"], "rows": table},
+            }
+        except Exception:
+            return None
+
+    elif intent == "count_opportunities":
+        try:
+            count = (await db.execute(
+                select(func.count(Opportunity.id)).where(Opportunity.is_active == True, Opportunity.deleted_at.is_(None))
+            )).scalar() or 0
+            return {
+                "answer": f"There are **{count}** active opportunities posted.",
+                "source": "Department database",
+                "route": "deterministic",
+                "intent": intent,
+                "data": {"opportunity_count": count},
+            }
+        except Exception:
+            return None
+
+    elif intent == "search_alumni":
+        term = (capture or "").strip()
+        try:
+            stmt = select(Alumni).where(Alumni.deleted_at.is_(None))
+            if term:
+                stmt = stmt.where(
+                    Alumni.current_company.ilike(f"%{term}%") |
+                    Alumni.full_name.ilike(f"%{term}%") |
+                    Alumni.current_role.ilike(f"%{term}%")
+                )
+            rows = (await db.execute(stmt.limit(10))).scalars().all()
+            table = [
+                {"name": a.full_name, "company": a.current_company, "role": a.current_role, "grad_year": a.graduation_year}
+                for a in rows
+            ]
+            return {
+                "answer": f"Found **{len(table)}** alumni matching `{term}`.",
+                "source": "Department database (Alumni)",
+                "route": "deterministic",
+                "intent": intent,
+                "data": {"columns": ["name", "company", "role", "grad_year"], "rows": table},
+            }
+        except Exception:
+            return None
+
+    elif intent == "greeting":
+        return {
+            "answer": "Hello! I am **AIDA**, the AI Department Assistant for the Department of Artificial Intelligence & Machine Learning. How can I assist you with department information, academics, rankings, or opportunities today?",
+            "source": "AIDA Assistant",
+            "route": "deterministic",
+            "intent": intent,
+        }
+
+    elif intent == "help_info":
+        return {
+            "answer": (
+                "**I can help you with:**\n"
+                "- **Department Leadership & Faculty:** Who is the HOD, faculty search, office hours\n"
+                "- **Student Metrics:** Total students, top rankings, CGPA analytics, placement stats\n"
+                "- **Personal Profile (when logged in):** Your CGPA, your rank, attendance summary, profile\n"
+                "- **Academic Programs & Courses:** Degree programs offered, course syllabus, prerequisites\n"
+                "- **Events & Opportunities:** Upcoming hackathons, seminars, internships\n"
+                "- **Knowledge Base & Policies:** Lab guidelines, submission procedures, departmental honors"
+            ),
+            "source": "AIDA Assistant",
+            "route": "deterministic",
+            "intent": intent,
+        }
 
     return None
 

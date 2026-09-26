@@ -58,11 +58,11 @@ export default function LoginPage() {
         {/* Top Brand Logo */}
         <div>
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md bg-[#111111] flex items-center justify-center text-white text-xs font-bold">
-              L
+            <div className="w-7 h-7 rounded-md bg-[#111111] flex items-center justify-center text-white text-[9px] font-bold tracking-tight">
+              AM
             </div>
-            <span className="text-lg font-bold tracking-tight text-[#111111]">
-              Lyrahub
+            <span className="text-sm font-bold tracking-[0.1em] text-[#111111] uppercase">
+              AIMETRA
             </span>
           </Link>
         </div>
@@ -74,7 +74,7 @@ export default function LoginPage() {
               Welcome back
             </h1>
             <p className="text-xs text-[#555555]">
-              Login to your Lyrahub account
+              Sign in to AIMETRA with your department credentials.
             </p>
           </div>
 
@@ -171,7 +171,7 @@ export default function LoginPage() {
                 <span>Quick demo:</span>
                 <button
                   type="button"
-                  onClick={() => quickFill("student@aiml.hub", "ChangeMe123!")}
+                  onClick={() => quickFill("student@aiml.hub", "password123")}
                   className="underline hover:text-[#111111]"
                 >
                   Student
@@ -179,7 +179,7 @@ export default function LoginPage() {
                 <span>•</span>
                 <button
                   type="button"
-                  onClick={() => quickFill("faculty@aiml.hub", "ChangeMe123!")}
+                  onClick={() => quickFill("faculty@aiml.hub", "faculty123")}
                   className="underline hover:text-[#111111]"
                 >
                   Faculty
@@ -187,7 +187,7 @@ export default function LoginPage() {
                 <span>•</span>
                 <button
                   type="button"
-                  onClick={() => quickFill("hod@aiml.hub", "ChangeMe123!")}
+                  onClick={() => quickFill("hod@aiml.hub", "hod123")}
                   className="underline hover:text-[#111111]"
                 >
                   HOD
@@ -195,10 +195,18 @@ export default function LoginPage() {
                 <span>•</span>
                 <button
                   type="button"
-                  onClick={() => quickFill("admin@aiml.hub", "ChangeMe123!")}
+                  onClick={() => quickFill("admin@aiml.hub", "admin123")}
                   className="underline hover:text-[#111111]"
                 >
                   Admin
+                </button>
+                <span>•</span>
+                <button
+                  type="button"
+                  onClick={() => quickFill("alumni@aiml.hub", "alumni123")}
+                  className="underline hover:text-[#111111]"
+                >
+                  Alumni
                 </button>
               </div>
 
@@ -219,7 +227,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    quickFill("student@aiml.hub", "ChangeMe123!")
+                    quickFill("student@aiml.hub", "password123")
                   }}
                   className="flex items-center justify-center gap-2 h-9 px-3 rounded-lg border border-[#E5E5E5] bg-white text-xs font-medium text-[#555555] hover:bg-[#FAFAFA] hover:text-[#111111] transition-colors"
                 >
@@ -247,7 +255,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    quickFill("admin@aiml.hub", "ChangeMe123!")
+                    quickFill("admin@aiml.hub", "admin123")
                   }}
                   className="flex items-center justify-center gap-2 h-9 px-3 rounded-lg border border-[#E5E5E5] bg-white text-xs font-medium text-[#555555] hover:bg-[#FAFAFA] hover:text-[#111111] transition-colors"
                 >
@@ -291,21 +299,31 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right Column: Architectural Photography (Matching Panel 2) */}
-      <div className="hidden lg:block lg:flex-1 relative bg-[#FAFAFA] border-l border-[#E5E5E5]">
+      {/* Right Column: Campus photography — flowering building */}
+      <div className="hidden lg:block lg:flex-1 relative overflow-hidden border-l border-[#E5E5E5]">
         <Image
-          src="/images/login-campus.jpg"
-          alt="AI & Machine Learning Institute Campus"
+          src="/images/login-campus.png"
+          alt="AI & Machine Learning Department — Campus"
           fill
           priority
-          className="object-cover"
+          className="object-cover object-top"
         />
-        {/* Clean text overlay matching Panel 2 */}
-        <div className="absolute inset-x-0 bottom-0 p-12 bg-gradient-to-t from-black/80 via-black/30 to-transparent text-white space-y-1">
-          <div className="text-sm font-medium text-white/80">One Department</div>
-          <div className="text-2xl font-bold tracking-tight text-white">
-            Infinite Possibilities
-          </div>
+        {/* Strong bottom gradient so text is always readable */}
+        <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+        {/* Subtle left edge darkening */}
+        <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/10 to-transparent" />
+
+        {/* Brand text — bottom of panel */}
+        <div className="absolute bottom-0 inset-x-0 p-10 space-y-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">
+            AI &amp; ML Education, Talent, Research &amp; Analytics
+          </p>
+          <p className="text-2xl font-semibold leading-tight text-white tracking-tight">
+            The intelligence layer for the AI &amp; ML department.
+          </p>
+          <p className="text-xs text-white/50 pt-1">
+            Department of Artificial Intelligence &amp; Machine Learning
+          </p>
         </div>
       </div>
     </div>

@@ -9,21 +9,23 @@ export default function HeroSection() {
         {/* Text content */}
         <div className="max-w-7xl mx-auto px-6 pt-32 pb-8 md:pb-0 relative z-10 w-full">
           <div className="max-w-3xl mx-auto text-center">
+
+            {/* Eyebrow */}
+            <p className="text-xs font-semibold uppercase tracking-widest text-ink/60 mb-5">
+              AI &amp; ML Education, Talent, Research &amp; Analytics
+            </p>
+
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-ink leading-[1.1]">
-              Mapping the brightest minds in{' '}
+              The intelligence layer
               <br className="hidden md:block" />
-              <span className="text-amber">Machine Learning.</span>
+              for the{' '}
+              <span className="text-amber">AI &amp; ML department.</span>
             </h1>
 
             <p className="mt-6 text-base md:text-lg text-ink/70 mx-auto leading-relaxed max-w-2xl">
-              <strong className="text-ink font-semibold">
-                Centralize. Evaluate. Elevate.
-              </strong>
-              <br className="hidden sm:block" />
-              {' '}Replace scattered spreadsheets and endless emails with one
-              intelligent workspace. From midnight hackathon deployments to
-              final placements, Lyrahub is the single source of truth for
-              every skill, project, and achievement.
+              AIMETRA connects students, faculty, projects, research,
+              opportunities, alumni and institutional data into one
+              intelligent academic environment.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -31,13 +33,13 @@ export default function HeroSection() {
                 href="/login"
                 className="bg-ink text-surface px-7 py-3.5 rounded-btn font-medium hover:bg-ink/85 transition-colors w-full sm:w-auto shadow-lg shadow-ink/15"
               >
-                Enter the Hub
+                Explore AIMETRA
               </Link>
               <Link
-                href="#documentation"
+                href="#system"
                 className="border border-border bg-surface text-ink px-7 py-3.5 rounded-btn font-medium hover:bg-canvas-alt transition-colors w-full sm:w-auto"
               >
-                View Documentation
+                See how it works
               </Link>
             </div>
           </div>
@@ -54,7 +56,7 @@ export default function HeroSection() {
           />
           <Image
             src="/hero-figure.jpg"
-            alt="A human silhouette composed of data particles and network connections, representing the intelligent mapping of student talent"
+            alt="Connected signals representing the people, knowledge and evidence within an AI & ML academic department"
             fill
             priority
             className="object-cover object-top"

@@ -50,6 +50,8 @@ for _origin in settings.CORS_ORIGINS.split(","):
     if _o:
         _ALLOWED_ORIGINS.append(_o)
 
+from fastapi.middleware.gzip import GZipMiddleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_ALLOWED_ORIGINS,
@@ -58,6 +60,9 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
     expose_headers=["X-Request-ID"],
 )
+
+# Response compression — compress JSON/text payloads > 1KB
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Request ID middleware — every request gets a traceable ID
 @app.middleware("http")

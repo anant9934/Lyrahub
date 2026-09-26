@@ -10,8 +10,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  // axios must run server-side as external package (prevents vendor chunk issue)
-  serverExternalPackages: ["axios"],
+
 
   // Security headers
   async headers() {
@@ -55,8 +54,15 @@ const nextConfig = {
     ],
   },
 
-  // Output: standalone for Docker deployment (if ever needed)
-  // Uncomment for self-hosted Docker: output: "standalone",
+  // Webpack config for in-browser client ML inference
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "sharp$": false,
+      "onnxruntime-node$": false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

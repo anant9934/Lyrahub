@@ -22,12 +22,13 @@ Cloud is LAST. Students NEVER get cloud.
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 import uuid
 import time
 from datetime import date, datetime, timezone
-from typing import Optional
+from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -58,6 +59,10 @@ settings = get_settings()
 
 router = APIRouter()
 
+# Single-flight request coalescing (Phase 12)
+_in_flight_coalescing: Dict[str, asyncio.Future] = {}
+_coalescing_lock = asyncio.Lock()
+
 # Cache TTL constants (seconds)
 _CACHE_TTL_ANALYTICS = 5 * 60         # 5 min — simple analytics
 _CACHE_TTL_KNOWLEDGE = 24 * 60 * 60   # 1 day — public knowledge
@@ -83,9 +88,13 @@ async def _resolve_role(user: User) -> str:
 # ─── Cache ─────────────────────────────────────────────────────────────────────
 
 def _cache_key(user_id: str, query: str, role: str, mode: str) -> str:
-    """Scope-aware cache key. User-scoped to prevent cross-user leakage."""
-    scope_hash = hashlib.sha256(f"{role}:{mode}".encode()).hexdigest()[:8]
-    query_hash = hashlib.sha256(query.lower().strip().encode()).hexdigest()[:12]
+    """Scope-aware cache key. Strictly user-scoped for personal queries to prevent cross-user leakage."""
+    q_lower = query.lower()
+    personal_markers = ("my ", "me ", "mine", "i ", "my-", "profile", "attendance", "cgpa", "resume", "marks", "scores")
+    is_personal = any(m in q_lower for m in personal_markers)
+    scope = f"{user_id}:{role}:{mode}" if is_personal else f"{role}:{mode}"
+    scope_hash = hashlib.sha256(scope.encode()).hexdigest()[:10]
+    query_hash = hashlib.sha256(q_lower.strip().encode()).hexdigest()[:12]
     return f"aida:{scope_hash}:{query_hash}"
 
 
@@ -154,42 +163,90 @@ async def aida_query(
             metadata={"cached": True, "data_as_of": cached.get("data_as_of", "")},
         )
 
-    # ── Route through 7-level pipeline ───────────────────────────────────────
-    start = time.monotonic()
-    route_result = await intent.route_intent(
-        body.query, db, role, user=current_user, mode=mode
-    )
-    routing_latency = int((time.monotonic() - start) * 1000)
+    # ── Request Coalescing (Phase 12: Single-flight deduplication) ────────────
+    leader_fut = None
+    my_fut = None
+    async with _coalescing_lock:
+        if cache_key in _in_flight_coalescing:
+            leader_fut = _in_flight_coalescing[cache_key]
+        else:
+            my_fut = asyncio.get_running_loop().create_future()
+            _in_flight_coalescing[cache_key] = my_fut
 
-    # ── Non-cloud result ──────────────────────────────────────────────────────
-    signal = route_result.get("signal")
+    if leader_fut is not None:
+        try:
+            coalesced = await asyncio.wait_for(asyncio.shield(leader_fut), timeout=10.0)
+            if coalesced:
+                return AIDAQueryResponse(
+                    request_id=request_id,
+                    answer=coalesced.get("answer"),
+                    source=coalesced.get("source"),
+                    route=coalesced.get("route", "coalesced"),
+                    intent=coalesced.get("intent"),
+                    ai_mode=f"Coalesced ({coalesced.get('route', 'cached')})",
+                    data=coalesced.get("data"),
+                    sources=coalesced.get("sources"),
+                    latency_ms=coalesced.get("latency_ms", 5),
+                    metadata={"cached": True, "coalesced": True},
+                )
+        except Exception:
+            pass  # Fall through to normal query processing if leader timed out
 
-    if signal not in (intent.CLOUD_REQUIRED_SIGNAL,) and route_result.get("answer") is not None:
-        route = route_result.get("route", "deterministic")
-        response = AIDAQueryResponse(
-            request_id=request_id,
-            answer=route_result["answer"],
-            source=route_result.get("source"),
-            route=route,
-            intent=route_result.get("intent"),
-            ai_mode=_route_label(route),
-            data=route_result.get("data"),
-            sources=route_result.get("sources"),
-            latency_ms=routing_latency,
-            metadata={"cached": False},
+    try:
+        # ── Route through 7-level pipeline ───────────────────────────────────────
+        start = time.monotonic()
+        route_result = await intent.route_intent(
+            body.query, db, role, user=current_user, mode=mode
         )
-        # Cache safe results
-        if route in ("deterministic", "okf", "rag", "local_llm"):
-            ttl = _get_cache_ttl(route)
-            await _set_cache(redis, cache_key, {
-                "answer": route_result["answer"],
-                "source": route_result.get("source"),
-                "route": route,
-                "intent": route_result.get("intent"),
-                "data": route_result.get("data"),
-                "sources": route_result.get("sources"),
-            }, ttl)
-        return response
+        routing_latency = int((time.monotonic() - start) * 1000)
+
+        # ── Non-cloud result ──────────────────────────────────────────────────────
+        signal = route_result.get("signal")
+
+        if signal not in (intent.CLOUD_REQUIRED_SIGNAL,) and route_result.get("answer") is not None:
+            route = route_result.get("route", "deterministic")
+            response = AIDAQueryResponse(
+                request_id=request_id,
+                answer=route_result["answer"],
+                source=route_result.get("source"),
+                route=route,
+                intent=route_result.get("intent"),
+                ai_mode=_route_label(route),
+                data=route_result.get("data"),
+                sources=route_result.get("sources"),
+                latency_ms=routing_latency,
+                metadata={"cached": False},
+            )
+            # Notify in-flight listeners
+            if my_fut and not my_fut.done():
+                my_fut.set_result({
+                    "answer": route_result["answer"],
+                    "source": route_result.get("source"),
+                    "route": route,
+                    "intent": route_result.get("intent"),
+                    "data": route_result.get("data"),
+                    "sources": route_result.get("sources"),
+                    "latency_ms": routing_latency,
+                })
+            # Cache safe results
+            if route in ("deterministic", "okf", "rag", "local_llm"):
+                ttl = _get_cache_ttl(route)
+                await _set_cache(redis, cache_key, {
+                    "answer": route_result["answer"],
+                    "source": route_result.get("source"),
+                    "route": route,
+                    "intent": route_result.get("intent"),
+                    "data": route_result.get("data"),
+                    "sources": route_result.get("sources"),
+                }, ttl)
+            return response
+    finally:
+        if my_fut is not None:
+            async with _coalescing_lock:
+                if _in_flight_coalescing.get(cache_key) is my_fut:
+                    _in_flight_coalescing.pop(cache_key, None)
+            if not my_fut.done():
+                my_fut.set_result(None)
 
     # ── Browser SLM signal ────────────────────────────────────────────────────
     if signal == intent.BROWSER_SLM_SIGNAL:

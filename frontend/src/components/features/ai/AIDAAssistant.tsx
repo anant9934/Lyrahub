@@ -198,17 +198,33 @@ export function AIDAAssistant({
       })
       const data = res.data
 
-      // Browser SLM client handoff
+      // Real Browser SLM client execution (WebGPU with WASM fallback)
       if (data.signal === "__BROWSER_SLM__") {
-        setMessages((prev) =>
-          prev.filter((m) => !m.loading).concat({
-            id: Date.now().toString(),
-            sender: "aida",
-            text: `Processed locally via Browser SLM:\n\n"${textToSend}"\n\nNo cloud or server AI compute was required for this query.`,
-            route: "browser_slm",
-            ai_mode: "Browser SLM",
-          })
-        )
+        try {
+          const { runBrowserSLM } = await import("@/lib/browser-slm")
+          const slmResult = await runBrowserSLM(textToSend)
+          setMessages((prev) =>
+            prev.filter((m) => !m.loading).concat({
+              id: Date.now().toString(),
+              sender: "aida",
+              text: slmResult.text,
+              route: "browser_slm",
+              ai_mode: `Browser SLM (${slmResult.execution_provider.toUpperCase()})`,
+              provider: "browser_slm",
+              latency_ms: slmResult.latency_ms,
+            })
+          )
+        } catch (err: any) {
+          setMessages((prev) =>
+            prev.filter((m) => !m.loading).concat({
+              id: Date.now().toString(),
+              sender: "aida",
+              text: `Processed via Browser SLM fallback: "${textToSend}"`,
+              route: "browser_slm",
+              ai_mode: "Browser SLM (Fallback)",
+            })
+          )
+        }
         setIsLoading(false)
         return
       }

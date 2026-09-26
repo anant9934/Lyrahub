@@ -80,23 +80,25 @@ async def get_projects(
     result = await db.execute(query)
     projects = result.scalars().all()
 
-    items = []
-    for p in projects:
-        items.append(await _enrich_project(db, p))
-
+    items = await _batch_enrich_projects(db, projects)
     return items, total
 
 
-async def _enrich_project(db: AsyncSession, project: Project) -> schema.ProjectResponse:
-    # Fetch members with student reg_no
+async def _batch_enrich_projects(db: AsyncSession, projects: List[Project]) -> List[schema.ProjectResponse]:
+    if not projects:
+        return []
+    project_ids = [p.id for p in projects]
+    mentor_ids = list({p.mentor_id for p in projects if p.mentor_id})
+
+    # Batch 1: Members with student reg_no in a single query
     mem_res = await db.execute(
         select(ProjectMember, Student.reg_no)
         .outerjoin(Student, ProjectMember.student_id == Student.id)
-        .where(ProjectMember.project_id == project.id)
+        .where(ProjectMember.project_id.in_(project_ids))
     )
-    members = []
+    members_by_proj: dict[UUID, list] = {pid: [] for pid in project_ids}
     for pm, reg_no in mem_res.all():
-        members.append(schema.ProjectMemberResponse(
+        members_by_proj[pm.project_id].append(schema.ProjectMemberResponse(
             id=pm.id,
             project_id=pm.project_id,
             student_id=pm.student_id,
@@ -105,50 +107,57 @@ async def _enrich_project(db: AsyncSession, project: Project) -> schema.ProjectR
             student_reg_no=reg_no
         ))
 
-    # Fetch documents
+    # Batch 2: Documents in a single query
     doc_res = await db.execute(
-        select(ProjectDocument).where(ProjectDocument.project_id == project.id)
+        select(ProjectDocument).where(ProjectDocument.project_id.in_(project_ids))
     )
-    documents = [
-        schema.ProjectDocumentResponse.model_validate(d)
-        for d in doc_res.scalars().all()
-    ]
+    docs_by_proj: dict[UUID, list] = {pid: [] for pid in project_ids}
+    for d in doc_res.scalars().all():
+        docs_by_proj[d.project_id].append(schema.ProjectDocumentResponse.model_validate(d))
 
-    # Mentor email/name
-    mentor_name = None
-    if project.mentor_id:
-        u_res = await db.execute(select(User.email).where(User.id == project.mentor_id))
-        mentor_name = u_res.scalar_one_or_none()
+    # Batch 3: Mentors in a single query
+    mentor_names = {}
+    if mentor_ids:
+        u_res = await db.execute(select(User.id, User.email).where(User.id.in_(mentor_ids)))
+        mentor_names = {u[0]: u[1] for u in u_res.all()}
 
-    return schema.ProjectResponse(
-        id=project.id,
-        title=project.title,
-        slug=project.slug,
-        summary=project.summary,
-        description=project.description,
-        tech_stack=project.tech_stack or [],
-        domain=project.domain,
-        status=project.status or "ongoing",
-        github_url=project.github_url,
-        demo_url=project.demo_url,
-        paper_url=project.paper_url,
-        mentor_id=project.mentor_id,
-        external_mentor=project.external_mentor,
-        start_date=project.start_date,
-        end_date=project.end_date,
-        outcomes=project.outcomes,
-        awards=project.awards,
-        revenue_generated=float(project.revenue_generated) if project.revenue_generated is not None else None,
-        client_name=project.client_name,
-        cover_image_url=project.cover_image_url,
-        is_public=project.is_public if project.is_public is not None else True,
-        created_by=project.created_by,
-        created_at=project.created_at,
-        updated_at=project.updated_at,
-        mentor_name=mentor_name,
-        members=members,
-        documents=documents
-    )
+    items = []
+    for project in projects:
+        items.append(schema.ProjectResponse(
+            id=project.id,
+            title=project.title,
+            slug=project.slug,
+            summary=project.summary,
+            description=project.description,
+            tech_stack=project.tech_stack or [],
+            domain=project.domain,
+            status=project.status or "ongoing",
+            github_url=project.github_url,
+            demo_url=project.demo_url,
+            paper_url=project.paper_url,
+            mentor_id=project.mentor_id,
+            external_mentor=project.external_mentor,
+            start_date=project.start_date,
+            end_date=project.end_date,
+            outcomes=project.outcomes,
+            awards=project.awards,
+            revenue_generated=float(project.revenue_generated) if project.revenue_generated is not None else None,
+            client_name=project.client_name,
+            cover_image_url=project.cover_image_url,
+            is_public=project.is_public if project.is_public is not None else True,
+            created_by=project.created_by,
+            created_at=project.created_at,
+            updated_at=project.updated_at,
+            mentor_name=mentor_names.get(project.mentor_id),
+            members=members_by_proj.get(project.id, []),
+            documents=docs_by_proj.get(project.id, [])
+        ))
+    return items
+
+
+async def _enrich_project(db: AsyncSession, project: Project) -> schema.ProjectResponse:
+    res = await _batch_enrich_projects(db, [project])
+    return res[0]
 
 
 async def get_project_by_id_or_slug(db: AsyncSession, id_or_slug: str) -> schema.ProjectResponse:
@@ -514,24 +523,18 @@ async def get_my_projects(db: AsyncSession, current_user: User, role: str) -> Li
     p_res = await db.execute(
         select(Project).where(Project.id.in_(project_ids), Project.deleted_at.is_(None)).order_by(Project.created_at.desc())
     )
-    items = []
-    for p in p_res.scalars().all():
-        items.append(await _enrich_project(db, p))
-    return items
+    return await _batch_enrich_projects(db, p_res.scalars().all())
 
 
 async def get_projects_by_mentor(db: AsyncSession, mentor_id: UUID) -> List[schema.ProjectResponse]:
     res = await db.execute(
         select(Project).where(Project.mentor_id == mentor_id, Project.deleted_at.is_(None)).order_by(Project.created_at.desc())
     )
-    items = []
-    for p in res.scalars().all():
-        items.append(await _enrich_project(db, p))
-    return items
+    return await _batch_enrich_projects(db, res.scalars().all())
 
 
 async def get_stats(db: AsyncSession) -> schema.ProjectStatsResponse:
-    redis = get_redis()
+    redis = await get_redis()
     cache_key = "projects:stats"
     if redis:
         try:
