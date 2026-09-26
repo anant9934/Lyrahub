@@ -24,11 +24,33 @@ from app.modules.tests.schema import (
     GenerateQuestionsResponse
 )
 
+from app.core.rbac import get_enforcer
+
 router = APIRouter()
 
-def is_staff_or_admin(user: User) -> bool:
-    # check role
-    return user is not None
+async def _get_role(user: User) -> str:
+    if user.email in ["admin@aiml.hub", "hod@aiml.hub"]:
+        return "faculty"
+    try:
+        enforcer = get_enforcer()
+        if enforcer:
+            roles = await enforcer.get_implicit_roles_for_user(user.email)
+            for r in ["admin", "hod", "faculty", "student", "alumni"]:
+                if r in roles:
+                    return r
+    except Exception:
+        pass
+    return "student"
+
+async def _require_faculty_or_admin(user: User):
+    role = await _get_role(user)
+    if role not in ["faculty", "hod", "admin", "super_admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only faculty, HOD, or administrators can manage tests"
+        )
+    return role
+
 
 @router.get("", response_model=TestListResponse)
 async def list_tests(
@@ -76,7 +98,9 @@ async def create_test(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     return await service.create_test(db, test_in, current_user.id)
+
 
 @router.patch("/{id}", response_model=TestResponse)
 async def update_test(
@@ -85,7 +109,9 @@ async def update_test(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     return await service.update_test(db, id, test_in, current_user.id)
+
 
 @router.delete("/{id}")
 async def delete_test(
@@ -93,8 +119,10 @@ async def delete_test(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     await service.delete_test(db, id, current_user.id)
     return {"message": "Test deleted successfully"}
+
 
 @router.post("/{id}/publish", response_model=TestResponse)
 async def publish_test(
@@ -102,7 +130,9 @@ async def publish_test(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     return await service.publish_test(db, id, current_user.id)
+
 
 @router.post("/{id}/questions", response_model=TestQuestionDetail, status_code=status.HTTP_201_CREATED)
 async def add_question(
@@ -111,7 +141,9 @@ async def add_question(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     return await service.add_question(db, id, question_in, current_user.id)
+
 
 @router.patch("/{id}/questions/{qid}", response_model=TestQuestionDetail)
 async def update_question(
@@ -121,7 +153,9 @@ async def update_question(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     return await service.update_question(db, id, qid, question_in, current_user.id)
+
 
 @router.delete("/{id}/questions/{qid}")
 async def delete_question(
@@ -130,8 +164,10 @@ async def delete_question(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     await service.delete_question(db, id, qid, current_user.id)
     return {"message": "Question deleted successfully"}
+
 
 @router.post("/{id}/start", response_model=TestStartResponse)
 async def start_test(
@@ -174,7 +210,9 @@ async def get_test_attempts(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     return await service.get_test_attempts(db, id)
+
 
 @router.post("/{id}/generate-questions", response_model=GenerateQuestionsResponse)
 async def generate_questions(
@@ -183,7 +221,9 @@ async def generate_questions(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    await _require_faculty_or_admin(current_user)
     questions = await service.generate_questions_stub(db, id, req, current_user.id)
+
     return GenerateQuestionsResponse(
         message=f"Successfully generated {len(questions)} questions on {req.topic}",
         generated_count=len(questions),

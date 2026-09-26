@@ -118,9 +118,10 @@ export default function StudentQRCodePage() {
             </div>
 
             <div className="space-y-1 mb-6">
-              <h2 className="text-lg font-bold text-slate-900">{user?.full_name || "Department Student"}</h2>
+              <h2 className="text-lg font-bold text-slate-900">{(user as any)?.full_name || user?.email || "Department Student"}</h2>
               <p className="text-sm font-mono text-slate-500">{user?.email}</p>
             </div>
+
 
             <div className="w-full grid grid-cols-2 gap-3 pt-2">
               <button

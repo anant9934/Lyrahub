@@ -13,10 +13,16 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     # Startup
     enforcer = await init_casbin()
-    # Seed Casbin for superadmin and test roles
-    await enforcer.add_policy("Admin", "roles", "create")
-    await enforcer.add_grouping_policy(settings.SUPERADMIN_EMAIL, "Admin")
-    await enforcer.add_grouping_policy("hod@aiml.hub", "HOD")
+    # Seed Casbin for superadmin and test roles if not already present
+    try:
+        if not enforcer.has_policy("Admin", "roles", "create"):
+            await enforcer.add_policy("Admin", "roles", "create")
+        if not enforcer.has_grouping_policy(settings.SUPERADMIN_EMAIL, "Admin"):
+            await enforcer.add_grouping_policy(settings.SUPERADMIN_EMAIL, "Admin")
+        if not enforcer.has_grouping_policy("hod@aiml.hub", "HOD"):
+            await enforcer.add_grouping_policy("hod@aiml.hub", "HOD")
+    except Exception as e:
+        print(f"Policy seeding notice: {e}")
     yield
     # Shutdown
     pass

@@ -170,7 +170,7 @@ async def create_test(db: AsyncSession, test_in: TestCreate, user_id: uuid.UUID)
         actor_id=user_id,
         action="CREATE_TEST",
         resource_type="tests",
-        resource_id=test.id,
+        resource_id=str(test.id),
         payload={"title": test.title, "slug": test.slug}
     )
     db.add(audit)
@@ -194,7 +194,7 @@ async def update_test(db: AsyncSession, test_id: uuid.UUID, test_in: TestUpdate,
         actor_id=user_id,
         action="UPDATE_TEST",
         resource_type="tests",
-        resource_id=test.id,
+        resource_id=str(test.id),
         payload=update_data
     )
     db.add(audit)
@@ -212,8 +212,9 @@ async def delete_test(db: AsyncSession, test_id: uuid.UUID, user_id: uuid.UUID) 
         actor_id=user_id,
         action="DELETE_TEST",
         resource_type="tests",
-        resource_id=test.id,
+        resource_id=str(test.id),
         payload={"deleted_at": str(test.deleted_at)}
+
     )
     db.add(audit)
     await db.commit()
@@ -227,7 +228,7 @@ async def publish_test(db: AsyncSession, test_id: uuid.UUID, user_id: uuid.UUID)
         actor_id=user_id,
         action="PUBLISH_TEST",
         resource_type="tests",
-        resource_id=test.id,
+        resource_id=str(test.id),
         payload={"is_published": True}
     )
     db.add(audit)
@@ -267,8 +268,9 @@ async def add_question(
         actor_id=user_id,
         action="ADD_TEST_QUESTION",
         resource_type="test_questions",
-        resource_id=question.id,
+        resource_id=str(question.id),
         payload={"test_id": str(test_id), "type": question.question_type}
+
     )
     db.add(audit)
     
@@ -303,7 +305,7 @@ async def update_question(
         actor_id=user_id,
         action="UPDATE_TEST_QUESTION",
         resource_type="test_questions",
-        resource_id=question.id,
+        resource_id=str(question.id),
         payload=update_data
     )
     db.add(audit)
@@ -334,7 +336,7 @@ async def delete_question(
         actor_id=user_id,
         action="DELETE_TEST_QUESTION",
         resource_type="test_questions",
-        resource_id=qid,
+        resource_id=str(qid),
         payload={"test_id": str(test_id)}
     )
     db.add(audit)
@@ -491,7 +493,7 @@ async def submit_test_attempt(
         actor_id=user_id,
         action="SUBMIT_TEST_ATTEMPT",
         resource_type="test_attempts",
-        resource_id=attempt.id,
+        resource_id=str(attempt.id),
         payload={"score": float(earned_score), "percentage": float(percentage), "passed": passed}
     )
     db.add(audit)
@@ -722,8 +724,9 @@ async def generate_questions_stub(
         actor_id=user_id,
         action="GENERATE_TEST_QUESTIONS",
         resource_type="tests",
-        resource_id=test_id,
+        resource_id=str(test_id),
         payload={"topic": req.topic, "count": count}
+
     )
     db.add(audit)
     

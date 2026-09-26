@@ -309,7 +309,7 @@ async def create_leadership(
         actor_id=actor_id,
         action="CREATE_LEADERSHIP_PROFILE",
         resource_type="leadership_profiles",
-        resource_id=profile.id,
+        resource_id=str(profile.id),
         payload={"role": profile.role, "title": profile.display_title}
     )
     db.add(audit)
@@ -337,7 +337,7 @@ async def update_leadership(
         actor_id=actor_id,
         action="UPDATE_LEADERSHIP_PROFILE",
         resource_type="leadership_profiles",
-        resource_id=profile.id,
+        resource_id=str(profile.id),
         payload=update_data
     )
     db.add(audit)
@@ -360,7 +360,7 @@ async def delete_leadership(
         actor_id=actor_id,
         action="DELETE_LEADERSHIP_PROFILE",
         resource_type="leadership_profiles",
-        resource_id=profile.id,
+        resource_id=str(profile.id),
         payload={"role": profile.role}
     )
     db.add(audit)

@@ -108,7 +108,7 @@ async def create_attendance_session(
         actor_id=user_id,
         action="CREATE_ATTENDANCE_SESSION",
         resource_type="attendance_sessions",
-        resource_id=session.id,
+        resource_id=str(session.id),
         payload={"course_id": str(req_in.course_id), "duration": req_in.duration_minutes}
     )
     db.add(audit)
@@ -174,7 +174,7 @@ async def mark_attendance(
         actor_id=user_id,
         action="MARK_ATTENDANCE",
         resource_type="attendance_records",
-        resource_id=record.id,
+        resource_id=str(record.id),
         payload={"session_id": str(session_id), "student_id": str(student.id)}
     )
     db.add(audit)

@@ -54,7 +54,7 @@ class Student(Base):
     section = Column(String)
     batch = Column(Integer)
     phone = Column(String)
-    cgpa = Column(Integer)
+    cgpa = Column(Numeric(4, 2))
     placement_status = Column(String)
     
     # Phase 2 Enhancements
@@ -803,7 +803,7 @@ class AttendanceSession(Base):
     __tablename__ = "attendance_sessions"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=True)
-    section = Column(String(10), nullable=True)
+    section = Column(String(50), nullable=True)
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
     expires_at = Column(DateTime(timezone=True), nullable=True)

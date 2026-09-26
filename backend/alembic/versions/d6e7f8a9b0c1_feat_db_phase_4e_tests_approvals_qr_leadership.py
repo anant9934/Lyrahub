@@ -133,7 +133,7 @@ def upgrade() -> None:
         'attendance_sessions',
         sa.Column('id', sa.UUID(), nullable=False),
         sa.Column('course_id', sa.UUID(), nullable=True),
-        sa.Column('section', sa.String(length=10), nullable=True),
+        sa.Column('section', sa.String(length=50), nullable=True),
         sa.Column('created_by', sa.UUID(), nullable=False),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
         sa.Column('expires_at', sa.DateTime(timezone=True), nullable=True),

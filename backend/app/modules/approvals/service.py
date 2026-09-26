@@ -34,11 +34,12 @@ async def get_student_snapshot(db: AsyncSession, student_id: uuid.UUID) -> Dict[
         "linkedin_url": st.linkedin_url,
         "portfolio_url": st.portfolio_url,
         "skills": st.skills,
-        "department": st.department,
+        "department": getattr(st, "department", "AI/ML"),
         "section": st.section,
         "batch": st.batch,
         "placement_status": st.placement_status
     }
+
 
 async def create_request(
     db: AsyncSession,
@@ -80,7 +81,7 @@ async def create_request(
         actor_id=requester_id,
         action="SUBMIT_CHANGE_REQUEST",
         resource_type="change_requests",
-        resource_id=change_req.id,
+        resource_id=str(change_req.id),
         payload={"resource_type": req_in.resource_type, "action": req_in.action}
     )
     db.add(audit)
@@ -228,7 +229,7 @@ async def approve_request(
         actor_id=reviewer_id,
         action="APPROVE_CHANGE_REQUEST",
         resource_type="change_requests",
-        resource_id=cr.id,
+        resource_id=str(cr.id),
         payload={"status": "approved"}
     )
     db.add(audit)
@@ -273,7 +274,7 @@ async def reject_request(
         actor_id=reviewer_id,
         action="REJECT_CHANGE_REQUEST",
         resource_type="change_requests",
-        resource_id=cr.id,
+        resource_id=str(cr.id),
         payload={"status": "rejected", "comment": comment}
     )
     db.add(audit)
@@ -303,7 +304,7 @@ async def withdraw_request(
         actor_id=requester_id,
         action="WITHDRAW_CHANGE_REQUEST",
         resource_type="change_requests",
-        resource_id=cr.id,
+        resource_id=str(cr.id),
         payload={"status": "withdrawn"}
     )
     db.add(audit)
