@@ -545,3 +545,145 @@ class GroupEvent(Base):
     )
 
 
+class Program(Base):
+    __tablename__ = "programs"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    slug = Column(String(200), unique=True, index=True)
+    code = Column(String(50), unique=True, index=True) # "BTCS-AIML", "MTCS-MLAI"
+    name = Column(String(200), nullable=False) # "B.Tech CSE (AI & ML)"
+    short_name = Column(String(50)) # "B.Tech AI&ML"
+    degree = Column(String(20)) # "B.Tech", "M.Tech"
+    level = Column(String(20)) # "undergraduate", "postgraduate", "minor"
+    duration_years = Column(Numeric(3, 1)) # 4.0, 2.0
+    total_credits = Column(Integer)
+    description = Column(String) # overview
+    eligibility = Column(String) # markdown
+    admission_process = Column(String) # markdown
+    career_opportunities = Column(String) # markdown
+    program_outcomes = Column(JSONB, default=list) # list of POs
+    program_specific_outcomes = Column(JSONB, default=list) # PSOs
+    cover_image_url = Column(String)
+    brochure_url = Column(String)
+    is_active = Column(Boolean, default=True)
+    display_order = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
+
+    __table_args__ = (
+        Index("idx_programs_level_active", "level", "is_active"),
+    )
+
+
+class Course(Base):
+    __tablename__ = "courses"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    slug = Column(String(200), unique=True, index=True)
+    code = Column(String(20), unique=True, index=True) # "CS301"
+    name = Column(String(200), nullable=False) # "Deep Learning"
+    short_name = Column(String(50))
+    description = Column(String)
+    credits = Column(Numeric(3, 1)) # 4.0, 3.5
+    semester = Column(Integer) # 1-8
+    year = Column(Integer) # 1-4
+    course_type = Column(String(30)) # core, elective, lab, project, seminar
+    category = Column(String(50)) # theory, practical, humanities, minor
+    prerequisites = Column(String)
+    syllabus = Column(String) # markdown
+    ip_lp_notes = Column(String) # IP/LP mapping
+    learning_outcomes = Column(JSONB, default=list) # COs
+    evaluation_scheme = Column(JSONB, default=dict) # {"quiz": 20, "midterm": 30, "final": 50}
+    references = Column(JSONB, default=list) # textbooks
+    edurev_benefits = Column(JSONB, default=list) # ["RPL eligible", "Rev Gen 10%"]
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
+
+    __table_args__ = (
+        Index("idx_courses_semester_type", "semester", "course_type"),
+        Index("idx_courses_learning_outcomes", "learning_outcomes", postgresql_using="gin"),
+    )
+
+
+class ProgramCourse(Base):
+    __tablename__ = "program_courses"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    program_id = Column(UUID(as_uuid=True), ForeignKey("programs.id"), nullable=False)
+    course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=False)
+    semester = Column(Integer)
+    is_mandatory = Column(Boolean, default=True)
+
+    __table_args__ = (
+        Index("idx_program_course_unique", "program_id", "course_id", unique=True),
+    )
+
+
+class CourseFaculty(Base):
+    __tablename__ = "course_faculty"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=False)
+    faculty_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    academic_year = Column(String(20)) # "2025-26"
+    section = Column(String(10)) # "A", "B"
+    role = Column(String(30), default="primary") # primary, co-instructor, guest
+
+    __table_args__ = (
+        Index("idx_course_faculty_unique", "course_id", "faculty_id", "academic_year", "section", unique=True),
+    )
+
+
+class Opportunity(Base):
+    __tablename__ = "opportunities"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    slug = Column(String(250), unique=True, index=True)
+    title = Column(String(300), nullable=False)
+    organization = Column(String(200), nullable=False) # company/org name
+    opportunity_type = Column(String(30)) # 'internship', 'training', 'workshop', 'course', 'fellowship', 'scholarship'
+    mode = Column(String(20)) # 'remote', 'onsite', 'hybrid'
+    location = Column(String(200))
+    description = Column(String)
+    eligibility = Column(String)
+    required_skills = Column(JSONB, default=list)
+    stipend_amount = Column(Numeric(10, 2), nullable=True)
+    stipend_currency = Column(String(3), default="INR")
+    duration_weeks = Column(Integer)
+    start_date = Column(Date, nullable=True)
+    application_deadline = Column(DateTime(timezone=True), nullable=True)
+    application_url = Column(String(500))
+    contact_email = Column(String(255))
+    cover_image_url = Column(String)
+    tags = Column(JSONB, default=list)
+    posted_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    is_active = Column(Boolean, default=True)
+    is_verified = Column(Boolean, default=False)
+    verified_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    verified_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("idx_opportunities_type_active_deadline", "opportunity_type", "is_active", "application_deadline"),
+        Index("idx_opportunities_organization", "organization"),
+        Index("idx_opportunities_tags", "tags", postgresql_using="gin"),
+        Index("idx_opportunities_skills", "required_skills", postgresql_using="gin"),
+    )
+
+
+class OpportunityApplication(Base):
+    __tablename__ = "opportunity_applications"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    opportunity_id = Column(UUID(as_uuid=True), ForeignKey("opportunities.id"), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=False)
+    status = Column(String(20), default="interested") # interested, applied, selected, rejected, withdrawn
+    notes = Column(String)
+    applied_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_opportunity_application_unique", "opportunity_id", "student_id", unique=True),
+    )
+
+
+
