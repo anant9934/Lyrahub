@@ -23,6 +23,12 @@ celery
 reportlab
 openpyxl
 pyyaml>=6.0
+aiofiles>=23.2.0
+numpy>=1.26.0
+qrcode>=7.4.2
+pillow>=10.0.0
+python-multipart>=0.0.9
+python-dotenv>=1.0.0
 
 # Testing (excluded from production via pip install --no-dev or separate requirements)
 pytest==8.2.0
