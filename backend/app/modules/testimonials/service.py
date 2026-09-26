@@ -30,7 +30,7 @@ async def detect_author_info(db: AsyncSession, user: User) -> Tuple[str, str, Op
     res_f = await db.execute(select(Faculty).where(Faculty.user_id == user.id))
     faculty = res_f.scalar_one_or_none()
     if faculty:
-        name = faculty.full_name or user.email.split("@")[0].title()
+        name = getattr(faculty, "full_name", None) or user.email.split("@")[0].replace(".", " ").title()
         return "faculty", name, faculty.designation or "Faculty"
 
     # Check Casbin roles

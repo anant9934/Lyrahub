@@ -77,23 +77,26 @@ async def list_groups(
         if role in ["admin", "hod"]:
             can_view_inactive = True
 
+    p = page if isinstance(page, int) else 1
+    ps = page_size if isinstance(page_size, int) else 20
+
     items, total = await service.get_groups(
         db=db,
         group_type=group_type,
         category=category,
         is_official=is_official,
         search=search,
-        page=page,
-        page_size=page_size,
+        page=p,
+        page_size=ps,
         can_view_inactive=can_view_inactive
     )
 
-    pages = math.ceil(total / page_size) if total > 0 else 1
+    pages = math.ceil(total / ps) if total > 0 else 1
     return {
         "items": items,
         "total": total,
-        "page": page,
-        "page_size": page_size,
+        "page": p,
+        "page_size": ps,
         "pages": pages
     }
 
@@ -104,18 +107,21 @@ async def list_official_groups(
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db)
 ):
+    p = page if isinstance(page, int) else 1
+    ps = page_size if isinstance(page_size, int) else 20
+
     items, total = await service.get_groups(
         db=db,
         is_official=True,
-        page=page,
-        page_size=page_size
+        page=p,
+        page_size=ps
     )
-    pages = math.ceil(total / page_size) if total > 0 else 1
+    pages = math.ceil(total / ps) if total > 0 else 1
     return {
         "items": items,
         "total": total,
-        "page": page,
-        "page_size": page_size,
+        "page": p,
+        "page_size": ps,
         "pages": pages
     }
 

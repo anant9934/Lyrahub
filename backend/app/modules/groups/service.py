@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional, List, Tuple, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import func, update, and_, or_
+from sqlalchemy import func, update, and_, or_, case
 from fastapi import HTTPException, status
 
 from app.models import Group, GroupMember, GroupEvent, Student, Faculty, Event, User, AuditLog
@@ -191,7 +191,7 @@ async def get_group_by_slug(
         .where(GroupMember.group_id == group.id, GroupMember.is_active.is_(True))
         .order_by(
             # Order: lead first, core second, member third, pending last
-            func.case(
+            case(
                 (GroupMember.role == "lead", 1),
                 (GroupMember.role == "core", 2),
                 (GroupMember.role == "member", 3),
@@ -704,7 +704,7 @@ async def get_group_members(db: AsyncSession, group_id: UUID) -> List[Dict[str, 
         .join(User, Student.user_id == User.id)
         .where(GroupMember.group_id == group_id, GroupMember.is_active.is_(True))
         .order_by(
-            func.case(
+            case(
                 (GroupMember.role == "lead", 1),
                 (GroupMember.role == "core", 2),
                 (GroupMember.role == "member", 3),
