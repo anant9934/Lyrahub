@@ -69,6 +69,10 @@ app.include_router(stories_router, prefix="/api/v1/stories", tags=["stories"])
 from app.modules.testimonials.router import router as testimonials_router
 app.include_router(testimonials_router, prefix="/api/v1/testimonials", tags=["testimonials"])
 
+from app.modules.groups.router import router as groups_router
+app.include_router(groups_router, prefix="/api/v1/groups", tags=["groups"])
+
+
 
 
 
