@@ -78,21 +78,37 @@ def do_run_migrations(connection: Connection) -> None:
 from sqlalchemy import create_engine
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode using synchronous psycopg2 to avoid macOS asyncpg loop hangs."""
+    """Run migrations in 'online' mode using synchronous psycopg2 or fallback to asyncpg."""
     db_url = os.environ.get("DATABASE_URL", "")
-    sync_url = db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://").replace("ssl=require", "sslmode=require")
-    connectable = create_engine(sync_url, poolclass=pool.NullPool)
+    try:
+        import psycopg2  # noqa: F401
+        sync_url = db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://").replace("ssl=require", "sslmode=require")
+        connectable = create_engine(sync_url, poolclass=pool.NullPool)
 
-    with connectable.connect() as connection:
-        context.configure(
-            connection=connection,
-            target_metadata=target_metadata,
-            include_object=include_object,
-            compare_type=True
-        )
+        with connectable.connect() as connection:
+            context.configure(
+                connection=connection,
+                target_metadata=target_metadata,
+                include_object=include_object,
+                compare_type=True
+            )
 
-        with context.begin_transaction():
-            context.run_migrations()
+            with context.begin_transaction():
+                context.run_migrations()
+    except ImportError:
+        import asyncio
+        from sqlalchemy.ext.asyncio import create_async_engine
+
+        async def run_async_migrations() -> None:
+            async_url = db_url
+            if not async_url.startswith("postgresql+asyncpg://"):
+                async_url = async_url.replace("postgresql://", "postgresql+asyncpg://")
+            async_engine = create_async_engine(async_url, poolclass=pool.NullPool)
+            async with async_engine.connect() as async_conn:
+                await async_conn.run_sync(do_run_migrations)
+            await async_engine.dispose()
+
+        asyncio.run(run_async_migrations())
 
 
 if context.is_offline_mode():
