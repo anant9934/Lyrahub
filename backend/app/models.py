@@ -887,3 +887,129 @@ class AIUsageLog(Base):
         Index("idx_ai_usage_date_role", "usage_date", "role"),
         Index("idx_ai_usage_provider", "provider", "usage_date"),
     )
+
+
+# ─── Phase 5: AIDA Intelligence Stack ────────────────────────────────────────
+
+class KnowledgeDocument(Base):
+    """
+    Represents an indexed document in the RAG knowledge base.
+    Tracks source, access scope, content hash (for deduplication),
+    and indexing status.
+    """
+    __tablename__ = "knowledge_documents"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = Column(String(500), nullable=False)
+    category = Column(String(100), nullable=False)          # programs, courses, research, etc.
+    source_type = Column(String(50), nullable=False)        # upload | okf | api
+    source_path = Column(String(1000), nullable=True)       # file path or URL
+    access_scope = Column(String(100), nullable=False, default="public")
+    content_hash = Column(String(64), nullable=False)       # SHA-256 hex — for deduplication
+    token_estimate = Column(Integer, nullable=True)
+    embedding_model = Column(String(100), nullable=True)    # model used for embedding
+    embedding_version = Column(String(50), nullable=True)
+    indexing_status = Column(String(50), nullable=False, default="pending")  # pending|indexed|failed
+    indexing_error = Column(String(500), nullable=True)
+    uploader_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    chunk_count = Column(Integer, nullable=True)
+    tags = Column(JSONB, nullable=True)
+    meta_data = Column("metadata", JSONB, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_knowledge_doc_category", "category"),
+        Index("idx_knowledge_doc_hash", "content_hash"),
+        Index("idx_knowledge_doc_status", "indexing_status"),
+        Index("idx_knowledge_doc_scope", "access_scope"),
+    )
+
+
+class KnowledgeChunk(Base):
+    """
+    A semantic chunk from a KnowledgeDocument with pgvector embedding.
+    Each chunk is independently retrievable.
+    """
+    __tablename__ = "knowledge_chunks"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    document_id = Column(UUID(as_uuid=True), ForeignKey("knowledge_documents.id", ondelete="CASCADE"), nullable=False)
+    chunk_index = Column(Integer, nullable=False)           # Order within document
+    content = Column(String, nullable=False)
+    token_estimate = Column(Integer, nullable=True)
+    content_hash = Column(String(64), nullable=False)       # For deduplication before embedding
+    embedding_model = Column(String(100), nullable=True)
+    embedding_version = Column(String(50), nullable=True)
+    # Embedding stored as JSON array (pgvector column added via migration)
+    # embedding VECTOR(768) — added in migration only, not declared here
+    # to avoid requiring pgvector Python library at model import time
+    embedding_json = Column(JSONB, nullable=True)           # Fallback for non-pgvector storage
+    meta_data = Column("metadata", JSONB, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_chunk_document_id", "document_id"),
+        Index("idx_chunk_content_hash", "content_hash"),
+    )
+
+
+class AIConversation(Base):
+    """
+    Lightweight conversation session. Stores only a summary + recent turns.
+    Full message history is stored in AIMessage.
+    """
+    __tablename__ = "ai_conversations"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    summary = Column(String(2000), nullable=True)           # Compressed conversation summary
+    last_route = Column(String(50), nullable=True)          # Last routing decision
+    message_count = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_conversation_user", "user_id"),
+    )
+
+
+class AIMessage(Base):
+    """
+    Individual message in an AIDA conversation.
+    Keeps only the last N messages; older ones are summarized into AIConversation.summary.
+    """
+    __tablename__ = "ai_messages"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    conversation_id = Column(UUID(as_uuid=True), ForeignKey("ai_conversations.id", ondelete="CASCADE"), nullable=False)
+    role = Column(String(20), nullable=False)               # user | assistant
+    content = Column(String(10000), nullable=False)
+    route = Column(String(50), nullable=True)               # deterministic|slm|okf|rag|local_llm|cloud
+    intent = Column(String(100), nullable=True)
+    provider = Column(String(50), nullable=True)
+    latency_ms = Column(Integer, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_message_conversation", "conversation_id"),
+    )
+
+
+class AIModelHealth(Base):
+    """
+    Tracks health/availability of each configured AI provider/model.
+    Updated by the health check background task.
+    """
+    __tablename__ = "ai_model_health"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    model_id = Column(String(200), nullable=False, unique=True)
+    provider = Column(String(50), nullable=False)
+    model_type = Column(String(50), nullable=False)
+    is_available = Column(Boolean, nullable=False, default=False)
+    last_checked_at = Column(DateTime(timezone=True), nullable=True)
+    last_latency_ms = Column(Integer, nullable=True)
+    error_message = Column(String(500), nullable=True)
+    consecutive_failures = Column(Integer, nullable=False, default=0)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_model_health_provider", "provider"),
+    )
+

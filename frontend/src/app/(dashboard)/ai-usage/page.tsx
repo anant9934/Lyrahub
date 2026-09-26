@@ -31,6 +31,31 @@ interface AIPolicy {
   reset_time: string;
 }
 
+interface ModelHealthEntry {
+  model_id: string;
+  provider: string;
+  type: string;
+  available: boolean;
+  description: string;
+}
+
+interface ModelHealthResponse {
+  ollama_online: boolean;
+  ollama_models: string[];
+  okf: { available: boolean; document_count: number };
+  models: ModelHealthEntry[];
+}
+
+interface KnowledgeDocEntry {
+  id: string;
+  title: string;
+  category: string;
+  access_scope: string;
+  indexing_status: string;
+  chunk_count: number;
+  created_at: string;
+}
+
 // ─── Subcomponents ─────────────────────────────────────────────────────────────
 
 function ProgressBar({ value, max, color = '#2563EB' }: { value: number; max: number; color?: string }) {
@@ -81,6 +106,8 @@ const ROLE_LIMITS: Record<string, number> = {
 export default function AIUsageDashboardPage() {
   const [summary, setSummary] = useState<AIUsageSummary | null>(null);
   const [policy, setPolicy] = useState<AIPolicy | null>(null);
+  const [health, setHealth] = useState<ModelHealthResponse | null>(null);
+  const [knowledgeDocs, setKnowledgeDocs] = useState<KnowledgeDocEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -94,12 +121,16 @@ export default function AIUsageDashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const [sumRes, policyRes] = await Promise.all([
+      const [sumRes, policyRes, healthRes, docsRes] = await Promise.all([
         api.get(`/ai/admin/usage?target_date=${selectedDate}`),
         api.get('/ai/admin/policy'),
+        api.get('/ai/health/models').catch(() => ({ data: null })),
+        api.get('/ai/knowledge/documents').catch(() => ({ data: { documents: [] } })),
       ]);
       setSummary(sumRes.data);
       setPolicy(policyRes.data);
+      if (healthRes.data) setHealth(healthRes.data);
+      if (docsRes.data?.documents) setKnowledgeDocs(docsRes.data.documents);
     } catch (e: any) {
       setError(e?.response?.data?.detail || 'Failed to load AI usage data. Ensure you have admin/HOD access.');
     } finally {
@@ -314,6 +345,89 @@ export default function AIUsageDashboardPage() {
                 </table>
               </div>
             )}
+
+            {/* Model Health & Capability Matrix (§48) */}
+            {health && (
+              <div style={{ border: '1px solid #D6D6D6', borderRadius: 8, background: '#fff', overflow: 'hidden', marginBottom: 24 }}>
+                <div style={{ padding: '16px 24px', borderBottom: '1px solid #D6D6D6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <h3 style={{ fontSize: 15, fontWeight: 600, color: '#111', margin: 0 }}>Model Health & Capability Matrix</h3>
+                    <p style={{ fontSize: 13, color: '#666', margin: '4px 0 0 0' }}>Live operational status across all 7 intelligence tiers.</p>
+                  </div>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <span style={{ fontSize: 12, padding: '4px 10px', borderRadius: 4, background: health.okf.available ? '#D1FAE5' : '#FEE2E2', color: health.okf.available ? '#065F46' : '#991B1B', fontWeight: 600 }}>
+                      OKF: {health.okf.document_count} Docs Active
+                    </span>
+                    <span style={{ fontSize: 12, padding: '4px 10px', borderRadius: 4, background: health.ollama_online ? '#D1FAE5' : '#FEF3C7', color: health.ollama_online ? '#065F46' : '#92400E', fontWeight: 600 }}>
+                      Ollama: {health.ollama_online ? 'Online' : 'Offline (Degraded to OKF/Cloud)'}
+                    </span>
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, padding: 20 }}>
+                  {health.models.map(m => (
+                    <div key={m.model_id} style={{ border: '1px solid #E5E5E5', borderRadius: 8, padding: 16, background: '#FAFAFA' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: '#111' }}>{m.model_id}</span>
+                        <span style={{
+                          fontSize: 10,
+                          fontWeight: 600,
+                          padding: '2px 8px',
+                          borderRadius: 9999,
+                          background: m.available ? '#D1FAE5' : '#FEE2E2',
+                          color: m.available ? '#065F46' : '#991B1B',
+                          textTransform: 'uppercase',
+                        }}>
+                          {m.available ? 'Ready' : 'Not Configured'}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 11, color: '#666', marginBottom: 4 }}>
+                        <span style={{ textTransform: 'uppercase', fontWeight: 500 }}>Provider: {m.provider}</span> · <span>{m.type}</span>
+                      </div>
+                      <p style={{ fontSize: 12, color: '#777', margin: 0 }}>{m.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Knowledge Base & RAG Documents Registry (§16) */}
+            <div style={{ border: '1px solid #D6D6D6', borderRadius: 8, background: '#fff', overflow: 'hidden', marginBottom: 24 }}>
+              <div style={{ padding: '16px 24px', borderBottom: '1px solid #D6D6D6' }}>
+                <h3 style={{ fontSize: 15, fontWeight: 600, color: '#111', margin: 0 }}>Institutional Knowledge Documents (RAG / OKF)</h3>
+                <p style={{ fontSize: 13, color: '#666', margin: '4px 0 0 0' }}>Indexed documents available for localized semantic grounding without cloud inference.</p>
+              </div>
+              {knowledgeDocs.length === 0 ? (
+                <p style={{ padding: 24, color: '#999', fontSize: 13, margin: 0, textAlign: 'center' }}>No indexed RAG documents recorded yet.</p>
+              ) : (
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ background: '#FAFAFA' }}>
+                      {['Title', 'Category', 'Scope', 'Chunks', 'Status', 'Indexed Date'].map(h => (
+                        <th key={h} style={{ padding: '10px 20px', textAlign: 'left', fontSize: 12, color: '#666', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '1px solid #E5E5E5' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {knowledgeDocs.map((doc, i) => (
+                      <tr key={doc.id} style={{ borderBottom: '1px solid #F5F5F5', background: i % 2 === 0 ? '#fff' : '#FAFAFA' }}>
+                        <td style={{ padding: '12px 20px', fontWeight: 500, color: '#111', fontSize: 13 }}>{doc.title}</td>
+                        <td style={{ padding: '12px 20px', color: '#555', fontSize: 12, textTransform: 'capitalize' }}>{doc.category}</td>
+                        <td style={{ padding: '12px 20px', color: '#666', fontSize: 12, fontFamily: 'monospace' }}>{doc.access_scope}</td>
+                        <td style={{ padding: '12px 20px', color: '#111', fontSize: 13, fontWeight: 600 }}>{doc.chunk_count}</td>
+                        <td style={{ padding: '12px 20px' }}>
+                          <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 4, background: doc.indexing_status.startsWith('indexed') ? '#D1FAE5' : '#FEF3C7', color: doc.indexing_status.startsWith('indexed') ? '#065F46' : '#92400E' }}>
+                            {doc.indexing_status}
+                          </span>
+                        </td>
+                        <td style={{ padding: '12px 20px', color: '#888', fontSize: 12 }}>
+                          {doc.created_at ? new Date(doc.created_at).toLocaleDateString() : '—'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </>
         )}
       </div>

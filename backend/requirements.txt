@@ -21,6 +21,7 @@ pdfplumber
 celery
 reportlab
 openpyxl
+pyyaml>=6.0
 
 # Testing (excluded from production via pip install --no-dev or separate requirements)
 pytest==8.2.0

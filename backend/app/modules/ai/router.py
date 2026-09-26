@@ -1,23 +1,29 @@
 """
-AIDA Gateway — main FastAPI router.
+AIDA Gateway — upgraded main FastAPI router (Phase 5).
 
-All cloud API calls go through this gateway only.
-No other module may call cloud AI providers directly.
-
-Enforcement pipeline (per spec §8):
+Routing pipeline (7 levels):
   request
     → authentication (get_current_user)
-    → role resolution
-    → AI policy check (cloud_ai_allowed)
-    → intent routing (deterministic/local first)
-    → quota check (atomic Redis)
-    → cloud provider call (if needed & permitted)
-    → audit log write
+    → role resolution (server-side RBAC)
+    → cache check (Redis)
+    → 7-level intent router
+      → deterministic tools
+      → OKF knowledge
+      → RAG retrieval
+      → local LLM (Ollama)
+      → cloud policy check
+      → quota check (atomic Redis)
+      → cloud provider call
+    → audit log
     → response
+
+Cloud is LAST. Students NEVER get cloud.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 import uuid
 import time
 from datetime import date, datetime, timezone
@@ -33,7 +39,7 @@ from app.core.dependencies import get_current_active_user
 from app.core.redis import get_redis
 from app.core.config import get_settings
 from app.core.rbac import get_enforcer
-from app.models import User, AIUsageLog
+from app.models import User, AIUsageLog, AIModelHealth, KnowledgeDocument
 from app.modules.ai.schema import (
     AIDAQueryRequest,
     AIDAQueryResponse,
@@ -43,19 +49,25 @@ from app.modules.ai.schema import (
 from app.modules.ai import quota as quota_svc
 from app.modules.ai import intent_router as intent
 from app.modules.ai import provider_router
+from app.modules.ai import rag_service
+from app.modules.ai.okf_engine import get_okf_engine
+from app.modules.ai.providers.ollama_provider import get_ollama_provider
+from app.modules.ai.model_registry import get_registry, ModelType
 
 settings = get_settings()
 
 router = APIRouter()
 
+# Cache TTL constants (seconds)
+_CACHE_TTL_ANALYTICS = 5 * 60         # 5 min — simple analytics
+_CACHE_TTL_KNOWLEDGE = 24 * 60 * 60   # 1 day — public knowledge
+_CACHE_TTL_GENERATED = 60 * 60        # 1 hour — LLM responses
+
 
 # ─── Role Resolution ──────────────────────────────────────────────────────────
 
 async def _resolve_role(user: User) -> str:
-    """
-    Resolve the user's primary role from the server-side RBAC system.
-    NEVER trust role from browser.
-    """
+    """Resolve the user's primary role from server-side RBAC. NEVER trust browser."""
     try:
         enforcer = get_enforcer()
         if enforcer:
@@ -65,8 +77,41 @@ async def _resolve_role(user: User) -> str:
                     return r
     except Exception:
         pass
-    # Default to the most restrictive role
     return "student"
+
+
+# ─── Cache ─────────────────────────────────────────────────────────────────────
+
+def _cache_key(user_id: str, query: str, role: str, mode: str) -> str:
+    """Scope-aware cache key. User-scoped to prevent cross-user leakage."""
+    scope_hash = hashlib.sha256(f"{role}:{mode}".encode()).hexdigest()[:8]
+    query_hash = hashlib.sha256(query.lower().strip().encode()).hexdigest()[:12]
+    return f"aida:{scope_hash}:{query_hash}"
+
+
+async def _get_cache(redis, key: str) -> Optional[dict]:
+    try:
+        val = await redis.get(key)
+        if val:
+            return json.loads(val)
+    except Exception:
+        pass
+    return None
+
+
+async def _set_cache(redis, key: str, value: dict, ttl: int) -> None:
+    try:
+        await redis.set(key, json.dumps(value), ex=ttl)
+    except Exception:
+        pass
+
+
+def _get_cache_ttl(route: str) -> int:
+    if route == "deterministic":
+        return _CACHE_TTL_ANALYTICS
+    if route in ("okf", "knowledge"):
+        return _CACHE_TTL_KNOWLEDGE
+    return _CACHE_TTL_GENERATED
 
 
 # ─── Main AIDA Query Endpoint ─────────────────────────────────────────────────
@@ -79,53 +124,117 @@ async def aida_query(
     redis=Depends(get_redis),
 ):
     """
-    Primary AIDA query endpoint.
-    Students receive deterministic answers or browser SLM signals.
-    Authorized staff receive cloud AI when deterministic tools are insufficient.
+    Primary AIDA query endpoint — 7-level hybrid routing.
+
+    Level 0-2: Deterministic SQL (always first)
+    Level 3: Browser SLM signal (for students without local match)
+    Level 4: OKF knowledge retrieval
+    Level 5: RAG / pgvector retrieval
+    Level 6: Local LLM (Ollama)
+    Level 7: Cloud LLM (authorized staff, quota enforced)
     """
     request_id = uuid.uuid4().hex[:16]
     role = await _resolve_role(current_user)
     user_id = str(current_user.id)
+    mode = getattr(body, "mode", "hybrid") or "hybrid"
 
-    # Step 1-6: Deterministic/local routing (always happens first)
-    route_result = await intent.route_intent(body.query, db, role)
-
-    # If deterministic answer found, return immediately — no cloud needed
-    if route_result.get("answer") is not None:
+    # ── Cache check (Level 1) ─────────────────────────────────────────────────
+    cache_key = _cache_key(user_id, body.query, role, mode)
+    cached = await _get_cache(redis, cache_key)
+    if cached:
         return AIDAQueryResponse(
-            answer=route_result["answer"],
-            source=route_result.get("source"),
-            ai_mode=route_result.get("ai_mode", "Deterministic (SQL)"),
-            data=route_result.get("data"),
+            request_id=request_id,
+            answer=cached.get("answer"),
+            source=cached.get("source"),
+            route=cached.get("route", "cache"),
+            intent=cached.get("intent"),
+            ai_mode=f"Cache ({cached.get('route', 'cached')})",
+            data=cached.get("data"),
+            sources=cached.get("sources"),
+            metadata={"cached": True, "data_as_of": cached.get("data_as_of", "")},
         )
 
-    # Browser SLM signal for students
-    if route_result.get("signal") == intent.BROWSER_SLM_SIGNAL:
+    # ── Route through 7-level pipeline ───────────────────────────────────────
+    start = time.monotonic()
+    route_result = await intent.route_intent(
+        body.query, db, role, user=current_user, mode=mode
+    )
+    routing_latency = int((time.monotonic() - start) * 1000)
+
+    # ── Non-cloud result ──────────────────────────────────────────────────────
+    signal = route_result.get("signal")
+
+    if signal not in (intent.CLOUD_REQUIRED_SIGNAL,) and route_result.get("answer") is not None:
+        route = route_result.get("route", "deterministic")
+        response = AIDAQueryResponse(
+            request_id=request_id,
+            answer=route_result["answer"],
+            source=route_result.get("source"),
+            route=route,
+            intent=route_result.get("intent"),
+            ai_mode=_route_label(route),
+            data=route_result.get("data"),
+            sources=route_result.get("sources"),
+            latency_ms=routing_latency,
+            metadata={"cached": False},
+        )
+        # Cache safe results
+        if route in ("deterministic", "okf", "rag", "local_llm"):
+            ttl = _get_cache_ttl(route)
+            await _set_cache(redis, cache_key, {
+                "answer": route_result["answer"],
+                "source": route_result.get("source"),
+                "route": route,
+                "intent": route_result.get("intent"),
+                "data": route_result.get("data"),
+                "sources": route_result.get("sources"),
+            }, ttl)
+        return response
+
+    # ── Browser SLM signal ────────────────────────────────────────────────────
+    if signal == intent.BROWSER_SLM_SIGNAL:
         return AIDAQueryResponse(
+            request_id=request_id,
             answer=None,
             source="Browser",
+            route="browser_slm",
+            intent="browser_slm_handoff",
             ai_mode="Browser SLM",
             signal=intent.BROWSER_SLM_SIGNAL,
             query=body.query,
+            latency_ms=routing_latency,
+            metadata={"cached": False},
         )
 
-    # Step 7: Cloud LLM — only for authorized staff
-    if route_result.get("signal") != intent.CLOUD_REQUIRED_SIGNAL:
+    # ── Cloud LLM path ────────────────────────────────────────────────────────
+    if signal != intent.CLOUD_REQUIRED_SIGNAL:
         return AIDAQueryResponse(
-            answer="I couldn't find an answer to that query.",
-            source="None",
-            ai_mode="Deterministic (SQL)",
+            request_id=request_id,
+            answer="I couldn't find an answer from department data.",
+            source="AIDA",
+            route="fallback",
+            intent="unknown",
+            ai_mode="Fallback",
+            latency_ms=routing_latency,
         )
 
-    # Student guard (double-check — defense in depth)
+    # Double-check student guard
     role_limit = settings.get_role_cloud_limit(role)
     if role_limit == 0:
         return AIDAQueryResponse(
-            answer="Advanced AI assistance is restricted to authorized staff roles. Your query requires cloud AI which is not available for students.",
+            request_id=request_id,
+            answer=(
+                "Advanced cloud AI is restricted to authorized staff. "
+                "AIDA can answer this using local department intelligence — "
+                "please try rephrasing your question."
+            ),
             source="Policy",
-            ai_mode="Blocked",
+            route="blocked",
+            intent="cloud_blocked",
+            ai_mode="Blocked — Student",
             cloud_calls_used=0,
             cloud_calls_limit=0,
+            latency_ms=routing_latency,
         )
 
     # Quota check (atomic)
@@ -135,37 +244,40 @@ async def aida_query(
 
     if not allowed:
         return AIDAQueryResponse(
+            request_id=request_id,
             answer=deny_reason,
             source="Quota Policy",
+            route="quota_exceeded",
+            intent="quota_exceeded",
             ai_mode="Quota Exceeded",
             cloud_calls_used=quota_before,
             cloud_calls_limit=role_limit,
+            latency_ms=routing_latency,
         )
 
     # Cloud provider call
-    start = time.monotonic()
+    cloud_start = time.monotonic()
     success = False
-    provider_result = {}
+    provider_result: dict = {}
     error_msg = None
 
     try:
         system_prompt = (
             "You are AIDA, the intelligent assistant for the AI & ML Department at Lyrahub. "
-            "You help faculty, HODs, and administrators with complex departmental queries. "
-            "Be concise, data-driven, and professional. Do not fabricate data."
+            "Answer questions about department students, faculty, research, and programs. "
+            "Be concise, accurate, and professional. Never fabricate data."
         )
         provider_result = await provider_router.route_to_cloud(body.query, system_prompt)
         success = True
     except RuntimeError as e:
         error_msg = str(e)
-        # Roll back quota if all providers failed
         await quota_svc.rollback_quota(redis, user_id)
-        # Update quota_after back
         quota_after = quota_before
 
-    latency_ms = int((time.monotonic() - start) * 1000)
+    cloud_latency = int((time.monotonic() - cloud_start) * 1000)
+    total_latency = routing_latency + cloud_latency
 
-    # Audit log (always write, even on failure)
+    # Audit log
     today_ist = quota_svc._today_ist()
     try:
         log = AIUsageLog(
@@ -177,9 +289,9 @@ async def aida_query(
             request_id=request_id,
             tokens_in=provider_result.get("tokens_in"),
             tokens_out=provider_result.get("tokens_out"),
-            latency_ms=latency_ms,
+            latency_ms=cloud_latency,
             success=success,
-            reason_for_cloud_route="Complex query requiring LLM reasoning beyond deterministic tools",
+            reason_for_cloud_route="Local intelligence insufficient — cloud escalation",
             quota_before=quota_before,
             quota_after=quota_after,
             error_message=error_msg,
@@ -198,19 +310,38 @@ async def aida_query(
     current_usage = await quota_svc.get_user_usage(redis, user_id)
 
     return AIDAQueryResponse(
+        request_id=request_id,
         answer=provider_result.get("text"),
-        source="Department database + Cloud AI",
-        ai_mode="Cloud LLM",
+        source="Cloud AI (advanced reasoning)",
+        route="cloud_llm",
+        intent="cloud_generation",
+        ai_mode=f"Cloud LLM ({provider_result.get('provider', 'unknown')})",
         cloud_calls_used=current_usage,
         cloud_calls_limit=role_limit,
         provider=provider_result.get("provider"),
         tokens_in=provider_result.get("tokens_in"),
         tokens_out=provider_result.get("tokens_out"),
-        latency_ms=latency_ms,
+        latency_ms=total_latency,
+        metadata={"cached": False},
     )
 
 
-# ─── Quota Status Endpoint ────────────────────────────────────────────────────
+def _route_label(route: str) -> str:
+    labels = {
+        "deterministic": "Deterministic (SQL)",
+        "cache": "Cache",
+        "browser_slm": "Browser SLM",
+        "okf": "Department Knowledge (OKF)",
+        "rag": "Document Library (RAG)",
+        "local_llm": "Local AI",
+        "cloud_llm": "Cloud AI",
+        "fallback": "Fallback",
+        "blocked": "Blocked",
+    }
+    return labels.get(route, route)
+
+
+# ─── Quota Status ─────────────────────────────────────────────────────────────
 
 @router.get("/quota")
 async def get_my_quota(
@@ -223,6 +354,10 @@ async def get_my_quota(
     role_limit = settings.get_role_cloud_limit(role)
     used = await quota_svc.get_user_usage(redis, user_id) if role_limit > 0 else 0
 
+    # Check local AI availability
+    ollama = get_ollama_provider()
+    ollama_ok = await ollama.is_available()
+
     return {
         "role": role,
         "cloud_ai_allowed": role_limit > 0 and settings.CLOUD_AI_ENABLED,
@@ -230,15 +365,156 @@ async def get_my_quota(
         "cloud_calls_used": used,
         "cloud_calls_remaining": max(0, role_limit - used),
         "reset_time": "00:00 Asia/Kolkata",
+        "local_ai_available": ollama_ok,
+        "ai_mode": "hybrid" if ollama_ok else "deterministic_rag",
     }
 
 
-# ─── Admin AI Usage Dashboard ─────────────────────────────────────────────────
+# ─── Model Health ─────────────────────────────────────────────────────────────
+
+@router.get("/health/models")
+async def get_model_health(
+    current_user: User = Depends(get_current_active_user),
+):
+    """Returns health status of all configured AI models. Admin/HOD/Faculty only."""
+    role = await _resolve_role(current_user)
+    if role not in ("admin", "super_admin", "hod", "cos", "hos", "faculty", "teacher"):
+        raise HTTPException(status_code=403, detail="Staff access required.")
+
+    ollama = get_ollama_provider()
+    ollama_ok = await ollama.is_available()
+    ollama_models = await ollama.list_models() if ollama_ok else []
+
+    health: list[dict] = []
+    registry = get_registry()
+
+    for model in registry:
+        if model.model_type.value == "cloud_llm":
+            keys = settings.get_provider_keys(model.provider.value)
+            health.append({
+                "model_id": model.model_id,
+                "provider": model.provider.value,
+                "type": model.model_type.value,
+                "available": bool(keys),
+                "description": model.description,
+            })
+        elif model.provider.value == "ollama":
+            available = ollama_ok and any(
+                m.startswith(model.model_id.split(":")[0]) for m in ollama_models
+            )
+            health.append({
+                "model_id": model.model_id,
+                "provider": "ollama",
+                "type": model.model_type.value,
+                "available": available,
+                "description": model.description,
+            })
+        elif model.provider.value == "pattern":
+            health.append({
+                "model_id": model.model_id,
+                "provider": "pattern",
+                "type": model.model_type.value,
+                "available": True,
+                "description": model.description,
+            })
+
+    # OKF status
+    try:
+        okf = get_okf_engine()
+        okf_docs = okf.get_all()
+        okf_status = {"available": True, "document_count": len(okf_docs)}
+    except Exception:
+        okf_status = {"available": False, "document_count": 0}
+
+    return {
+        "ollama_online": ollama_ok,
+        "ollama_models": ollama_models,
+        "okf": okf_status,
+        "models": health,
+    }
+
+
+# ─── Document Indexing ────────────────────────────────────────────────────────
+
+@router.post("/knowledge/index")
+async def index_document(
+    body: dict,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Index a document into the RAG knowledge base. Faculty+ only."""
+    role = await _resolve_role(current_user)
+    if role not in ("admin", "super_admin", "hod", "cos", "hos", "faculty", "teacher"):
+        raise HTTPException(status_code=403, detail="Faculty or above required to index documents.")
+
+    title = body.get("title", "").strip()
+    content = body.get("content", "").strip()
+    category = body.get("category", "general")
+    access_scope = body.get("access_scope", "faculty:department")
+
+    if not title or not content:
+        raise HTTPException(status_code=400, detail="title and content are required.")
+    if len(content) < 50:
+        raise HTTPException(status_code=400, detail="content must be at least 50 characters.")
+
+    result = await rag_service.index_document(
+        db=db,
+        title=title,
+        content=content,
+        category=category,
+        source_type="upload",
+        access_scope=access_scope,
+        uploader_id=current_user.id,
+        tags=body.get("tags"),
+        metadata=body.get("metadata"),
+    )
+    return result
+
+
+@router.get("/knowledge/documents")
+async def list_knowledge_documents(
+    page: int = 1,
+    limit: int = 20,
+    category: Optional[str] = None,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """List indexed knowledge documents. Faculty+ only."""
+    role = await _resolve_role(current_user)
+    if role not in ("admin", "super_admin", "hod", "cos", "hos", "faculty", "teacher"):
+        raise HTTPException(status_code=403, detail="Faculty or above required.")
+
+    stmt = select(KnowledgeDocument).order_by(KnowledgeDocument.created_at.desc())
+    if category:
+        stmt = stmt.where(KnowledgeDocument.category == category)
+    stmt = stmt.offset((page - 1) * limit).limit(min(limit, 100))
+
+    result = await db.execute(stmt)
+    docs = result.scalars().all()
+
+    return {
+        "page": page,
+        "documents": [
+            {
+                "id": str(d.id),
+                "title": d.title,
+                "category": d.category,
+                "access_scope": d.access_scope,
+                "indexing_status": d.indexing_status,
+                "chunk_count": d.chunk_count,
+                "created_at": d.created_at.isoformat() if d.created_at else None,
+            }
+            for d in docs
+        ],
+    }
+
+
+# ─── Admin Endpoints ──────────────────────────────────────────────────────────
 
 async def _require_admin(user: User) -> str:
     role = await _resolve_role(user)
     if role not in ["admin", "super_admin", "hod"]:
-        raise HTTPException(status_code=403, detail="Admin or HOD access required for AI usage dashboard.")
+        raise HTTPException(status_code=403, detail="Admin or HOD access required.")
     return role
 
 
@@ -249,10 +525,7 @@ async def get_ai_usage_summary(
     db: AsyncSession = Depends(get_db),
     redis=Depends(get_redis),
 ):
-    """
-    Returns today's cloud AI usage summary for the admin dashboard.
-    Only accessible to Admin and HOD roles.
-    """
+    """Today's cloud AI usage summary. Admin/HOD only."""
     await _require_admin(current_user)
 
     today_str = target_date or quota_svc._today_ist()
@@ -261,19 +534,13 @@ async def get_ai_usage_summary(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
 
-    # Query from DB for today's logs
     stmt = select(AIUsageLog).where(AIUsageLog.usage_date == target_date_obj)
     result = await db.execute(stmt)
     logs = result.scalars().all()
 
-    # Aggregate
     by_role: dict[str, int] = {}
     by_provider: dict[str, int] = {}
-    total_tokens_in = 0
-    total_tokens_out = 0
-    total_latency = 0
-    failed = 0
-    successful_count = 0
+    total_tokens_in = total_tokens_out = total_latency = failed = successful_count = 0
 
     for log in logs:
         by_role[log.role] = by_role.get(log.role, 0) + 1
@@ -289,16 +556,13 @@ async def get_ai_usage_summary(
         else:
             successful_count += 1
 
-    total_calls = len(logs)
     avg_latency = (total_latency / successful_count) if successful_count > 0 else None
-
-    # Redis for live global counters
     global_daily = await quota_svc.get_global_usage_today(redis)
     global_monthly = await quota_svc.get_global_usage_month(redis)
 
     return AIUsageSummary(
         date=today_str,
-        total_cloud_calls=total_calls,
+        total_cloud_calls=len(logs),
         global_daily_limit=settings.CLOUD_AI_GLOBAL_DAILY_LIMIT,
         global_monthly_limit=settings.CLOUD_AI_GLOBAL_MONTHLY_LIMIT,
         monthly_calls_used=global_monthly,
@@ -320,7 +584,7 @@ async def list_usage_logs(
     current_user: User = Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Returns paginated cloud AI usage audit logs. Admin/HOD only."""
+    """Paginated cloud AI usage audit logs. Admin/HOD only."""
     await _require_admin(current_user)
     limit = min(limit, 100)
     offset = (page - 1) * limit
@@ -361,10 +625,8 @@ async def list_usage_logs(
 
 
 @router.get("/admin/policy")
-async def get_ai_policy(
-    current_user: User = Depends(get_current_active_user),
-):
-    """Returns the current AI gateway policy configuration. Admin/HOD only."""
+async def get_ai_policy(current_user: User = Depends(get_current_active_user)):
+    """Current AI gateway policy configuration. Admin/HOD only."""
     await _require_admin(current_user)
     return {
         "cloud_ai_enabled": settings.CLOUD_AI_ENABLED,

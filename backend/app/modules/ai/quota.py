@@ -94,7 +94,7 @@ async def check_and_consume_quota(
     # 3. Atomic increment via pipeline
     async with redis.pipeline(transaction=True) as pipe:
         try:
-            pipe.watch(user_key, global_key)
+            await pipe.watch(user_key, global_key)
             current_user = int(await redis.get(user_key) or 0)
             current_global = int(await redis.get(global_key) or 0)
             current_monthly = int(await redis.get(monthly_key) or 0)
