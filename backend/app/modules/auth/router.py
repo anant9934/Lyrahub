@@ -107,7 +107,10 @@ async def get_me(current_user: User = Depends(get_current_active_user)):
     roles = []
     if enforcer:
         try:
-            group_roles = await enforcer.get_implicit_roles_for_user(current_user.email)
+            await enforcer.load_policy()
+            group_roles = await enforcer.get_roles_for_user(current_user.email)
+            if not group_roles:
+                group_roles = await enforcer.get_implicit_roles_for_user(current_user.email)
             roles = [{"name": r} for r in group_roles]
         except Exception:
             # fallback if casbin isn't fully loaded

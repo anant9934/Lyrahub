@@ -1,11 +1,11 @@
 'use client';
+
+import Navbar from '@/components/layout/Navbar';
 import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-import Navbar from '@/components/layout/Navbar';
-
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function SubDashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
 

@@ -2,7 +2,14 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import api from './api';
 
-interface User { id: string; email: string; is_active: boolean; created_at: string; role?: string; }
+export interface User { 
+  id: string; 
+  email: string; 
+  is_active: boolean; 
+  created_at: string; 
+  role?: string; 
+  roles?: { name: string }[];
+}
 
 interface AuthContextType {
   user: User | null;
