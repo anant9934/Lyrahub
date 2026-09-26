@@ -15,6 +15,29 @@ class Settings(BaseSettings):
     SUPERADMIN_EMAIL: str
     SUPERADMIN_PASSWORD: str
     
+    # AI / LLM API Provider Keys
+    MENTOR_MAZE_API_KEY: str = ""
+    GEMINI_API_KEY: str = ""
+    GEMINI_API_KEYS: str = ""
+    GROQ_API_KEY: str = ""
+    GROQ_API_KEYS: str = ""
+    OPENROUTER_API_KEY: str = ""
+    OPENROUTER_API_KEYS: str = ""
+    CEREBRAS_API_KEY: str = ""
+    CEREBRAS_API_KEYS: str = ""
+    MISTRAL_API_KEY: str = ""
+    MISTRAL_API_KEYS: str = ""
+    SAMBANOVA_API_KEY: str = ""
+    SAMBANOVA_API_KEYS: str = ""
+
+    def get_provider_keys(self, provider: str) -> list[str]:
+        """Returns the list of configured API keys for a given provider for round-robin rotation."""
+        provider = provider.upper()
+        keys_str = getattr(self, f"{provider}_API_KEYS", "") or getattr(self, f"{provider}_API_KEY", "")
+        if not keys_str:
+            return []
+        return [k.strip() for k in keys_str.split(",") if k.strip()]
+    
     model_config = SettingsConfigDict(env_file=ENV_FILE, extra="ignore")
 
 @lru_cache
