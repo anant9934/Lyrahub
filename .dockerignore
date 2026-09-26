@@ -1,0 +1,43 @@
+# Root .dockerignore for Render
+.git
+.github
+.env
+.env.*
+*.log
+
+# Frontend (not needed in backend Docker image)
+frontend/node_modules
+frontend/.next
+frontend/out
+
+# Python artifacts
+backend/venv
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+
+# Local test & scratch scripts
+backend/test_*.py
+backend/verify_*.py
+backend/seed_*.py
+seed_*.py
+verify_*.py
+test_*.py
+check_tables.py
+*.png
+*.jpg
+*.webp
+
+# Uploads & local storage
+uploads/
+backend/uploads/
+
+# IDE
+.vscode
+.idea
+.DS_Store
