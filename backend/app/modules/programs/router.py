@@ -1,0 +1,137 @@
+from uuid import UUID
+from typing import Optional, List
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.database import get_db
+from app.core.dependencies import get_current_user, get_optional_current_user
+from app.models import User
+from app.core.rbac import get_enforcer
+from . import schema, service
+
+router = APIRouter(tags=["programs"])
+
+
+async def _get_role(user: User) -> str:
+    try:
+        enforcer = get_enforcer()
+        if enforcer:
+            roles = await enforcer.get_implicit_roles_for_user(user.email)
+            for r in ["admin", "hod", "faculty", "student", "alumni"]:
+                if r in roles:
+                    return r
+    except Exception:
+        pass
+    return "student"
+
+
+def _require_admin_or_hod(role: str):
+    if role not in ["admin", "hod"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only HOD or Admin can perform this action"
+        )
+
+
+@router.get("", response_model=schema.ProgramListResponse)
+async def list_programs(
+    level: Optional[str] = None,
+    degree: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user)
+):
+    include_inactive = False
+    if current_user:
+        role = await _get_role(current_user)
+        if role in ["admin", "hod"]:
+            include_inactive = True
+
+    items, total = await service.get_programs(
+        db=db,
+        level=level,
+        degree=degree,
+        include_inactive=include_inactive
+    )
+    return {"items": items, "total": total}
+
+
+@router.get("/{slug}", response_model=schema.ProgramDetailResponse)
+async def get_program(
+    slug: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user)
+):
+    include_inactive = False
+    if current_user:
+        role = await _get_role(current_user)
+        if role in ["admin", "hod"]:
+            include_inactive = True
+
+    return await service.get_program_by_slug(db, slug, include_inactive=include_inactive)
+
+
+@router.post("", response_model=schema.ProgramResponse, status_code=status.HTTP_201_CREATED)
+async def create_program(
+    data: schema.ProgramCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    role = await _get_role(current_user)
+    _require_admin_or_hod(role)
+    return await service.create_program(db, data, current_user)
+
+
+@router.patch("/{id}", response_model=schema.ProgramResponse)
+async def update_program(
+    id: UUID,
+    data: schema.ProgramUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    role = await _get_role(current_user)
+    _require_admin_or_hod(role)
+    return await service.update_program(db, id, data, current_user)
+
+
+@router.delete("/{id}", status_code=status.HTTP_200_OK)
+async def delete_program(
+    id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    role = await _get_role(current_user)
+    _require_admin_or_hod(role)
+    await service.delete_program(db, id, current_user)
+    return {"message": "Program successfully deleted"}
+
+
+@router.post("/{id}/courses", status_code=status.HTTP_201_CREATED)
+async def add_program_course(
+    id: UUID,
+    data: schema.ProgramCourseMap,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    role = await _get_role(current_user)
+    _require_admin_or_hod(role)
+    pc = await service.add_program_course(db, id, data, current_user)
+    return {
+        "message": "Course mapped successfully",
+        "program_id": pc.program_id,
+        "course_id": pc.course_id,
+        "semester": pc.semester,
+        "is_mandatory": pc.is_mandatory
+    }
+
+
+@router.delete("/{id}/courses/{course_id}", status_code=status.HTTP_200_OK)
+async def remove_program_course(
+    id: UUID,
+    course_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    role = await _get_role(current_user)
+    _require_admin_or_hod(role)
+    await service.remove_program_course(db, id, course_id, current_user)
+    return {"message": "Course mapping removed successfully"}
