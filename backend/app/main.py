@@ -87,6 +87,10 @@ app.include_router(tests_router, prefix="/api/v1/tests", tags=["tests"])
 from app.modules.approvals.router import router as approvals_router
 app.include_router(approvals_router, prefix="/api/v1/approvals", tags=["approvals"])
 
+from app.modules.qr.router import router as qr_router
+app.include_router(qr_router, prefix="/api/v1/qr", tags=["qr"])
+
+
 
 
 
