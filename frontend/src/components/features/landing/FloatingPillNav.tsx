@@ -11,13 +11,16 @@ export default function FloatingPillNav() {
         </div>
         
         <div className="hidden md:flex items-center space-x-8">
-          <Link href="#platform" className="text-ink-500 hover:text-ink transition-colors text-sm font-medium">
+          <Link href="/leadership" className="text-ink-500 hover:text-ink transition-colors text-sm font-medium">
+            Leadership
+          </Link>
+          <Link href="/#platform" className="text-ink-500 hover:text-ink transition-colors text-sm font-medium">
             Platform
           </Link>
-          <Link href="#governance" className="text-ink-500 hover:text-ink transition-colors text-sm font-medium">
+          <Link href="/#governance" className="text-ink-500 hover:text-ink transition-colors text-sm font-medium">
             Governance
           </Link>
-          <Link href="#security" className="text-ink-500 hover:text-ink transition-colors text-sm font-medium">
+          <Link href="/#security" className="text-ink-500 hover:text-ink transition-colors text-sm font-medium">
             Security
           </Link>
         </div>

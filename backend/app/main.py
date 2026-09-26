@@ -90,6 +90,10 @@ app.include_router(approvals_router, prefix="/api/v1/approvals", tags=["approval
 from app.modules.qr.router import router as qr_router
 app.include_router(qr_router, prefix="/api/v1/qr", tags=["qr"])
 
+from app.modules.leadership.router import router as leadership_router
+app.include_router(leadership_router, prefix="/api/v1/leadership", tags=["leadership"])
+
+
 
 
 

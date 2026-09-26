@@ -65,6 +65,18 @@ export default function Navbar() {
               Dashboard
             </Link>
 
+            <Link
+              href="/leadership"
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                pathname.startsWith("/leadership")
+                  ? "bg-primary/10 text-primary"
+                  : "text-ink-500 hover:text-ink hover:bg-canvas"
+              }`}
+            >
+              Leadership
+            </Link>
+
+
             {/* Academics Dropdown */}
             <div className="relative group" onMouseEnter={() => setAcademicsOpen(true)} onMouseLeave={() => setAcademicsOpen(false)}>
               <button 
