@@ -72,6 +72,16 @@ app.include_router(testimonials_router, prefix="/api/v1/testimonials", tags=["te
 from app.modules.groups.router import router as groups_router
 app.include_router(groups_router, prefix="/api/v1/groups", tags=["groups"])
 
+from app.modules.programs.router import router as programs_router
+app.include_router(programs_router, prefix="/api/v1/programs", tags=["programs"])
+
+from app.modules.courses.router import router as courses_router
+app.include_router(courses_router, prefix="/api/v1/courses", tags=["courses"])
+
+from app.modules.opportunities.router import router as opportunities_router
+app.include_router(opportunities_router, prefix="/api/v1/opportunities", tags=["opportunities"])
+
+
 
 
 
