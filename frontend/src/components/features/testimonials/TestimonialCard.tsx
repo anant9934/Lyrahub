@@ -90,7 +90,7 @@ export const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testim
         <div className="relative mb-6">
           <Quote className="w-8 h-8 text-[#94B0B8]/30 absolute -top-2 -left-1 -z-0 pointer-events-none" />
           <p className="text-sm text-[#1E1E1E] leading-relaxed relative z-10 italic">
-            "{testimonial.text}"
+            &ldquo;{testimonial.text}&rdquo;
           </p>
         </div>
       </div>

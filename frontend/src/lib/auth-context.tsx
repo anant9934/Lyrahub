@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import api from './api';
 
-interface User { id: string; email: string; is_active: boolean; created_at: string; }
+interface User { id: string; email: string; is_active: boolean; created_at: string; role?: string; }
 
 interface AuthContextType {
   user: User | null;

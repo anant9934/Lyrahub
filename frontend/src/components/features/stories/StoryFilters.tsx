@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 
 interface FiltersState {
   story_type: string;

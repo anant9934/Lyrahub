@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Crown, Star, User, Clock } from 'lucide-react';
+import { Crown, Star, Clock } from 'lucide-react';
 
 interface Member {
   id: string;

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Eye, ArrowRight, Calendar, Building, GraduationCap, User } from 'lucide-react';
+import { Eye, ArrowRight, Calendar, GraduationCap, User } from 'lucide-react';
 
 interface Story {
   id: string;
@@ -65,7 +65,7 @@ export const StoryCard: React.FC<{ story: Story }> = ({ story }) => {
 
             {story.batch_year && (
               <span className="text-[11px] bg-[#F2F2F1] text-[#5C5C5C] px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                <Calendar className="w-3 h-3" /> '{story.batch_year}
+                <Calendar className="w-3 h-3" /> &apos;{story.batch_year}
               </span>
             )}
           </div>

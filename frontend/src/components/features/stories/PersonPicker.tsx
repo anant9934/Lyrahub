@@ -37,7 +37,14 @@ export const PersonPicker: React.FC<PersonPickerProps> = ({
       try {
         if (storyType === 'student') {
           const res = await apiGet(`/students?search=${encodeURIComponent(query)}&page_size=10`);
-          const items = (res.items || res || []).map((s: any) => ({
+          interface RawStudent {
+            id: string;
+            reg_no?: string;
+            batch?: number;
+            user?: { email?: string; avatar_url?: string };
+          }
+          const rawItems = (res.items || res || []) as RawStudent[];
+          const items = rawItems.map((s) => ({
             id: s.id,
             name: s.user?.email ? s.user.email.split('@')[0].replace('.', ' ').toUpperCase() : s.reg_no || 'Student',
             role: `Student (${s.reg_no || ''})`,
@@ -49,7 +56,17 @@ export const PersonPicker: React.FC<PersonPickerProps> = ({
           setResults(items);
         } else {
           const res = await apiGet(`/alumni/directory?search=${encodeURIComponent(query)}&page_size=10`);
-          const items = (res.items || []).map((a: any) => ({
+          interface RawAlumni {
+            id: string;
+            full_name: string;
+            current_role?: string;
+            current_company?: string;
+            graduation_year?: number;
+            program?: string;
+            portfolio_url?: string;
+          }
+          const rawItems = (res.items || []) as RawAlumni[];
+          const items = rawItems.map((a) => ({
             id: a.id,
             name: a.full_name,
             role: a.current_role || 'Alumni',

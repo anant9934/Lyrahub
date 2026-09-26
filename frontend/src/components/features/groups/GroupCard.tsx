@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Users, CheckCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Users, CheckCircle, ArrowRight } from 'lucide-react';
 
 interface Group {
   id: string;

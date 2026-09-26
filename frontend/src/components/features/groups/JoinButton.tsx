@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { apiPost, apiDelete } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
-import { UserPlus, UserMinus, Check, AlertCircle } from 'lucide-react';
+import { UserPlus, UserMinus, AlertCircle } from 'lucide-react';
 
 interface JoinButtonProps {
   groupId: string;
@@ -17,7 +17,7 @@ interface JoinButtonProps {
 export const JoinButton: React.FC<JoinButtonProps> = ({
   groupId,
   isMember,
-  memberRole,
+  memberRole = 'member',
   membershipOpen = true,
   membershipFee = 0,
   onStatusChange
@@ -34,9 +34,10 @@ export const JoinButton: React.FC<JoinButtonProps> = ({
     try {
       await apiPost(`/groups/${groupId}/join`, {});
       onStatusChange();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to join group', err);
-      setError(err.response?.data?.detail || 'Failed to join group');
+      const message = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Failed to join group';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -49,9 +50,10 @@ export const JoinButton: React.FC<JoinButtonProps> = ({
     try {
       await apiDelete(`/groups/${groupId}/join`);
       onStatusChange();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to leave group', err);
-      setError(err.response?.data?.detail || 'Failed to leave group');
+      const message = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Failed to leave group';
+      setError(message);
     } finally {
       setLoading(false);
     }

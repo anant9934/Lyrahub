@@ -52,9 +52,10 @@ export const TestimonialForm: React.FC = () => {
       setTimeout(() => {
         router.push('/testimonials');
       }, 2500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to submit testimonial', err);
-      setError(err.response?.data?.detail || 'Failed to submit testimonial. Please try again.');
+      const message = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Failed to submit testimonial. Please try again.';
+      setError(message);
     } finally {
       setLoading(false);
     }

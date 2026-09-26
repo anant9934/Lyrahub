@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { CheckCircle, Calendar, MapPin, Globe, Mail, Phone, Users, Shield } from 'lucide-react';
+import { CheckCircle, Users } from 'lucide-react';
 import { getCategoryBadge } from './GroupCard';
 import { JoinButton } from './JoinButton';
 
 interface GroupHeroProps {
-  group: any;
+  group: Record<string, any>;
   isMember: boolean;
   memberRole?: string;
   onStatusChange: () => void;

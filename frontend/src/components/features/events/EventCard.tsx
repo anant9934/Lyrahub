@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 
-export function EventCard({ event }) {
+export function EventCard({ event }: { event: any }) {
   const badgeColors: Record<string, string> = {
     workshop: "bg-[#94BD88] text-white", // sage
     hackathon: "bg-[#EE8E1E] text-white", // amber
