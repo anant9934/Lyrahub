@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import api from "@/lib/api";
 import { ProjectCard } from "@/components/features/projects/ProjectCard";
 import { ProjectFilters } from "@/components/features/projects/ProjectFilters";
 
@@ -22,20 +23,13 @@ export default function ProjectsPage() {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (domain) params.append("domain", domain);
-      if (status) params.append("status", status);
-      if (search) params.append("search", search);
+      const params: any = {};
+      if (domain) params.domain = domain;
+      if (status) params.status = status;
+      if (search) params.search = search;
 
-      const res = await fetch(`http://localhost:8000/api/v1/projects?${params.toString()}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setProjects(data.items || []);
-      }
+      const res = await api.get("/projects", { params });
+      setProjects(res.data?.items || []);
     } catch (e) {
       console.error(e);
     } finally {
@@ -52,24 +46,26 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 bg-[#F2F2F1] min-h-screen">
+    <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#1E1E1E]">Projects Repository</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
+            Projects Repository
+          </h1>
+          <p className="text-xs text-[#555555] mt-1">
             Department AI/ML projects, faculty-mentored research, and student innovation showcase.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <Link
             href="/projects/me"
-            className="px-4 py-2 text-sm font-semibold text-[#1E1E1E] bg-white border border-[#D6D6D6] rounded-xl hover:bg-gray-100 transition shadow-sm"
+            className="px-3.5 py-2 text-xs font-medium text-[#111111] bg-white border border-[#E5E5E5] rounded-lg hover:bg-[#FAFAFA] transition"
           >
             My Projects
           </Link>
           <Link
             href="/projects/create"
-            className="px-4 py-2 text-sm font-semibold text-white bg-[#1E1E1E] rounded-xl hover:bg-gray-800 transition shadow-sm"
+            className="px-3.5 py-2 text-xs font-medium text-white bg-[#111111] rounded-lg hover:bg-neutral-800 transition"
           >
             + New Project
           </Link>

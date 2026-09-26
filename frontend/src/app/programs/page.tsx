@@ -35,13 +35,13 @@ export default function ProgramsPage() {
   }, [degreeFilter]);
 
   return (
-    <div className="min-h-screen bg-[#F2F2F1] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E1E1E] via-[#2A2A2A] to-[#1E1E1E] text-white p-8 md:p-12 mb-10 shadow-sm">
+        <div className="relative overflow-hidden rounded-2xl bg-[#111111] text-white p-8 md:p-12 mb-10 shadow-subtle">
           <div className="max-w-3xl relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-[#EEBE1E] border border-[#EEBE1E]/30 mb-4">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/20 mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-[#2563EB]" />
               <span>Academic Catalog</span>
             </div>
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">

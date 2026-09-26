@@ -1,35 +1,34 @@
-'use client';
-import { useAuth } from '@/lib/auth-context';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+"use client"
 
-import Navbar from '@/components/layout/Navbar';
+import { useAuth } from "@/lib/auth-context"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { DashboardShell } from "@/components/layout/DashboardShell"
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-  const router = useRouter();
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const { user, loading } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push("/login")
     }
-  }, [user, loading, router]);
+  }, [user, loading, router])
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-canvas">
-        <div className="animate-pulse space-y-4 w-64 text-center">
-          <div className="h-4 bg-border rounded w-3/4 mx-auto"></div>
-          <div className="h-4 bg-border rounded w-1/2 mx-auto"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-pulse space-y-3 w-48 text-center">
+          <div className="h-4 bg-[#E5E5E5] rounded w-3/4 mx-auto"></div>
+          <div className="h-3 bg-[#F0F0F0] rounded w-1/2 mx-auto"></div>
         </div>
       </div>
-    );
+    )
   }
 
-  return (
-    <div className="min-h-screen bg-canvas flex flex-col">
-      <Navbar />
-      <main className="flex-1">{children}</main>
-    </div>
-  );
+  return <DashboardShell>{children}</DashboardShell>
 }

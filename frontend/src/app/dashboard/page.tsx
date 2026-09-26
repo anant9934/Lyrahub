@@ -1,460 +1,1062 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { useAuth } from "@/lib/auth-context";
-import { 
-  GraduationCap, 
-  BookOpen, 
-  Briefcase, 
-  Trophy, 
-  Users, 
-  Calendar, 
-  Sparkles, 
-  ShieldCheck, 
-  User as UserIcon, 
-  ArrowRight,
-  PlusCircle,
+import { useState } from "react"
+import Link from "next/link"
+import { useAuth } from "@/lib/auth-context"
+import { useQuery } from "@tanstack/react-query"
+import api, { apiGet } from "@/lib/api"
+import { StatCard } from "@/components/ui/stat-card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import {
+  User,
+  Upload,
   FileCheck2,
-  FolderGit2,
-  Medal,
-  Star,
-  Quote,
+  Trophy,
+  Calendar,
+  Briefcase,
+  GitBranch,
+  Award,
+  CheckCircle2,
   Clock,
-  Compass
-} from "lucide-react";
+  ArrowRight,
+  ExternalLink,
+  Users,
+  GraduationCap,
+  Sparkles,
+  ShieldCheck,
+  Activity,
+  Layers,
+} from "lucide-react"
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  Area,
+} from "recharts"
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
-  const rolesList: string[] = user?.roles ? user.roles.map((r: any) => r.name?.toLowerCase()) : [];
-  const isAdminOrHOD = rolesList.includes("admin") || rolesList.includes("hod") || user?.email === "admin@aiml.hub";
-  const isStudent = rolesList.includes("student") || (!isAdminOrHOD && user);
+  // Determine user role
+  const rolesList: string[] = user?.roles
+    ? user.roles.map((r: any) => r.name?.toLowerCase())
+    : []
+
+  const isSuperAdmin =
+    rolesList.includes("admin") || user?.email === "admin@aiml.hub"
+  const isHODRole =
+    rolesList.includes("hod") || user?.email === "hod@aiml.hub"
+  const isFacultyRole = rolesList.includes("faculty")
+  const isStudentDefault = !isSuperAdmin && !isHODRole && !isFacultyRole
+
+  // Active view state (allows admins / HODs to view other role perspectives)
+  const defaultRole = isSuperAdmin
+    ? "admin"
+    : isHODRole
+    ? "hod"
+    : isFacultyRole
+    ? "faculty"
+    : "student"
+
+  const [activeRoleView, setActiveRoleView] = useState<string>(defaultRole)
+
+  // Fetch real profile and stats if available
+  const { data: studentProfile } = useQuery({
+    queryKey: ["student-me"],
+    queryFn: () => apiGet("/students/me").catch(() => null),
+    enabled: !!user,
+  })
+
+  const { data: rankingsData } = useQuery({
+    queryKey: ["rankings-preview"],
+    queryFn: () => apiGet("/ranking?page_size=5").catch(() => null),
+    enabled: !!user,
+  })
+
+  const { data: eventsData } = useQuery({
+    queryKey: ["events-preview"],
+    queryFn: () => apiGet("/events?page_size=5").catch(() => null),
+    enabled: !!user,
+  })
+
+  const { data: approvalsData } = useQuery({
+    queryKey: ["approvals-preview"],
+    queryFn: () => apiGet("/approvals?page_size=5").catch(() => null),
+    enabled: isHODRole || isSuperAdmin,
+  })
+
+  // Role preview switcher for privileged users
+  const canSwitchViews = isSuperAdmin || isHODRole
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Hero Welcome Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface via-surface to-primary/5 p-6 sm:p-8 shadow-card">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl">👋</span>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">
-                Welcome to Lyrahub, {user?.email?.split("@")[0]}
-              </h1>
-            </div>
-            <p className="text-sm sm:text-base text-ink-500 max-w-2xl">
-              The centralized intelligence platform for the AI/ML Department. Explore degree curriculums, apply for verified internships, track student rankings, and connect with faculty and alumni.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:items-end gap-2 shrink-0">
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
-              {isAdminOrHOD ? "🛡️ Department Administrator / HOD" : "🎓 Student Account"}
-            </div>
-            <span className="text-xs text-ink-400">
-              Account: {user?.email}
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Role Switcher Pill if Privileged User */}
+      {canSwitchViews && (
+        <div className="flex items-center justify-between bg-[#FAFAFA] border border-[#E5E5E5] p-2.5 rounded-lg">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-[#111111]">
+              View Perspective:
             </span>
+            <span className="text-[11px] text-[#777777]">
+              Switch dashboard mode
+            </span>
+          </div>
+          <div className="inline-flex h-8 items-center rounded-md bg-white border border-[#E5E5E5] p-0.5 text-xs">
+            <button
+              onClick={() => setActiveRoleView("student")}
+              className={`px-3 py-1 rounded transition-colors ${
+                activeRoleView === "student"
+                  ? "bg-[#111111] text-white font-medium"
+                  : "text-[#555555] hover:text-[#111111]"
+              }`}
+            >
+              Student
+            </button>
+            <button
+              onClick={() => setActiveRoleView("faculty")}
+              className={`px-3 py-1 rounded transition-colors ${
+                activeRoleView === "faculty"
+                  ? "bg-[#111111] text-white font-medium"
+                  : "text-[#555555] hover:text-[#111111]"
+              }`}
+            >
+              Faculty
+            </button>
+            <button
+              onClick={() => setActiveRoleView("hod")}
+              className={`px-3 py-1 rounded transition-colors ${
+                activeRoleView === "hod"
+                  ? "bg-[#111111] text-white font-medium"
+                  : "text-[#555555] hover:text-[#111111]"
+              }`}
+            >
+              HOD
+            </button>
+            <button
+              onClick={() => setActiveRoleView("admin")}
+              className={`px-3 py-1 rounded transition-colors ${
+                activeRoleView === "admin"
+                  ? "bg-[#111111] text-white font-medium"
+                  : "text-[#555555] hover:text-[#111111]"
+              }`}
+            >
+              Admin
+            </button>
           </div>
         </div>
-      </div>
-
-      {/* Admin / HOD Command Center (Only if Admin/HOD) */}
-      {isAdminOrHOD && (
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <ShieldCheck className="w-5 h-5 text-amber-500" />
-              <h2 className="text-lg font-bold text-ink">Admin & HOD Command Center</h2>
-            </div>
-            <span className="text-xs font-medium text-amber-600 bg-amber-500/10 px-2.5 py-0.5 rounded-full">
-              Privileged Actions
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Link
-              href="/programs/manage"
-              className="group p-5 rounded-xl border border-border bg-surface hover:border-primary/40 hover:shadow-card transition-all"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
-                  <BookOpen className="w-5 h-5" />
-                </div>
-                <ArrowRight className="w-4 h-4 text-ink-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
-              <h3 className="text-base font-semibold text-ink group-hover:text-primary transition-colors">
-                Manage Degree Programs
-              </h3>
-              <p className="text-xs text-ink-500 mt-1">
-                Create & configure B.Tech, M.Tech, and Minor catalogs, update eligibility, and map semester courses.
-              </p>
-            </Link>
-
-            <Link
-              href="/courses/manage"
-              className="group p-5 rounded-xl border border-border bg-surface hover:border-primary/40 hover:shadow-card transition-all"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-                  <GraduationCap className="w-5 h-5" />
-                </div>
-                <ArrowRight className="w-4 h-4 text-ink-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
-              <h3 className="text-base font-semibold text-ink group-hover:text-primary transition-colors">
-                Manage Courses & CSV Import
-              </h3>
-              <p className="text-xs text-ink-500 mt-1">
-                Add course units, update syllabi, assign teaching faculty, or perform bulk CSV syllabus imports.
-              </p>
-            </Link>
-
-            <Link
-              href="/opportunities/verify"
-              className="group p-5 rounded-xl border border-border bg-surface hover:border-primary/40 hover:shadow-card transition-all"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600">
-                  <FileCheck2 className="w-5 h-5" />
-                </div>
-                <ArrowRight className="w-4 h-4 text-ink-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
-              <h3 className="text-base font-semibold text-ink group-hover:text-primary transition-colors">
-                Verify Opportunities
-              </h3>
-              <p className="text-xs text-ink-500 mt-1">
-                Review pending internship and training listings posted by faculty and alumni before public publishing.
-              </p>
-            </Link>
-
-            <Link
-              href="/achievements/verify"
-              className="group p-5 rounded-xl border border-border bg-surface hover:border-primary/40 hover:shadow-card transition-all"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-600">
-                  <Trophy className="w-5 h-5" />
-                </div>
-                <ArrowRight className="w-4 h-4 text-ink-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
-              <h3 className="text-base font-semibold text-ink group-hover:text-primary transition-colors">
-                Review Student Achievements
-              </h3>
-              <p className="text-xs text-ink-500 mt-1">
-                Verify student hackathon certificates, research publications, and approve credit points.
-              </p>
-            </Link>
-
-            <Link
-              href="/events/manage"
-              className="group p-5 rounded-xl border border-border bg-surface hover:border-primary/40 hover:shadow-card transition-all"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-600">
-                  <Calendar className="w-5 h-5" />
-                </div>
-                <ArrowRight className="w-4 h-4 text-ink-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
-              <h3 className="text-base font-semibold text-ink group-hover:text-primary transition-colors">
-                Manage Events & Seminars
-              </h3>
-              <p className="text-xs text-ink-500 mt-1">
-                Schedule departmental workshops, guest talks, and track student registration lists.
-              </p>
-            </Link>
-
-            <Link
-              href="/groups/manage"
-              className="group p-5 rounded-xl border border-border bg-surface hover:border-primary/40 hover:shadow-card transition-all"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-600">
-                  <Users className="w-5 h-5" />
-                </div>
-                <ArrowRight className="w-4 h-4 text-ink-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
-              <h3 className="text-base font-semibold text-ink group-hover:text-primary transition-colors">
-                Manage Clubs & Groups
-              </h3>
-              <p className="text-xs text-ink-500 mt-1">
-                Oversee student AI clubs, assign group leads, and monitor technical activities.
-              </p>
-            </Link>
-          </div>
-        </section>
       )}
 
-      {/* Student Action Bar */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Compass className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-bold text-ink">Quick Launchpad</h2>
-          </div>
-          <span className="text-xs text-ink-400">Direct student workflows</span>
-        </div>
+      {/* Render appropriate dashboard view */}
+      {activeRoleView === "student" && (
+        <StudentDashboardView
+          user={user}
+          profile={studentProfile}
+          rankings={rankingsData}
+        />
+      )}
 
+      {activeRoleView === "hod" && (
+        <HODDashboardView approvals={approvalsData} />
+      )}
+
+      {activeRoleView === "faculty" && (
+        <FacultyDashboardView user={user} rankings={rankingsData} />
+      )}
+
+      {activeRoleView === "admin" && <AdminDashboardView />}
+    </div>
+  )
+}
+
+/* =========================================================================
+   PANEL 3: STUDENT DASHBOARD
+   ========================================================================= */
+function StudentDashboardView({
+  user,
+  profile,
+  rankings,
+}: {
+  user: any
+  profile: any
+  rankings: any
+}) {
+  const studentName = profile?.user?.name || user?.email?.split("@")[0] || "Rahul"
+  const displayName =
+    studentName.charAt(0).toUpperCase() + studentName.slice(1)
+
+  return (
+    <div className="space-y-8">
+      {/* Header (Matching Panel 3) */}
+      <div className="space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
+          Welcome back, {displayName} 👋
+        </h1>
+        <p className="text-xs text-[#555555]">
+          Here&apos;s your AI & ML journey at a glance.
+        </p>
+      </div>
+
+      {/* 4 Stat Cards in a row (Matching Panel 3) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          label="My Rank"
+          value={profile?.rank ? `#${profile.rank}` : "#42"}
+          subValue="(out of 1240)"
+          icon={<Trophy className="w-4 h-4 text-[#CA8A04]" />}
+        />
+        <StatCard
+          label="Test Score"
+          value="82 / 100"
+          subValue="Verified"
+          icon={<FileCheck2 className="w-4 h-4 text-[#2563EB]" />}
+        />
+        <StatCard
+          label="Skills"
+          value={profile?.skills?.length || "18"}
+          subValue="verified"
+          icon={<Sparkles className="w-4 h-4 text-[#16A34A]" />}
+        />
+        <StatCard
+          label="Projects"
+          value="5"
+          subValue="with 2 publications"
+          icon={<GitBranch className="w-4 h-4 text-[#111111]" />}
+        />
+      </div>
+
+      {/* Quick Actions (Matching Panel 3) */}
+      <div className="space-y-3">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#777777]">
+          Quick Actions
+        </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <Link
             href="/dashboard/profile"
-            className="flex flex-col items-center text-center p-4 rounded-xl border border-border bg-surface hover:bg-canvas hover:border-primary/30 transition-all group"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
           >
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2 group-hover:scale-110 transition-transform">
-              <UserIcon className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-semibold text-ink">My Profile</span>
-            <span className="text-[10px] text-ink-400 mt-0.5">Bio & Resume</span>
+            <User className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
+            <span className="text-xs font-medium text-[#111111]">
+              Update Profile
+            </span>
+          </Link>
+
+          <Link
+            href="/qr/my-code"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+          >
+            <Upload className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
+            <span className="text-xs font-medium text-[#111111]">
+              Upload Documents
+            </span>
+          </Link>
+
+          <Link
+            href="/tests"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+          >
+            <FileCheck2 className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
+            <span className="text-xs font-medium text-[#111111]">
+              Take AI/ML Test
+            </span>
+          </Link>
+
+          <Link
+            href="/ranking"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+          >
+            <Trophy className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
+            <span className="text-xs font-medium text-[#111111]">
+              View My Rank
+            </span>
+          </Link>
+
+          <Link
+            href="/events"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+          >
+            <Calendar className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
+            <span className="text-xs font-medium text-[#111111]">
+              Register for Event
+            </span>
           </Link>
 
           <Link
             href="/opportunities"
-            className="flex flex-col items-center text-center p-4 rounded-xl border border-border bg-surface hover:bg-canvas hover:border-primary/30 transition-all group"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
           >
-            <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 mb-2 group-hover:scale-110 transition-transform">
-              <Briefcase className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-semibold text-ink">Internships</span>
-            <span className="text-[10px] text-ink-400 mt-0.5">Explore openings</span>
-          </Link>
-
-          <Link
-            href="/opportunities/me"
-            className="flex flex-col items-center text-center p-4 rounded-xl border border-border bg-surface hover:bg-canvas hover:border-primary/30 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 mb-2 group-hover:scale-110 transition-transform">
-              <Clock className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-semibold text-ink">My Applications</span>
-            <span className="text-[10px] text-ink-400 mt-0.5">Status tracker</span>
-          </Link>
-
-          <Link
-            href="/achievements/submit"
-            className="flex flex-col items-center text-center p-4 rounded-xl border border-border bg-surface hover:bg-canvas hover:border-primary/30 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 mb-2 group-hover:scale-110 transition-transform">
-              <Trophy className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-semibold text-ink">Submit Award</span>
-            <span className="text-[10px] text-ink-400 mt-0.5">Earn badges</span>
-          </Link>
-
-          <Link
-            href="/projects/create"
-            className="flex flex-col items-center text-center p-4 rounded-xl border border-border bg-surface hover:bg-canvas hover:border-primary/30 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 mb-2 group-hover:scale-110 transition-transform">
-              <FolderGit2 className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-semibold text-ink">Post Project</span>
-            <span className="text-[10px] text-ink-400 mt-0.5">Showcase demo</span>
-          </Link>
-
-          <Link
-            href="/opportunities/create"
-            className="flex flex-col items-center text-center p-4 rounded-xl border border-border bg-surface hover:bg-canvas hover:border-primary/30 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-600 mb-2 group-hover:scale-110 transition-transform">
-              <PlusCircle className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-semibold text-ink">Post Opening</span>
-            <span className="text-[10px] text-ink-400 mt-0.5">For faculty & alumni</span>
+            <Briefcase className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
+            <span className="text-xs font-medium text-[#111111]">
+              Find Opportunities
+            </span>
           </Link>
         </div>
-      </section>
+      </div>
 
-      {/* Main Department Modules Grid */}
-      <section className="space-y-6">
-        <h2 className="text-lg font-bold text-ink flex items-center space-x-2">
-          <BookOpen className="w-5 h-5 text-primary" />
-          <span>Department Ecosystem & Modules</span>
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Card: Degree Programs */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-ink">Academic Programs</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Explore B.Tech CSE (AI & ML), M.Tech AI & Data Science, and Minor in AI/ML degrees with full semester curriculums, credit structures, and career outcomes.
-              </p>
-            </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/programs" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                Browse Programs <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-              {isAdminOrHOD && (
-                <Link href="/programs/manage" className="text-xs text-ink-400 hover:text-ink">
-                  Admin Setup
-                </Link>
-              )}
-            </div>
+      {/* Two Columns: Recent Activities & My Progress (Matching Panel 3) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Recent Activities */}
+        <div className="lg:col-span-7 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
+            <h3 className="text-sm font-semibold text-[#111111]">
+              Recent Activities
+            </h3>
+            <span className="text-xs text-[#777777]">Last 7 days</span>
           </div>
 
-          {/* Card: Courses Catalog */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-                <GraduationCap className="w-6 h-6" />
+          <div className="space-y-3.5">
+            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#FAFAFA] transition-colors">
+              <div className="w-8 h-8 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#111111] shrink-0 mt-0.5">
+                <GitBranch className="w-4 h-4" />
               </div>
-              <h3 className="text-lg font-bold text-ink">Course Catalog & Syllabi</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Detailed catalog of departmental courses (CS101, CS201, CS301...) with modular syllabus topics, textbooks, laboratory exercises, and assigned faculty professors.
-              </p>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-[#111111]">
+                  GitHub profile updated
+                </div>
+                <div className="text-[11px] text-[#777777]">
+                  2 repositories synced with capstone showcase
+                </div>
+              </div>
+              <span className="text-[10px] text-[#888888] shrink-0">
+                2 hours ago
+              </span>
             </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/courses" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                Explore Courses <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-              {isAdminOrHOD && (
-                <Link href="/courses/manage" className="text-xs text-ink-400 hover:text-ink">
-                  Manage & CSV
-                </Link>
-              )}
-            </div>
-          </div>
 
-          {/* Card: Opportunities */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
-                <Briefcase className="w-6 h-6" />
+            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#FAFAFA] transition-colors">
+              <div className="w-8 h-8 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#2563EB] shrink-0 mt-0.5">
+                <Award className="w-4 h-4" />
               </div>
-              <h3 className="text-lg font-bold text-ink">Internships & Training</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Apply for industry internships, faculty research apprenticeships, and summer trainings with instant application tracking and deadline alerts.
-              </p>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-[#111111]">
+                  Certificate uploaded (AWS ML Specialty)
+                </div>
+                <div className="text-[11px] text-[#777777]">
+                  Credential verified by faculty advisor
+                </div>
+              </div>
+              <span className="text-[10px] text-[#888888] shrink-0">
+                1 day ago
+              </span>
             </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/opportunities" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                View Openings <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-              <Link href="/opportunities/me" className="text-xs text-ink-400 hover:text-ink">
-                My Tracker
-              </Link>
-            </div>
-          </div>
 
-          {/* Card: Student Rankings */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-600">
-                <Medal className="w-6 h-6" />
+            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#FAFAFA] transition-colors">
+              <div className="w-8 h-8 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#16A34A] shrink-0 mt-0.5">
+                <Calendar className="w-4 h-4" />
               </div>
-              <h3 className="text-lg font-bold text-ink">Department Rankings</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Objective department leaderboard computing student rankings based on academic CGPA, verified hackathons, project contributions, and research output.
-              </p>
-            </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/ranking" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                View Standings <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: Projects Showcase */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
-                <FolderGit2 className="w-6 h-6" />
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-[#111111]">
+                  Registered for GenAI Hackathon 2026
+                </div>
+                <div className="text-[11px] text-[#777777]">
+                  Team confirmed: Neural Knights (3 members)
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-ink">Capstone & Research Projects</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Showcase of student machine learning repositories, demos, architecture documents, and peer member attributions.
-              </p>
-            </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/projects" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                Explore Projects <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-              <Link href="/projects/create" className="text-xs text-ink-400 hover:text-ink">
-                Submit Repo
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: Alumni Directory */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600">
-                <Users className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-ink">Alumni Network & Mentors</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Connect with graduates now working at Microsoft, Google, AWS, and AI startups who offer guidance, resume reviews, and referrals.
-              </p>
-            </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/alumni" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                Browse Alumni <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-              <Link href="/alumni/register" className="text-xs text-ink-400 hover:text-ink">
-                Join Directory
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: Student Clubs & Groups */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-600">
-                <Users className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-ink">Clubs & Reading Groups</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Join specialized student circles like Computer Vision Club, NLP Reading Group, and Kaggle competitive teams.
-              </p>
-            </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/groups" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                Explore Groups <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: Events & Hackathons */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600">
-                <Calendar className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-ink">Events & Workshops</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Calendar of guest technical seminars, hackathons, and symposiums with one-click RSVP and digital badge certificates.
-              </p>
-            </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/events" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                View Calendar <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: Success Stories & Testimonials */}
-          <div className="rounded-xl border border-border bg-surface p-6 flex flex-col justify-between hover:shadow-card transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-600">
-                <Quote className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-ink">Success Stories & Voices</h3>
-              <p className="text-xs text-ink-500 leading-relaxed">
-                Inspiring placement journeys, high-package offers, patent grants, and feedback from recruiters and graduates.
-              </p>
-            </div>
-            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
-              <Link href="/stories" className="text-xs font-semibold text-primary hover:underline flex items-center">
-                Read Stories <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Link>
-              <Link href="/testimonials" className="text-xs text-ink-400 hover:text-ink">
-                Testimonials
-              </Link>
+              <span className="text-[10px] text-[#888888] shrink-0">
+                3 days ago
+              </span>
             </div>
           </div>
         </div>
-      </section>
+
+        {/* Right Column: My Progress (Matching Panel 3) */}
+        <div className="lg:col-span-5 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-6">
+          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
+            <h3 className="text-sm font-semibold text-[#111111]">
+              My Progress
+            </h3>
+            <span className="text-xs font-medium text-[#16A34A]">
+              On Track
+            </span>
+          </div>
+
+          {/* Circular Indicator & Breakdown */}
+          <div className="flex items-center gap-6">
+            <div className="relative w-20 h-20 rounded-full border-4 border-[#E5E5E5] border-t-[#111111] border-r-[#111111] flex items-center justify-center shrink-0">
+              <span className="text-xl font-bold text-[#111111]">78%</span>
+            </div>
+            <div className="text-xs text-[#555555] space-y-1">
+              <div className="font-medium text-[#111111]">
+                Profile Readiness
+              </div>
+              <p className="text-[11px] leading-relaxed text-[#777777]">
+                Your profile is 78% complete for upcoming campus recruitment drives.
+              </p>
+            </div>
+          </div>
+
+          {/* Progress Bars */}
+          <div className="space-y-3 pt-2">
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="text-[#555555]">Profile Completeness</span>
+                <span className="font-medium text-[#111111]">90%</span>
+              </div>
+              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
+                <div className="h-full bg-[#111111] rounded-full w-[90%]" />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="text-[#555555]">Skills & Certifications</span>
+                <span className="font-medium text-[#111111]">80%</span>
+              </div>
+              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
+                <div className="h-full bg-[#111111] rounded-full w-[80%]" />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="text-[#555555]">Projects & Publications</span>
+                <span className="font-medium text-[#111111]">75%</span>
+              </div>
+              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
+                <div className="h-full bg-[#111111] rounded-full w-[75%]" />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="text-[#555555]">AI/ML Test Score</span>
+                <span className="font-medium text-[#111111]">82%</span>
+              </div>
+              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
+                <div className="h-full bg-[#2563EB] rounded-full w-[82%]" />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="text-[#555555]">Verified Documents</span>
+                <span className="font-medium text-[#111111]">65%</span>
+              </div>
+              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
+                <div className="h-full bg-[#111111] rounded-full w-[65%]" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
+}
+
+/* =========================================================================
+   PANEL 4: HOD DASHBOARD
+   ========================================================================= */
+function HODDashboardView({ approvals }: { approvals: any }) {
+  const placementData = [
+    { year: "2022", placed: 180, notPlaced: 40 },
+    { year: "2023", placed: 220, notPlaced: 35 },
+    { year: "2024", placed: 290, notPlaced: 30 },
+    { year: "2025", placed: 310, notPlaced: 20 },
+  ]
+
+  const topSkills = [
+    { name: "Python", percentage: 92 },
+    { name: "Machine Learning", percentage: 78 },
+    { name: "Deep Learning", percentage: 65 },
+    { name: "Generative AI", percentage: 58 },
+    { name: "Data Analysis", percentage: 52 },
+  ]
+
+  return (
+    <div className="space-y-8">
+      {/* Header (Matching Panel 4) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
+            HOD Dashboard
+          </h1>
+          <p className="text-xs text-[#555555]">
+            Department overview and key insights.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <select className="h-9 px-3 rounded-lg border border-[#E5E5E5] bg-white text-xs text-[#111111] focus:outline-none focus:border-[#111111]">
+            <option>Academic Year 2025-26</option>
+            <option>Academic Year 2024-25</option>
+          </select>
+        </div>
+      </div>
+
+      {/* 4 Stat Cards in a row (Matching Panel 4) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          label="Total Students"
+          value="1,240"
+          trend="+12% from last year"
+          trendType="positive"
+        />
+        <StatCard
+          label="Faculty Members"
+          value="52"
+          trend="+2 new this year"
+          trendType="positive"
+        />
+        <StatCard
+          label="Research Projects"
+          value="320"
+          trend="+18% from last year"
+          trendType="positive"
+        />
+        <StatCard
+          label="Placements"
+          value="78%"
+          trend="+6% from last year"
+          trendType="positive"
+        />
+      </div>
+
+      {/* Charts Row: Placement & Rankings + Top Skills (Matching Panel 4) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left: Placement & Rankings Bar Chart */}
+        <div className="lg:col-span-7 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-[#111111]">
+              Placement & Rankings
+            </h3>
+            <div className="flex items-center gap-4 text-[11px] text-[#777777]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-sm bg-[#2563EB]" /> Placed
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-sm bg-[#93C5FD]" /> Not Placed
+              </span>
+            </div>
+          </div>
+
+          <div className="h-64 w-full pt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={placementData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F0F0" />
+                <XAxis dataKey="year" tickLine={false} tick={{ fontSize: 11, fill: "#888888" }} />
+                <YAxis tickLine={false} tick={{ fontSize: 11, fill: "#888888" }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#FFFFFF",
+                    borderColor: "#E5E5E5",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                  }}
+                />
+                <Bar dataKey="placed" fill="#2563EB" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="notPlaced" fill="#93C5FD" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Right: Top Skills in Department */}
+        <div className="lg:col-span-5 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
+            <h3 className="text-sm font-semibold text-[#111111]">
+              Top Skills in Department
+            </h3>
+            <span className="text-xs text-[#777777]">Cohort 2026</span>
+          </div>
+
+          <div className="space-y-4 pt-2">
+            {topSkills.map((skill) => (
+              <div key={skill.name} className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span className="font-medium text-[#111111]">
+                    {skill.name}
+                  </span>
+                  <span className="text-[#555555] font-semibold">
+                    {skill.percentage}%
+                  </span>
+                </div>
+                <div className="h-2 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#2563EB] rounded-full"
+                    style={{ width: `${skill.percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom: Recent Approvals Table (Matching Panel 4) */}
+      <div className="rounded-lg border border-[#E5E5E5] bg-white overflow-hidden">
+        <div className="p-5 border-b border-[#E5E5E5] flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-[#111111]">
+            Recent Approvals
+          </h3>
+          <Link
+            href="/approvals"
+            className="text-xs text-[#2563EB] hover:underline font-medium"
+          >
+            View Queue →
+          </Link>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#FAFAFA] border-b border-[#E5E5E5] text-[#555555] font-medium">
+              <tr>
+                <th className="p-3.5">Type</th>
+                <th className="p-3.5">Requested By</th>
+                <th className="p-3.5">Details</th>
+                <th className="p-3.5">Date</th>
+                <th className="p-3.5">Status</th>
+                <th className="p-3.5 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E5E5E5]">
+              <tr className="hover:bg-[#FAFAFA]">
+                <td className="p-3.5 font-medium text-[#111111]">
+                  Profile Update
+                </td>
+                <td className="p-3.5 text-[#555555]">Dr. S. Mehta</td>
+                <td className="p-3.5 text-[#777777]">
+                  Student skill update - Ananya
+                </td>
+                <td className="p-3.5 text-[#777777]">12 Sep 2026</td>
+                <td className="p-3.5">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#FEF9C3] text-[#A16207]">
+                    Pending
+                  </span>
+                </td>
+                <td className="p-3.5 text-right">
+                  <Link href="/approvals">
+                    <Button size="sm" variant="secondary" className="h-7 text-xs">
+                      Review
+                    </Button>
+                  </Link>
+                </td>
+              </tr>
+
+              <tr className="hover:bg-[#FAFAFA]">
+                <td className="p-3.5 font-medium text-[#111111]">
+                  New Project
+                </td>
+                <td className="p-3.5 text-[#555555]">Prof. R. Singh</td>
+                <td className="p-3.5 text-[#777777]">
+                  LLM Research Project
+                </td>
+                <td className="p-3.5 text-[#777777]">11 Sep 2026</td>
+                <td className="p-3.5">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#DCFCE7] text-[#15803D]">
+                    Approved
+                  </span>
+                </td>
+                <td className="p-3.5 text-right">
+                  <Button size="sm" variant="ghost" className="h-7 text-xs" disabled>
+                    View
+                  </Button>
+                </td>
+              </tr>
+
+              <tr className="hover:bg-[#FAFAFA]">
+                <td className="p-3.5 font-medium text-[#111111]">Event</td>
+                <td className="p-3.5 text-[#555555]">Prof. K. Verma</td>
+                <td className="p-3.5 text-[#777777]">GenAI Workshop</td>
+                <td className="p-3.5 text-[#777777]">10 Sep 2026</td>
+                <td className="p-3.5">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#FEF9C3] text-[#A16207]">
+                    Pending
+                  </span>
+                </td>
+                <td className="p-3.5 text-right">
+                  <Link href="/approvals">
+                    <Button size="sm" variant="secondary" className="h-7 text-xs">
+                      Review
+                    </Button>
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* =========================================================================
+   PANEL 5: FACULTY DASHBOARD
+   ========================================================================= */
+function FacultyDashboardView({
+  user,
+  rankings,
+}: {
+  user: any
+  rankings: any
+}) {
+  const [tab, setTab] = useState("students")
+
+  const studentsList = [
+    {
+      regNo: "AIML0012",
+      name: "Ananya Singh",
+      section: "A",
+      cgpa: "8.9",
+      rank: 15,
+      status: "Active",
+    },
+    {
+      regNo: "AIML0024",
+      name: "Rohan Mehta",
+      section: "A",
+      cgpa: "8.6",
+      rank: 32,
+      status: "Active",
+    },
+    {
+      regNo: "AIML0056",
+      name: "Priya Sharma",
+      section: "B",
+      cgpa: "8.4",
+      rank: 48,
+      status: "Active",
+    },
+    {
+      regNo: "AIML0078",
+      name: "Karan Patel",
+      section: "B",
+      cgpa: "8.1",
+      rank: 76,
+      status: "Active",
+    },
+  ]
+
+  return (
+    <div className="space-y-8">
+      {/* Header (Matching Panel 5) */}
+      <div className="space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
+          Welcome, Prof. R. Singh
+        </h1>
+        <p className="text-xs text-[#555555]">
+          Manage your students, projects and academic activities.
+        </p>
+      </div>
+
+      {/* 4 Stat Cards in a row (Matching Panel 5) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="My Students" value="28" icon={<Users className="w-4 h-4 text-[#111111]" />} />
+        <StatCard label="Active Projects" value="6" icon={<GitBranch className="w-4 h-4 text-[#2563EB]" />} />
+        <StatCard label="Pending Requests" value="3" highlight icon={<Clock className="w-4 h-4 text-[#DC2626]" />} />
+        <StatCard label="Events Conducted" value="4" icon={<Calendar className="w-4 h-4 text-[#16A34A]" />} />
+      </div>
+
+      {/* Tabs: [My Students] [Projects] [Requests] [Upcoming Events] (Matching Panel 5) */}
+      <div className="space-y-4">
+        <div className="inline-flex h-9 items-center rounded-lg bg-[#F5F5F5] p-1 text-xs font-medium text-[#555555]">
+          <button
+            onClick={() => setTab("students")}
+            className={`px-3 py-1 rounded-md transition-all ${
+              tab === "students"
+                ? "bg-white text-[#111111] shadow-subtle"
+                : "text-[#555555] hover:text-[#111111]"
+            }`}
+          >
+            My Students
+          </button>
+          <button
+            onClick={() => setTab("projects")}
+            className={`px-3 py-1 rounded-md transition-all ${
+              tab === "projects"
+                ? "bg-white text-[#111111] shadow-subtle"
+                : "text-[#555555] hover:text-[#111111]"
+            }`}
+          >
+            Projects
+          </button>
+          <button
+            onClick={() => setTab("requests")}
+            className={`px-3 py-1 rounded-md transition-all ${
+              tab === "requests"
+                ? "bg-white text-[#111111] shadow-subtle"
+                : "text-[#555555] hover:text-[#111111]"
+            }`}
+          >
+            Requests
+          </button>
+          <button
+            onClick={() => setTab("events")}
+            className={`px-3 py-1 rounded-md transition-all ${
+              tab === "events"
+                ? "bg-white text-[#111111] shadow-subtle"
+                : "text-[#555555] hover:text-[#111111]"
+            }`}
+          >
+            Upcoming Events
+          </button>
+        </div>
+
+        {/* Student Table (Matching Panel 5) */}
+        {tab === "students" && (
+          <div className="rounded-lg border border-[#E5E5E5] bg-white overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#FAFAFA] border-b border-[#E5E5E5] text-[#555555] font-medium">
+                  <tr>
+                    <th className="p-3.5">Reg. No.</th>
+                    <th className="p-3.5">Name</th>
+                    <th className="p-3.5">Section</th>
+                    <th className="p-3.5">CGPA</th>
+                    <th className="p-3.5">Rank</th>
+                    <th className="p-3.5">Status</th>
+                    <th className="p-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E5E5E5]">
+                  {studentsList.map((st) => (
+                    <tr key={st.regNo} className="hover:bg-[#FAFAFA]">
+                      <td className="p-3.5 font-medium text-[#111111]">
+                        {st.regNo}
+                      </td>
+                      <td className="p-3.5 font-medium text-[#111111]">
+                        {st.name}
+                      </td>
+                      <td className="p-3.5 text-[#555555]">{st.section}</td>
+                      <td className="p-3.5 text-[#555555]">{st.cgpa}</td>
+                      <td className="p-3.5 text-[#111111] font-medium">
+                        {st.rank}
+                      </td>
+                      <td className="p-3.5">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#DCFCE7] text-[#15803D]">
+                          {st.status}
+                        </span>
+                      </td>
+                      <td className="p-3.5 text-right">
+                        <Link href="/dashboard/profile">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="h-7 text-xs"
+                          >
+                            View
+                          </Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {tab === "projects" && (
+          <div className="p-8 text-center border border-[#E5E5E5] rounded-lg bg-white text-xs text-[#777777]">
+            Active student capstone & research projects will appear here.
+          </div>
+        )}
+
+        {tab === "requests" && (
+          <div className="p-8 text-center border border-[#E5E5E5] rounded-lg bg-white text-xs text-[#777777]">
+            3 change requests awaiting submission or HOD review.
+          </div>
+        )}
+
+        {tab === "events" && (
+          <div className="p-8 text-center border border-[#E5E5E5] rounded-lg bg-white text-xs text-[#777777]">
+            4 departmental workshops scheduled for this semester.
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* =========================================================================
+   PANEL 6: ADMIN DASHBOARD
+   ========================================================================= */
+function AdminDashboardView() {
+  const userDistribution = [
+    { name: "Students", value: 1248, color: "#111111" },
+    { name: "Faculty", value: 52, color: "#2563EB" },
+    { name: "Alumni", value: 120, color: "#16A34A" },
+    { name: "Others", value: 23, color: "#CA8A04" },
+  ]
+
+  const activityData = [
+    { date: "6 Sep", count: 1200 },
+    { date: "7 Sep", count: 1100 },
+    { date: "8 Sep", count: 1350 },
+    { date: "9 Sep", count: 1450 },
+    { date: "10 Sep", count: 1300 },
+    { date: "11 Sep", count: 1250 },
+    { date: "12 Sep", count: 1420 },
+  ]
+
+  const recentLogins = [
+    { name: "Rahul Sharma", role: "Student", time: "2 min ago" },
+    { name: "Prof. R. Singh", role: "Faculty", time: "12 min ago" },
+    { name: "Ananya Gupta", role: "Student", time: "25 min ago" },
+    { name: "Dr. A. Kumar", role: "HOD", time: "1 hour ago" },
+  ]
+
+  return (
+    <div className="space-y-8">
+      {/* Header (Matching Panel 6) */}
+      <div className="space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
+          Admin Dashboard
+        </h1>
+        <p className="text-xs text-[#555555]">
+          System overview and health status.
+        </p>
+      </div>
+
+      {/* 4 Stat Cards in a row (Matching Panel 6) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Total Users" value="1,435" />
+        <StatCard label="Active Users" value="1,210" />
+        <StatCard label="Storage Used" value="68 GB" />
+        <StatCard
+          label="System Health"
+          value="All Good"
+          trend="Neon + Redis Healthy"
+          trendType="positive"
+        />
+      </div>
+
+      {/* Mid Row: User Distribution Donut + Recent Logins (Matching Panel 6) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left: User Distribution Donut */}
+        <div className="lg:col-span-7 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
+            <h3 className="text-sm font-semibold text-[#111111]">
+              User Distribution
+            </h3>
+            <span className="text-xs text-[#777777]">1,435 Total</span>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-around gap-6 pt-2">
+            <div className="w-48 h-48 relative">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={userDistribution}
+                    innerRadius={55}
+                    outerRadius={80}
+                    paddingAngle={3}
+                    dataKey="value"
+                  >
+                    {userDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                <span className="text-lg font-bold text-[#111111]">1,435</span>
+                <span className="text-[10px] text-[#777777]">Users</span>
+              </div>
+            </div>
+
+            <div className="space-y-2.5 text-xs">
+              {userDistribution.map((item) => (
+                <div key={item.name} className="flex items-center gap-6 justify-between min-w-[160px]">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="text-[#555555]">{item.name}</span>
+                  </div>
+                  <span className="font-semibold text-[#111111]">
+                    {item.value.toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Recent Logins */}
+        <div className="lg:col-span-5 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
+            <h3 className="text-sm font-semibold text-[#111111]">
+              Recent Logins
+            </h3>
+            <span className="text-xs text-[#777777]">Live telemetry</span>
+          </div>
+
+          <div className="space-y-3 pt-1">
+            {recentLogins.map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between p-2 rounded-lg hover:bg-[#FAFAFA] transition-colors text-xs"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-full bg-[#111111] text-white flex items-center justify-center text-xs font-medium">
+                    {item.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-medium text-[#111111]">
+                      {item.name}
+                    </div>
+                    <div className="text-[10px] text-[#777777]">
+                      {item.role}
+                    </div>
+                  </div>
+                </div>
+                <span className="text-[10px] text-[#888888]">
+                  {item.time}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom: System Activity (Last 7 Days) Area Chart (Matching Panel 6) */}
+      <div className="rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-[#111111]">
+            System Activity (Last 7 Days)
+          </h3>
+          <span className="text-xs text-[#777777]">1.2k - 1.5k requests/day</span>
+        </div>
+
+        <div className="h-60 w-full pt-2">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={activityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="activityGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F0F0" />
+              <XAxis dataKey="date" tickLine={false} tick={{ fontSize: 11, fill: "#888888" }} />
+              <YAxis tickLine={false} tick={{ fontSize: 11, fill: "#888888" }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#FFFFFF",
+                  borderColor: "#E5E5E5",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="count"
+                stroke="#2563EB"
+                strokeWidth={2}
+                fillOpacity={1}
+                fill="url(#activityGrad)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  )
 }

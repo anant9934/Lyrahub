@@ -17,7 +17,7 @@ export default function StudentQRCodePage() {
       try {
         setLoading(true);
         setError(null);
-        const res = await api.get("/api/v1/qr/student/me", {
+        const res = await api.get("/qr/student/me", {
           responseType: "blob",
         });
         const objectUrl = URL.createObjectURL(res.data);

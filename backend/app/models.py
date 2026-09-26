@@ -860,3 +860,30 @@ class LeadershipProfile(Base):
 
 
 
+
+
+class AIUsageLog(Base):
+    """Immutable audit log for every cloud AI call routed through the AI Gateway."""
+    __tablename__ = "ai_usage_logs"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    role = Column(String(50), nullable=False)
+    usage_date = Column(Date, nullable=False)
+    provider = Column(String(50), nullable=False)          # 'gemini', 'groq', 'cerebras', ...
+    model = Column(String(100), nullable=True)
+    request_id = Column(String(64), nullable=False)
+    tokens_in = Column(Integer, nullable=True)
+    tokens_out = Column(Integer, nullable=True)
+    latency_ms = Column(Integer, nullable=True)
+    success = Column(Boolean, nullable=False, default=True)
+    reason_for_cloud_route = Column(String(500), nullable=True)
+    quota_before = Column(Integer, nullable=False, default=0)
+    quota_after = Column(Integer, nullable=False, default=0)
+    error_message = Column(String(500), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_ai_usage_user_date", "user_id", "usage_date"),
+        Index("idx_ai_usage_date_role", "usage_date", "role"),
+        Index("idx_ai_usage_provider", "provider", "usage_date"),
+    )

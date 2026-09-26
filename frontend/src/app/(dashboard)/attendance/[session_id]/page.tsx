@@ -57,7 +57,7 @@ export default function LiveAttendanceSessionPage() {
   const fetchRecords = async (showLoading = false) => {
     if (showLoading) setLoading(true);
     try {
-      const res = await api.get(`/api/v1/qr/attendance/session/${sessionId}/records`);
+      const res = await api.get(`/qr/attendance/session/${sessionId}/records`);
       setSession(res.data);
       setError(null);
     } catch (err: any) {

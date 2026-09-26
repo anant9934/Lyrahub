@@ -38,7 +38,7 @@ export default function AttendanceStartPage() {
     async function loadCourses() {
       try {
         setFetchingCourses(true);
-        const res = await api.get("/api/v1/courses");
+        const res = await api.get("/courses");
         if (res.data?.items) {
           setCourses(res.data.items);
           if (res.data.items.length > 0) {
@@ -66,7 +66,7 @@ export default function AttendanceStartPage() {
         duration_minutes: durationMinutes,
       };
 
-      const res = await api.post("/api/v1/qr/attendance/session", payload);
+      const res = await api.post("/qr/attendance/session", payload);
       const session = res.data;
       router.push(`/attendance/${session.id}`);
     } catch (err: any) {

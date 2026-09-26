@@ -1,0 +1,73 @@
+# ─────────────────────────────────────────────────────────────────
+# Lyrahub — Local Full-Stack Development (docker-compose)
+#
+# Usage:
+#   docker-compose up -d           # Start postgres + redis only
+#   docker-compose --profile full up   # Start everything including backend
+#
+# Requirements:
+#   - Copy .env.example → .env and fill in values
+# ─────────────────────────────────────────────────────────────────
+
+services:
+  # ── Postgres + pgvector ─────────────────────────────────────────
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: lyrahub_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lyrahub
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lyrahub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: lyrahub_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend (FastAPI) ────────────────────────────────────────────
+  # Activate with: docker-compose --profile full up
+  backend:
+    profiles: ["full"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lyrahub_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/lyrahub
+      - REDIS_URL=redis://redis:6379
+      - ENVIRONMENT=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend/uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

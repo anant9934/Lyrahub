@@ -58,13 +58,13 @@ export default function CoursesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F1] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E1E1E] via-[#2A2A2A] to-[#1E1E1E] text-white p-8 md:p-12 mb-8 shadow-sm">
+        <div className="relative overflow-hidden rounded-2xl bg-[#111111] text-white p-8 md:p-12 mb-8 shadow-subtle">
           <div className="max-w-3xl relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-[#EEBE1E] border border-[#EEBE1E]/30 mb-4">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/20 mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-[#2563EB]" />
               <span>Department Syllabus Catalog</span>
             </div>
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
@@ -79,7 +79,7 @@ export default function CoursesPage() {
             <div className="mt-6 md:mt-0 md:absolute md:top-12 md:right-12 z-20">
               <Link
                 href="/courses/manage"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#EEBE1E] hover:bg-[#EEBE1E]/90 text-[#1E1E1E] font-semibold text-sm transition-all shadow-md"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white hover:bg-neutral-100 text-[#111111] font-semibold text-xs transition-all"
               >
                 <PlusCircle className="w-4 h-4" />
                 <span>Manage Courses</span>

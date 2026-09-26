@@ -53,7 +53,7 @@ export default function QRScannerPage() {
     if (parsed.type === "attendance" || parsed.session_id) {
       const sessionId = parsed.session_id || parsed.id;
       try {
-        const res = await api.post("/api/v1/qr/attendance/mark", {
+        const res = await api.post("/qr/attendance/mark", {
           session_id: sessionId,
           scanned_at: new Date().toISOString()
         });

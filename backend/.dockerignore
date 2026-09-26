@@ -1,0 +1,31 @@
+# ─────────────────────────────────────────────────────
+# .dockerignore — backend
+# ─────────────────────────────────────────────────────
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Dev / test files
+test_*.py
+verify_*.py
+seed_*.py
+force_recalc.py
+*.log
+
+# Secrets (never in image)
+.env
+.env.*
+
+# Uploads (use object storage in production)
+uploads/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store

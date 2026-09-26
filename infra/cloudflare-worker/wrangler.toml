@@ -1,0 +1,10 @@
+name = "lyrahub-keep-alive"
+main = "keep-alive.js"
+compatibility_date = "2024-01-01"
+
+[triggers]
+crons = ["*/14 * * * *"]   # every 14 minutes
+
+[vars]
+# Override BACKEND_URL here if needed, or set as a secret:
+# wrangler secret put BACKEND_URL

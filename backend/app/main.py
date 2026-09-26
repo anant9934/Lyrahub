@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
+import uuid
 
 from app.core.rbac import init_casbin, get_enforcer
 from app.core.config import get_settings
@@ -30,16 +32,40 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="AI/ML Department Hub API",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    # Disable interactive docs in production
+    docs_url=None if settings.ENVIRONMENT == "production" else "/docs",
+    redoc_url=None if settings.ENVIRONMENT == "production" else "/redoc",
+    openapi_url=None if settings.ENVIRONMENT == "production" else "/openapi.json",
 )
+
+# CORS — allow_origins must be explicit when withCredentials=true
+_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
+# Extend with production origins from env
+for _origin in settings.CORS_ORIGINS.split(","):
+    _o = _origin.strip()
+    if _o:
+        _ALLOWED_ORIGINS.append(_o)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+    expose_headers=["X-Request-ID"],
 )
+
+# Request ID middleware — every request gets a traceable ID
+@app.middleware("http")
+async def request_id_middleware(request: Request, call_next):
+    request_id = request.headers.get("X-Request-ID", uuid.uuid4().hex)
+    response = await call_next(request)
+    response.headers["X-Request-ID"] = request_id
+    return response
 
 from app.modules.health.router import router as health_router
 from app.modules.students.router import router as students_router
@@ -98,6 +124,10 @@ app.include_router(qr_router, prefix="/api/v1/qr", tags=["qr"])
 
 from app.modules.leadership.router import router as leadership_router
 app.include_router(leadership_router, prefix="/api/v1/leadership", tags=["leadership"])
+
+from app.modules.ai.router import router as ai_router
+app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
+
 
 
 

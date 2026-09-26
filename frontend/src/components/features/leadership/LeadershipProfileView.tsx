@@ -72,8 +72,8 @@ export default function LeadershipProfileView({ role }: LeadershipProfileViewPro
       try {
         setLoading(true);
         const [profileRes, statsRes] = await Promise.all([
-          api.get(`/api/v1/leadership/${role}`),
-          api.get(`/api/v1/leadership/${role}/stats`),
+          api.get(`/leadership/${role}`),
+          api.get(`/leadership/${role}/stats`),
         ]);
         setProfile(profileRes.data);
         setStats(statsRes.data);

@@ -1,0 +1,95 @@
+services:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Lyrahub Backend — FastAPI on Render (Free tier: Web Service)
+  # ──────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: lyrahub-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    region: singapore          # Closest to target users (change if needed)
+    plan: free                 # Upgrade to starter ($7/mo) for always-on
+    branch: main
+    healthCheckPath: /api/v1/health/live
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PORT
+        value: "8000"
+      # Comma-separated Vercel URLs — no trailing slashes
+      - key: CORS_ORIGINS
+        value: "https://lyrahub.vercel.app"  # Update after Vercel deploy
+
+      # ── Database & Cache ──────────────────────────────────────────────────
+      - key: DATABASE_URL
+        sync: false            # Set in Render dashboard
+      - key: REDIS_URL
+        sync: false            # Set in Render dashboard
+      # ── Auth ─────────────────────────────────────────────────────────────
+      - key: JWT_SECRET
+        generateValue: true    # Render auto-generates a secure random value
+      - key: JWT_ACCESS_EXPIRY
+        value: "900"
+      - key: JWT_REFRESH_EXPIRY
+        value: "604800"
+      - key: SUPERADMIN_EMAIL
+        sync: false            # Set in Render dashboard
+      - key: SUPERADMIN_PASSWORD
+        sync: false            # Set in Render dashboard
+      # ── AI Gateway Policy ─────────────────────────────────────────────────
+      - key: CLOUD_AI_ENABLED
+        value: "true"
+      - key: STUDENT_CLOUD_CALLS_PER_DAY
+        value: "0"
+      - key: FACULTY_CLOUD_CALLS_PER_DAY
+        value: "1"
+      - key: HOD_CLOUD_CALLS_PER_DAY
+        value: "5"
+      - key: COS_CLOUD_CALLS_PER_DAY
+        value: "3"
+      - key: HOS_CLOUD_CALLS_PER_DAY
+        value: "3"
+      - key: HIGHER_AUTHORITY_CLOUD_CALLS_PER_DAY
+        value: "3"
+      - key: SUPER_ADMIN_CLOUD_CALLS_PER_DAY
+        value: "50"
+      - key: CLOUD_AI_GLOBAL_DAILY_LIMIT
+        value: "25"
+      - key: CLOUD_AI_GLOBAL_MONTHLY_LIMIT
+        value: "100"
+      - key: CLOUD_AI_MAX_TOKENS_PER_REQUEST
+        value: "1500"
+      - key: CLOUD_AI_MAX_PROVIDER_RETRIES
+        value: "2"
+      - key: CLOUD_AI_PROVIDER_ORDER
+        value: "groq,cerebras,gemini,openrouter,mistral,sambanova"
+      # ── AI Provider Keys (set in Render dashboard, NEVER commit) ─────────
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEYS
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_API_KEYS
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEYS
+        sync: false
+      - key: CEREBRAS_API_KEY
+        sync: false
+      - key: CEREBRAS_API_KEYS
+        sync: false
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: MISTRAL_API_KEYS
+        sync: false
+      - key: SAMBANOVA_API_KEY
+        sync: false
+      - key: SAMBANOVA_API_KEYS
+        sync: false
+      # ── Storage ──────────────────────────────────────────────────────────
+      - key: STORAGE_PROVIDER
+        value: local           # Change to 'r2' once Cloudflare R2 is configured
+      - key: PARSER_PROVIDER
+        value: keyword

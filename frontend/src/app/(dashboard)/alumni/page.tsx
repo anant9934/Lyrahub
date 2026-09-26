@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import api from "@/lib/api";
 import { AlumniCard } from "@/components/features/alumni/AlumniCard";
 import { AlumniFilters } from "@/components/features/alumni/AlumniFilters";
 
@@ -23,21 +24,14 @@ export default function AlumniDirectoryPage() {
   const fetchAlumni = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (year) params.append("graduation_year", year);
-      if (company) params.append("company", company);
-      if (mentorshipOnly) params.append("open_to_mentorship", "true");
-      if (search) params.append("search", search);
+      const params: any = {};
+      if (year) params.graduation_year = year;
+      if (company) params.company = company;
+      if (mentorshipOnly) params.open_to_mentorship = true;
+      if (search) params.search = search;
 
-      const res = await fetch(`http://localhost:8000/api/v1/alumni?${params.toString()}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setAlumni(data.items || []);
-      }
+      const res = await api.get("/alumni", { params });
+      setAlumni(res.data?.items || []);
     } catch (e) {
       console.error(e);
     } finally {
@@ -46,11 +40,13 @@ export default function AlumniDirectoryPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 bg-[#F2F2F1] min-h-screen">
+    <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#1E1E1E]">Alumni Directory</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
+            Alumni Directory
+          </h1>
+          <p className="text-xs text-[#555555] mt-1">
             Connect with department graduates in global AI research, big tech, and cutting-edge startups.
           </p>
         </div>
