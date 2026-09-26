@@ -686,4 +686,177 @@ class OpportunityApplication(Base):
     )
 
 
+# ==========================================
+# PHASE 4E: CORE MISSING FEATURES
+# 1. AI/ML Knowledge Tests
+# 2. Approvals Workflow
+# 3. QR & Attendance
+# 4. Leadership Profiles
+# ==========================================
+
+class Test(Base):
+    __tablename__ = "tests"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = Column(String(200), nullable=False)
+    slug = Column(String(250), unique=True, nullable=False)
+    description = Column(String)
+    domain = Column(String(50), nullable=False, default="ai_ml_general") # 'ai_ml_general', 'llm', 'cv', 'nlp', 'mlops'
+    difficulty = Column(String(20), default="intermediate")             # 'beginner', 'intermediate', 'advanced'
+    duration_minutes = Column(Integer, nullable=False, default=30)
+    total_questions = Column(Integer, nullable=False, default=10)
+    total_marks = Column(Integer, nullable=False, default=10)
+    passing_marks = Column(Integer, nullable=True, default=5)
+    is_published = Column(Boolean, default=False)
+    available_from = Column(DateTime(timezone=True), nullable=True)
+    available_until = Column(DateTime(timezone=True), nullable=True)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("idx_tests_published_window", "is_published", "available_from", "available_until"),
+    )
+
+
+class TestQuestion(Base):
+    __tablename__ = "test_questions"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    test_id = Column(UUID(as_uuid=True), ForeignKey("tests.id"), nullable=False)
+    question_text = Column(String, nullable=False)
+    question_type = Column(String(20), nullable=False, default="mcq") # 'mcq', 'multi_select', 'short_answer'
+    options = Column(JSONB, default=list)                             # [{"id": "a", "text": "..."}]
+    correct_answer = Column(JSONB, nullable=False)                   # ["a"] or "keyword"
+    explanation = Column(String)
+    marks = Column(Integer, default=1)
+    difficulty = Column(String(20), default="intermediate")
+    topic = Column(String(100))                                      # 'neural_networks', 'transformers'
+    display_order = Column(Integer, default=1)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_test_questions_test_order", "test_id", "display_order"),
+    )
+
+
+class TestAttempt(Base):
+    __tablename__ = "test_attempts"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    test_id = Column(UUID(as_uuid=True), ForeignKey("tests.id"), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=False)
+    started_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    submitted_at = Column(DateTime(timezone=True), nullable=True)
+    time_taken_seconds = Column(Integer, nullable=True)
+    score = Column(Numeric(6, 2), nullable=True)
+    total_marks = Column(Integer, nullable=True)
+    percentage = Column(Numeric(5, 2), nullable=True)
+    passed = Column(Boolean, nullable=True)
+    answers = Column(JSONB, default=dict)                             # {question_id: answer}
+    status = Column(String(20), default="in_progress")                # in_progress, submitted, graded
+    ip_address = Column(String(45))
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_test_attempt_unique", "test_id", "student_id", unique=True),
+        Index("idx_test_attempts_student_submitted", "student_id", "submitted_at"),
+    )
+
+
+class ChangeRequest(Base):
+    __tablename__ = "change_requests"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    requester_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    resource_type = Column(String(50), nullable=False)                # 'student_profile', 'achievement', 'test', 'group'
+    resource_id = Column(UUID(as_uuid=True), nullable=True)
+    action = Column(String(20), nullable=False, default="update")     # 'create', 'update', 'delete'
+    payload = Column(JSONB, nullable=False, default=dict)
+    current_state = Column(JSONB, nullable=True, default=dict)
+    status = Column(String(20), default="pending")                   # pending, approved, rejected, withdrawn
+    reviewer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    reviewer_comment = Column(String, nullable=True)
+    reviewed_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_change_requests_status_created", "status", "created_at"),
+        Index("idx_change_requests_requester_status", "requester_id", "status"),
+        Index("idx_change_requests_reviewer_status", "reviewer_id", "status"),
+    )
+
+
+class ApprovalNotification(Base):
+    __tablename__ = "approval_notifications"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    change_request_id = Column(UUID(as_uuid=True), ForeignKey("change_requests.id"), nullable=False)
+    recipient_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    channel = Column(String(20), default="in_app")                   # 'in_app', 'email'
+    sent_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    read_at = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("idx_approval_notif_recipient", "recipient_id", "read_at"),
+    )
+
+
+class AttendanceSession(Base):
+    __tablename__ = "attendance_sessions"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=True)
+    section = Column(String(10), nullable=True)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+    is_active = Column(Boolean, default=True)
+
+    __table_args__ = (
+        Index("idx_attendance_sessions_course_active", "course_id", "is_active"),
+    )
+
+
+class AttendanceRecord(Base):
+    __tablename__ = "attendance_records"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    session_id = Column(UUID(as_uuid=True), ForeignKey("attendance_sessions.id"), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=False)
+    marked_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    ip_address = Column(String(45), nullable=True)
+
+    __table_args__ = (
+        Index("idx_attendance_record_unique", "session_id", "student_id", unique=True),
+    )
+
+
+class LeadershipProfile(Base):
+    __tablename__ = "leadership_profiles"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True, nullable=True)
+    role = Column(String(30), nullable=False)                         # 'hod', 'cos', 'hos'
+    display_title = Column(String(100), nullable=False)              # "Head of Department"
+    photo_url = Column(String, nullable=True)
+    short_bio = Column(String, nullable=True)
+    full_bio = Column(String, nullable=True)
+    message = Column(String, nullable=True)
+    vision = Column(String, nullable=True)
+    qualifications = Column(JSONB, default=list)
+    experience_years = Column(Integer, default=0)
+    research_interests = Column(JSONB, default=list)
+    publications_count = Column(Integer, default=0)
+    email = Column(String(255), nullable=True)
+    phone = Column(String(20), nullable=True)
+    office_location = Column(String(200), nullable=True)
+    office_hours = Column(String(200), nullable=True)
+    linkedin_url = Column(String(500), nullable=True)
+    google_scholar_url = Column(String(500), nullable=True)
+    display_order = Column(Integer, default=0)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("idx_leadership_role_active", "role", "is_active"),
+    )
+
+
 
