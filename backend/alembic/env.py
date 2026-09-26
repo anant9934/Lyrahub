@@ -25,13 +25,34 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 sys.path.insert(0, BASE_DIR)
 load_dotenv(os.path.join(ROOT_DIR, ".env"))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+load_dotenv()
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 from app.models import Base
 target_metadata = Base.metadata
 
-config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"])
+db_url = os.environ.get("DATABASE_URL")
+if not db_url:
+    try:
+        from app.core.config import get_settings
+        db_url = get_settings().DATABASE_URL
+    except Exception:
+        pass
+
+if db_url:
+    config.set_main_option("sqlalchemy.url", db_url)
+else:
+    import sys
+    print(
+        "\n" + "=" * 70 + "\n"
+        "ERROR: DATABASE_URL is not configured in the environment!\n"
+        "Please add DATABASE_URL in your Render Dashboard -> Environment tab\n"
+        "and click 'Save Changes'.\n" + "=" * 70 + "\n",
+        file=sys.stderr
+    )
+    raise RuntimeError("DATABASE_URL environment variable is missing.")
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -79,7 +100,7 @@ from sqlalchemy import create_engine
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode using synchronous psycopg2 or fallback to asyncpg."""
-    db_url = os.environ.get("DATABASE_URL", "")
+    db_url = config.get_main_option("sqlalchemy.url") or os.environ.get("DATABASE_URL", "")
     try:
         import psycopg2  # noqa: F401
         sync_url = db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://").replace("ssl=require", "sslmode=require")
