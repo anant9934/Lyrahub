@@ -84,6 +84,9 @@ app.include_router(opportunities_router, prefix="/api/v1/opportunities", tags=["
 from app.modules.tests.router import router as tests_router
 app.include_router(tests_router, prefix="/api/v1/tests", tags=["tests"])
 
+from app.modules.approvals.router import router as approvals_router
+app.include_router(approvals_router, prefix="/api/v1/approvals", tags=["approvals"])
+
 
 
 

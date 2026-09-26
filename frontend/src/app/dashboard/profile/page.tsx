@@ -5,8 +5,11 @@ import { apiGet, apiPatch } from "@/lib/api";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ResumeDropzone } from "@/components/features/profile/ResumeDropzone";
+import { useAuth } from "@/lib/auth-context";
 
 export default function ProfilePage() {
+    const { user } = useAuth();
     const queryClient = useQueryClient();
     const { data: profile, isLoading } = useQuery({
         queryKey: ["profile"],
@@ -48,7 +51,7 @@ export default function ProfilePage() {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>Basic Information</CardTitle>
-                    <Button variant="outline" onClick={() => setIsEditing(!isEditing)}>
+                    <Button variant="secondary" onClick={() => setIsEditing(!isEditing)}>
                         {isEditing ? "Cancel" : "Edit"}
                     </Button>
                 </CardHeader>
@@ -68,7 +71,11 @@ export default function ProfilePage() {
                                 <Input value={formData.github_url} onChange={(e) => setFormData({...formData, github_url: e.target.value})} />
                             </div>
                             <Button onClick={() => updateProfile.mutate(formData)} disabled={updateProfile.isPending}>
-                                {updateProfile.isPending ? "Saving..." : "Save Changes"}
+                                {updateProfile.isPending 
+                                    ? "Submitting..." 
+                                    : (user?.role === "faculty" || user?.roles?.some((r: any) => r.name?.toLowerCase() === "faculty"))
+                                        ? "Submit for HOD Approval" 
+                                        : "Save Changes"}
                             </Button>
                         </div>
                     ) : (
@@ -88,11 +95,7 @@ export default function ProfilePage() {
                     <CardTitle>Resume Upload</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="border-2 border-dashed rounded-lg p-8 text-center text-muted-foreground hover:bg-muted/50 transition-colors">
-                        Drag & Drop your Resume (PDF) here
-                        <br />
-                        <span className="text-sm text-muted-foreground/70">(Upload logic via presigned URL pending backend S3 setup)</span>
-                    </div>
+                    <ResumeDropzone onSuccess={() => queryClient.invalidateQueries({ queryKey: ["profile"] })} />
                 </CardContent>
             </Card>
         </div>

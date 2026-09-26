@@ -146,41 +146,24 @@ async def confirm_resume(db: AsyncSession, user_id: UUID, req: ConfirmResumeRequ
     except Exception as e:
         raise HTTPException(status_code=400, detail="Failed to parse PDF")
         
-    # 1. Load skill names + aliases from DB
-    skills_result = await db.execute(select(Skill.id, Skill.name, Skill.aliases))
-    skill_lookup = {}
-    skill_id_map = {}
-    for sid, name, aliases in skills_result:
-        skill_lookup[name.lower()] = name
-        skill_id_map[name] = sid
-        for alias in (aliases or []):
-            skill_lookup[alias.lower()] = name
-            
-    # 2. Match against resume text
-    found = set()
-    text_lower = text.lower()
-    for keyword, canonical in skill_lookup.items():
-        pattern = r'\b' + re.escape(keyword) + r'\b'
-        if re.search(pattern, text_lower):
-            found.add(canonical)
-            
-    # 3. Extract projects via regex
-    projects = []
-    project_matches = re.finditer(r'(?i)\b(project[s]?[:\-]?)\s*\n?(.{10,200})', text)
-    for match in project_matches:
-        projects.append({"title": match.group(2).strip()[:50], "description": match.group(2).strip()})
+    from app.services.resume_parser import get_parser
+    parser = get_parser()
+    extracted_data = await parser.extract(text)
+    
+    extracted_skills = extracted_data["skills"]
+    projects = extracted_data["projects"]
+    certs = extracted_data["certifications"]
 
-    # 4. Extract certifications via regex
-    certs = []
-    cert_matches = re.finditer(r'(?i)\b(certifi(?:ed|cate|cation)[s]?[:\-]?)\s*\n?(.{10,100})', text)
-    for match in cert_matches:
-        certs.append({"title": match.group(2).strip()[:50]})
+    skill_id_map = {}
+    if extracted_skills:
+        skills_result = await db.execute(select(Skill.id, Skill.name).where(Skill.name.in_(extracted_skills)))
+        for sid, name in skills_result:
+            skill_id_map[name] = sid
 
     existing = await db.execute(select(StudentResume).where(StudentResume.file_hash == req.content_hash))
     if existing.scalar_one_or_none():
         pass
-        
-    extracted_skills = sorted(list(found))
+
     resume = StudentResume(
         id=req.file_id,
         student_id=student.id,
@@ -198,6 +181,8 @@ async def confirm_resume(db: AsyncSession, user_id: UUID, req: ConfirmResumeRequ
     # Delete existing parsed skills if re-uploading? Or just add. The prompt says "ON CONFLICT DO NOTHING (upsert)".
     # SQLAlchemy ORM doesn't do upsert easily without core inserts. We can do simple check.
     for s_name in extracted_skills:
+        if s_name not in skill_id_map:
+            continue
         s_id = skill_id_map[s_name]
         # check if already exists
         ext_res = await db.execute(

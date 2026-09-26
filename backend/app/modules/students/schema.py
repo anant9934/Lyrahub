@@ -43,6 +43,15 @@ class StudentProfileUpdateRequest(BaseModel):
     hackerearth_url: Optional[str] = None
     portfolio_url: Optional[str] = None
     expected_graduation: Optional[date] = None
+    cgpa: Optional[float] = None
+    section: Optional[str] = None
+    batch: Optional[int] = None
+
+class StudentUpdateResultResponse(BaseModel):
+    change_request_id: Optional[str] = None
+    status: Optional[str] = None
+    message: Optional[str] = None
+    profile: Optional[StudentProfileResponse] = None
 
 class ResumeMetadataResponse(BaseModel):
     id: UUID
@@ -67,6 +76,8 @@ class PresignResumeRequest(BaseModel):
     size: int
 
 class ConfirmResumeRequest(BaseModel):
+    file_id: UUID
+    key: str
     content_hash: str
 
 class HistoryResponse(BaseModel):
