@@ -1,21 +1,9 @@
-# Vercel deployment config for Lyrahub frontend (Next.js)
-# This file is optional — Vercel auto-detects Next.js — but we set it
-# explicitly to fix the root directory and configure rewrites.
-
 {
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "installCommand": "npm ci",
   "devCommand": "npm run dev",
-
-  "rewrites": [
-    {
-      "source": "/api/health",
-      "destination": "https://your-backend.onrender.com/api/v1/health/live"
-    }
-  ],
-
   "headers": [
     {
       "source": "/(.*)",
@@ -26,9 +14,6 @@
       ]
     }
   ],
-
-  "regions": ["sin1"],
-
   "github": {
     "silent": true
   }
