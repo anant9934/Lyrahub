@@ -393,7 +393,11 @@ async def aida_query(
     if not success:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"Cloud AI temporarily unavailable. {error_msg}",
+            detail={
+                "title": "AIDA couldn't complete that request.",
+                "message": "Please try again shortly.",
+                "request_id": request_id,
+            },
         )
 
     current_usage = await quota_svc.get_user_usage(redis, user_id)

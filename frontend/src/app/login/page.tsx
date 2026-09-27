@@ -8,21 +8,31 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/lib/auth-context"
 import api from "@/lib/api"
-import { QrCode, Mail, ArrowRight, ShieldCheck } from "lucide-react"
+import { QrCode, Mail, ArrowRight } from "lucide-react"
 
 export default function LoginPage() {
   const [activeTab, setActiveTab] = useState<"email" | "qr">("email")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  // Explicit login states: idle | authenticating | success | error
+  const [authState, setAuthState] = useState<"idle" | "authenticating" | "success">("idle")
   const router = useRouter()
   const { login } = useAuth()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-    setLoading(true)
+    setAuthState("authenticating")
+
+    // 15-second timeout — never leave user stuck in "Authenticating..."
+    const controller = new AbortController()
+    const timeout = setTimeout(() => {
+      controller.abort()
+      setAuthState("idle")
+      setError("Login request timed out. Please check your connection and try again.")
+    }, 15_000)
+
     try {
       const formData = new URLSearchParams()
       formData.append("username", email)
@@ -30,26 +40,48 @@ export default function LoginPage() {
 
       const { data } = await api.post("/auth/login", formData, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        signal: controller.signal,
       })
 
+      clearTimeout(timeout)
+      setAuthState("success")
+
+      // Login caches the user, then navigate — no need to refetch on dashboard
       await login(data)
       router.push("/dashboard")
-    } catch (err: any) {
+    } catch (error: unknown) {
+      clearTimeout(timeout)
+      if (controller.signal.aborted) return // Already handled by timeout
+
+      setAuthState("idle")
+      const err = error as {
+        response?: { status?: number; data?: { detail?: string | { title?: string } } };
+        normalized?: { message?: string };
+      };
+
       if (!err.response) {
-        setError(
-          "Connection error connecting to backend API. Please check your network or try again."
-        )
+        // Network error (no response at all)
+        setError("Cannot connect to AIMETRA services. Please check your network and try again.")
+      } else if (err.response?.status === 401) {
+        setError("Incorrect email or password. Please verify your credentials.")
+      } else if (err.response?.status === 429) {
+        setError("Too many login attempts. Please wait a moment before trying again.")
+      } else if (err.response?.status && err.response.status >= 500) {
+        setError("AIMETRA services are temporarily unavailable. Please try again shortly.")
       } else {
+        // Use the normalized safe message from the API interceptor
+        const detail = err.response?.data?.detail;
+        const detailMsg = typeof detail === "object" && detail !== null ? detail.title : (detail as string);
         setError(
-          err.response?.data?.detail?.title ||
-            err.response?.data?.detail ||
-            "Invalid credentials. Please verify your email and password."
+          err.normalized?.message ||
+          detailMsg ||
+          "Sign-in failed. Please try again."
         )
       }
-    } finally {
-      setLoading(false)
     }
   }
+
+  const loading = authState === "authenticating" || authState === "success"
 
   // Pre-fill helper for test/demo accounts
   const quickFill = (userEmail: string, userPass: string) => {
@@ -60,7 +92,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left Column: Form (Matching Panel 2) */}
-      <div className="flex-1 flex flex-col justify-between p-8 sm:p-12 lg:p-16 max-w-xl mx-auto w-full">
+      <div className="flex-1 flex flex-col justify-between p-4 sm:p-8 lg:p-16 max-w-xl mx-auto w-full">
         {/* Top Brand Logo */}
         <div>
           <Link href="/" className="inline-flex items-center gap-2">
@@ -167,9 +199,13 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-10 rounded-lg bg-[#111111] text-white hover:bg-neutral-800 font-medium text-xs mt-2"
+                className="w-full h-10 rounded-lg bg-[#111111] text-white hover:bg-neutral-800 font-medium text-xs mt-2 disabled:opacity-70 transition-all"
               >
-                {loading ? "Authenticating..." : "Login"}
+                {authState === "success"
+                  ? "✓ Signed in — redirecting…"
+                  : authState === "authenticating"
+                  ? "Authenticating…"
+                  : "Sign in"}
               </Button>
 
               {/* Demo Quick Logins */}
@@ -229,7 +265,7 @@ export default function LoginPage() {
               </div>
 
               {/* SSO Buttons */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => {

@@ -1,0 +1,112 @@
+/**
+ * AIMETRA Centralized Responsive Design System & Tokens
+ * Implements fluid sizing, container queries, safe areas, and touch adaptations.
+ */
+
+:root {
+  /* Fluid Sizing Tokens */
+  --page-padding: clamp(12px, 2.5vw, 32px);
+  --section-gap: clamp(16px, 3vw, 40px);
+  --card-padding: clamp(14px, 1.8vw, 24px);
+  --content-max-width: 1600px;
+  --header-height: 64px;
+  --bottom-nav-height: 64px;
+
+  /* Safe Area Insets with graceful fallbacks */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* Fluid Typography Clamps */
+  --font-hero: clamp(2rem, 5vw + 1rem, 3.75rem);
+  --font-h1: clamp(1.65rem, 3.5vw + 0.5rem, 2.5rem);
+  --font-h2: clamp(1.25rem, 2vw + 0.5rem, 1.75rem);
+  --font-h3: clamp(1rem, 1.2vw + 0.3rem, 1.25rem);
+}
+
+/* Bounded responsive page container */
+.page-container {
+  width: min(100% - var(--page-padding) * 2, var(--content-max-width));
+  margin-inline: auto;
+}
+
+/* Container Queries for components that adapt to available width */
+.responsive-container {
+  container-type: inline-size;
+}
+
+.responsive-card {
+  container-type: inline-size;
+}
+
+.responsive-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* Table scroll hint shadow when overflowing */
+.table-scroll-hint {
+  background: 
+    /* Shadow Cover Left */
+    linear-gradient(white 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
+    /* Shadow Left */
+    radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+    radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)) 0 100%;
+}
+
+/* Touch-optimized minimal target dimensions (WCAG AAA touch targets) */
+@media (pointer: coarse) {
+  button, 
+  [role="button"], 
+  input[type="button"], 
+  input[type="submit"], 
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .touch-target-compact {
+    min-height: 38px;
+    min-width: 38px;
+  }
+}
+
+/* Hover safety: only apply hover effects if device actually supports hover */
+@media (hover: hover) {
+  .hover-elevate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (hover: none) {
+  .hover-elevate:hover {
+    transform: none;
+  }
+}
+
+/* Viewport dynamic height support (prevents jump on mobile address bar) */
+.min-h-dvh {
+  min-height: 100dvh;
+}
+
+.h-dvh {
+  height: 100dvh;
+}
+
+.max-h-dvh {
+  max-height: 100dvh;
+}
+
+/* Mobile bottom safe area padding */
+.pb-safe {
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+.pt-safe {
+  padding-top: max(16px, env(safe-area-inset-top));
+}

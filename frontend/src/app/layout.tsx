@@ -5,6 +5,10 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { QueryProvider } from "@/lib/query-provider";
 import { AntiInspectGuard } from "@/components/security/AntiInspectGuard";
+import { RouteProgressBar } from "@/components/ui/route-progress";
+import { Suspense } from "react";
+import { ResponsiveProvider } from "@/responsive/ResponsiveProvider";
+import { ResponsiveDebug } from "@/components/responsive/ResponsiveDebug";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://aimetra.institution.edu"),
@@ -121,8 +125,14 @@ export default function RootLayout({
         </a>
         <QueryProvider>
           <AuthProvider>
-            <AntiInspectGuard />
-            {children}
+            <ResponsiveProvider>
+              <AntiInspectGuard />
+              <Suspense fallback={null}>
+                <RouteProgressBar />
+              </Suspense>
+              {children}
+              <ResponsiveDebug />
+            </ResponsiveProvider>
           </AuthProvider>
         </QueryProvider>
       </body>

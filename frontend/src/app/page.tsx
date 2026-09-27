@@ -13,7 +13,7 @@ export default function Home() {
       <main id="main-content" className="flex-1">
 
         {/* ══ HERO — Full-bleed campus image with text overlay ══ */}
-        <section className="relative w-full overflow-hidden" style={{ height: "calc(100vh - 64px)", minHeight: "560px", maxHeight: "820px" }}>
+        <section className="relative w-full overflow-hidden min-h-[min(560px,calc(100dvh-64px))] md:h-[calc(100dvh-64px)] md:max-h-[820px] flex items-center">
           {/* Campus image — fills entire hero */}
           <Image
             src="/images/hero-campus.png"
@@ -24,36 +24,36 @@ export default function Home() {
           />
 
           {/* Left-side dark gradient scrim — text sits here */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/30 md:to-transparent" />
           {/* Bottom fade for smooth section transition */}
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
 
           {/* Hero text — left-aligned, white, over the scrim */}
-          <div className="absolute inset-0 flex items-center">
-            <div className="mx-auto max-w-7xl w-full px-6 lg:px-8">
+          <div className="relative z-10 w-full py-16 sm:py-20 md:py-0">
+            <div className="mx-auto max-w-7xl w-full px-5 sm:px-6 lg:px-8">
               <div className="max-w-2xl">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/60 mb-6">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/70 mb-4 sm:mb-6">
                   AI &amp; ML Education, Talent, Research &amp; Analytics
                 </p>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-[1.08] mb-6">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-[1.1] sm:leading-[1.08] mb-5 sm:mb-6">
                   The intelligence layer
                   <br />
                   for the AI &amp; ML
                   <br />
                   department.
                 </h1>
-                <p className="text-base sm:text-lg text-white/80 max-w-lg leading-relaxed mb-10">
+                <p className="text-sm sm:text-base md:text-lg text-white/85 max-w-lg leading-relaxed mb-8 sm:mb-10">
                   AIMETRA connects students, faculty, projects, research, opportunities, alumni and institutional data into one intelligent academic environment.
                 </p>
-                <div className="flex flex-wrap items-center gap-4">
-                  <Link href="/login">
-                    <Button className="h-12 px-8 rounded-lg bg-white text-[#111111] hover:bg-neutral-100 font-semibold text-sm shadow-lg">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3.5 sm:gap-4">
+                  <Link href="/login" className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto h-12 px-8 rounded-lg bg-white text-[#111111] hover:bg-neutral-100 font-semibold text-sm shadow-lg">
                       Explore AIMETRA
                     </Button>
                   </Link>
                   <Link
                     href="#system"
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-white/80 hover:text-white transition-colors"
+                    className="inline-flex items-center justify-center gap-1.5 text-sm font-medium text-white/80 hover:text-white transition-colors py-2 sm:py-0"
                   >
                     See how it works <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -63,8 +63,8 @@ export default function Home() {
           </div>
 
           {/* Bottom-right: institution label */}
-          <div className="absolute bottom-8 right-6 lg:right-10 text-right">
-            <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-white/40">
+          <div className="hidden sm:block absolute bottom-8 right-6 lg:right-10 text-right z-10">
+            <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-white/50">
               Department of Artificial Intelligence &amp; Machine Learning
             </p>
           </div>
@@ -178,18 +178,18 @@ export default function Home() {
               </div>
               <div className="lg:col-span-7">
                 <div className="bg-white rounded-2xl border border-[#E8E8E8] overflow-hidden">
-                  <div className="grid grid-cols-2 divide-x divide-[#E8E8E8]">
-                    <div className="p-8">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#BBBBBB] mb-6">Before</p>
-                      <ul className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E8E8E8]">
+                    <div className="p-5 sm:p-8">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#BBBBBB] mb-4 sm:mb-6">Before</p>
+                      <ul className="space-y-3 sm:space-y-4">
                         {["Scattered records","Disconnected platforms","Hidden expertise","Manual searches","Fragmented evidence","Decisions without context"].map((item) => (
                           <li key={item} className="text-sm text-[#888888] leading-snug">{item}</li>
                         ))}
                       </ul>
                     </div>
-                    <div className="p-8">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#111111] mb-6">With AIMETRA</p>
-                      <ul className="space-y-4">
+                    <div className="p-5 sm:p-8">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#111111] mb-4 sm:mb-6">With AIMETRA</p>
+                      <ul className="space-y-3 sm:space-y-4">
                         {["Connected student profiles","Institutional intelligence","Discoverable expertise","Structured evidence","Faster, informed analysis","Context-aware AI assistance"].map((item) => (
                           <li key={item} className="text-sm text-[#111111] font-medium leading-snug">{item}</li>
                         ))}
@@ -246,10 +246,12 @@ export default function Home() {
                       { label: "Certifications", value: "6", sub: "Coursera, NPTEL, AWS ML" },
                       { label: "Internship", value: "1 completed", sub: "AI Startup · 3 months" },
                     ].map((row) => (
-                      <div key={row.label} className="flex items-center justify-between px-6 py-3.5">
-                        <span className="text-xs text-[#888888] w-28 shrink-0">{row.label}</span>
-                        <span className="text-xs font-semibold text-[#111111] w-24 shrink-0">{row.value}</span>
-                        <span className="text-[11px] text-[#AAAAAA] text-right truncate">{row.sub}</span>
+                      <div key={row.label} className="flex flex-col sm:flex-row sm:items-center justify-between px-5 sm:px-6 py-3 sm:py-3.5 gap-1 sm:gap-2">
+                        <div className="flex items-center justify-between sm:justify-start gap-4">
+                          <span className="text-xs text-[#888888] sm:w-28 shrink-0">{row.label}</span>
+                          <span className="text-xs font-semibold text-[#111111] sm:w-24 shrink-0">{row.value}</span>
+                        </div>
+                        <span className="text-[11px] text-[#AAAAAA] sm:text-right truncate">{row.sub}</span>
                       </div>
                     ))}
                   </div>
@@ -280,8 +282,8 @@ export default function Home() {
                       { label: "Research", items: "4 publications · 2 under review" },
                       { label: "Mentees", items: "12 students" },
                     ].map((row) => (
-                      <div key={row.label} className="px-6 py-3.5 flex items-start gap-4">
-                        <span className="text-[11px] text-[#AAAAAA] w-32 shrink-0 pt-0.5">{row.label}</span>
+                      <div key={row.label} className="px-5 sm:px-6 py-3 sm:py-3.5 flex flex-col sm:flex-row items-start gap-1 sm:gap-4">
+                        <span className="text-[11px] text-[#AAAAAA] sm:w-32 shrink-0 pt-0.5">{row.label}</span>
                         <span className="text-xs text-[#333333] leading-relaxed">{row.items}</span>
                       </div>
                     ))}
@@ -519,8 +521,8 @@ export default function Home() {
                     { role: "Opportunity", view: "Find relevant talent", desc: "Evidence-based access to student capability — structured by skills and performance." },
                     { role: "AIDA", view: "Ask the system", desc: "Conversational intelligence — find, analyze and present institutional information." },
                   ].map((item) => (
-                    <div key={item.role} className="flex items-start gap-6 py-5">
-                      <div className="w-28 shrink-0">
+                    <div key={item.role} className="flex flex-col sm:flex-row items-start gap-2 sm:gap-6 py-5">
+                      <div className="w-auto sm:w-28 shrink-0">
                         <span className="text-xs font-semibold text-[#111111]">{item.role}</span>
                       </div>
                       <div className="flex-1 min-w-0">
@@ -576,8 +578,8 @@ export default function Home() {
                 { title: "QR Attendance & Events", desc: "Encrypted QR codes for contactless attendance, event registration and digital credential verification.", tag: "Operations" },
                 { title: "Faculty → HOD Approvals", desc: "Multi-role governance with audit logging and diff inspections before any data is published to the system.", tag: "Governance" },
               ].map((cap) => (
-                <div key={cap.title} className="flex items-start gap-6 py-6 sm:gap-12">
-                  <div className="w-32 sm:w-40 shrink-0">
+                <div key={cap.title} className="flex flex-col sm:flex-row items-start gap-2 sm:gap-12 py-6">
+                  <div className="w-auto sm:w-40 shrink-0">
                     <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#CCCCCC]">{cap.tag}</span>
                   </div>
                   <div className="flex-1 min-w-0">

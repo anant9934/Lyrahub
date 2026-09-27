@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
-import { useQuery } from "@tanstack/react-query"
-import api, { apiGet } from "@/lib/api"
+import {
+  useStudentProfile,
+  usePrefetchCriticalData,
+} from "@/lib/hooks"
 import { StatCard } from "@/components/ui/stat-card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import {
   User,
   Upload,
@@ -17,16 +19,9 @@ import {
   Briefcase,
   GitBranch,
   Award,
-  CheckCircle2,
   Clock,
-  ArrowRight,
-  ExternalLink,
   Users,
-  GraduationCap,
   Sparkles,
-  ShieldCheck,
-  Activity,
-  Layers,
 } from "lucide-react"
 import dynamic from "next/dynamic"
 
@@ -58,7 +53,6 @@ export default function DashboardPage() {
   const isHODRole =
     rolesList.includes("hod") || user?.email === "hod@aiml.hub"
   const isFacultyRole = rolesList.includes("faculty")
-  const isStudentDefault = !isSuperAdmin && !isHODRole && !isFacultyRole
 
   // Active view state (allows admins / HODs to view other role perspectives)
   const defaultRole = isSuperAdmin
@@ -71,30 +65,11 @@ export default function DashboardPage() {
 
   const [activeRoleView, setActiveRoleView] = useState<string>(defaultRole)
 
-  // Fetch real profile and stats if available
-  const { data: studentProfile } = useQuery({
-    queryKey: ["student-me"],
-    queryFn: () => apiGet("/students/me").catch(() => null),
-    enabled: !!user,
-  })
+  // Prefetch likely next routes while user reads dashboard
+  usePrefetchCriticalData()
 
-  const { data: rankingsData } = useQuery({
-    queryKey: ["rankings-preview"],
-    queryFn: () => apiGet("/ranking?page_size=5").catch(() => null),
-    enabled: !!user,
-  })
-
-  const { data: eventsData } = useQuery({
-    queryKey: ["events-preview"],
-    queryFn: () => apiGet("/events?page_size=5").catch(() => null),
-    enabled: !!user,
-  })
-
-  const { data: approvalsData } = useQuery({
-    queryKey: ["approvals-preview"],
-    queryFn: () => apiGet("/approvals?page_size=5").catch(() => null),
-    enabled: isHODRole || isSuperAdmin,
-  })
+  // Fetch real profile — uses shared query keys for deduplication
+  const { data: studentProfile } = useStudentProfile(!!user)
 
   // Role preview switcher for privileged users
   const canSwitchViews = isSuperAdmin || isHODRole
@@ -112,7 +87,8 @@ export default function DashboardPage() {
               Switch dashboard mode
             </span>
           </div>
-          <div className="inline-flex h-8 items-center rounded-md bg-white border border-[#E5E5E5] p-0.5 text-xs">
+          <div className="overflow-x-auto max-w-full pb-1">
+            <div className="inline-flex h-8 items-center rounded-md bg-white border border-[#E5E5E5] p-0.5 text-xs whitespace-nowrap">
             <button
               onClick={() => setActiveRoleView("student")}
               className={`px-3 py-1 rounded transition-colors ${
@@ -155,6 +131,7 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+        </div>
       )}
 
       {/* Render appropriate dashboard view */}
@@ -162,16 +139,15 @@ export default function DashboardPage() {
         <StudentDashboardView
           user={user}
           profile={studentProfile}
-          rankings={rankingsData}
         />
       )}
 
       {activeRoleView === "hod" && (
-        <HODDashboardView approvals={approvalsData} />
+        <HODDashboardView />
       )}
 
       {activeRoleView === "faculty" && (
-        <FacultyDashboardView user={user} rankings={rankingsData} />
+        <FacultyDashboardView />
       )}
 
       {activeRoleView === "admin" && <AdminDashboardView />}
@@ -185,11 +161,9 @@ export default function DashboardPage() {
 function StudentDashboardView({
   user,
   profile,
-  rankings,
 }: {
   user: any
   profile: any
-  rankings: any
 }) {
   const studentName = profile?.user?.name || user?.email?.split("@")[0] || "Rahul"
   const displayName =
@@ -208,7 +182,7 @@ function StudentDashboardView({
       </div>
 
       {/* 4 Stat Cards in a row (Matching Panel 3) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="My Rank"
           value={profile?.rank ? `#${profile.rank}` : "#42"}
@@ -455,7 +429,7 @@ function StudentDashboardView({
 /* =========================================================================
    PANEL 4: HOD DASHBOARD
    ========================================================================= */
-function HODDashboardView({ approvals }: { approvals: any }) {
+function HODDashboardView() {
   const placementData = [
     { year: "2022", placed: 180, notPlaced: 40 },
     { year: "2023", placed: 220, notPlaced: 35 },
@@ -492,7 +466,7 @@ function HODDashboardView({ approvals }: { approvals: any }) {
       </div>
 
       {/* 4 Stat Cards in a row (Matching Panel 4) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Total Students"
           value="1,240"
@@ -674,13 +648,7 @@ function HODDashboardView({ approvals }: { approvals: any }) {
 /* =========================================================================
    PANEL 5: FACULTY DASHBOARD
    ========================================================================= */
-function FacultyDashboardView({
-  user,
-  rankings,
-}: {
-  user: any
-  rankings: any
-}) {
+function FacultyDashboardView() {
   const [tab, setTab] = useState("students")
 
   const studentsList = [
@@ -731,7 +699,7 @@ function FacultyDashboardView({
       </div>
 
       {/* 4 Stat Cards in a row (Matching Panel 5) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="My Students" value="28" icon={<Users className="w-4 h-4 text-[#111111]" />} />
         <StatCard label="Active Projects" value="6" icon={<GitBranch className="w-4 h-4 text-[#2563EB]" />} />
         <StatCard label="Pending Requests" value="3" highlight icon={<Clock className="w-4 h-4 text-[#DC2626]" />} />
@@ -740,7 +708,8 @@ function FacultyDashboardView({
 
       {/* Tabs: [My Students] [Projects] [Requests] [Upcoming Events] (Matching Panel 5) */}
       <div className="space-y-4">
-        <div className="inline-flex h-9 items-center rounded-lg bg-[#F5F5F5] p-1 text-xs font-medium text-[#555555]">
+        <div className="overflow-x-auto max-w-full pb-1">
+          <div className="inline-flex h-9 items-center rounded-lg bg-[#F5F5F5] p-1 text-xs font-medium text-[#555555] whitespace-nowrap">
           <button
             onClick={() => setTab("students")}
             className={`px-3 py-1 rounded-md transition-all ${
@@ -782,6 +751,7 @@ function FacultyDashboardView({
             Upcoming Events
           </button>
         </div>
+      </div>
 
         {/* Student Table (Matching Panel 5) */}
         {tab === "students" && (
@@ -900,7 +870,7 @@ function AdminDashboardView() {
       </div>
 
       {/* 4 Stat Cards in a row (Matching Panel 6) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Total Users" value="1,435" />
         <StatCard label="Active Users" value="1,210" />
         <StatCard label="Storage Used" value="68 GB" />

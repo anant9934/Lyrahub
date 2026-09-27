@@ -1,20 +1,16 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
-import api, { apiGet } from "@/lib/api"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { RankingTableSkeleton } from "@/components/ui/skeletons"
+import { useRankings } from "@/lib/hooks"
 import {
-  Trophy,
   Download,
-  Filter,
-  Eye,
-  X,
-  ChevronDown,
   Info,
-  ExternalLink,
 } from "lucide-react"
+import { ResponsiveTable } from "@/components/responsive/ResponsiveTable"
+import { ResponsiveModal } from "@/components/responsive/ResponsiveModal"
 
 interface RankingItem {
   student_id: string
@@ -31,104 +27,31 @@ interface RankingItem {
   }
 }
 
+// Demo fallback when backend has no seeded data yet
+const DEMO_ITEMS: RankingItem[] = [
+  { student_id: "s1", rank: 1, score: 0.912, breakdown: { name: "Arjun Mehta", reg_no: "AIML2021", cgpa: 9.2, test_score: 92, skill_score: 88, section: "A" } },
+  { student_id: "s2", rank: 2, score: 0.894, breakdown: { name: "Priya Sharma", reg_no: "AIML2013", cgpa: 9.1, test_score: 88, skill_score: 85, section: "B" } },
+  { student_id: "s3", rank: 3, score: 0.876, breakdown: { name: "Rohan Verma", reg_no: "AIML2087", cgpa: 8.9, test_score: 86, skill_score: 82, section: "A" } },
+  { student_id: "s4", rank: 4, score: 0.852, breakdown: { name: "Ananya Singh", reg_no: "AIML2012", cgpa: 8.8, test_score: 84, skill_score: 80, section: "A" } },
+  { student_id: "s5", rank: 5, score: 0.831, breakdown: { name: "Karan Patel", reg_no: "AIML2079", cgpa: 8.7, test_score: 82, skill_score: 78, section: "B" } },
+]
+
 export default function RankingPage() {
   const [year, setYear] = useState<string>("all")
   const [section, setSection] = useState<string>("all")
   const [topN, setTopN] = useState<number>(100)
-  const [items, setItems] = useState<RankingItem[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [selectedStudent, setSelectedStudent] = useState<RankingItem | null>(null)
 
-  const fetchRankings = async () => {
-    setIsLoading(true)
-    try {
-      const params = new URLSearchParams()
-      params.append("page_size", topN.toString())
-      if (section !== "all") params.append("section", section)
+  // TanStack Query with placeholderData — previous data stays visible while refetching
+  const { data, isLoading, isFetching, isError } = useRankings({
+    pageSize: topN,
+    section,
+  })
 
-      const data = await apiGet(`/ranking?${params.toString()}`)
-      if (data && data.items && data.items.length > 0) {
-        setItems(data.items)
-      } else {
-        // High quality fallback demonstration matching Panel 8
-        setItems([
-          {
-            student_id: "s1",
-            rank: 1,
-            score: 0.912,
-            breakdown: {
-              name: "Arjun Mehta",
-              reg_no: "AIML2021",
-              cgpa: 9.2,
-              test_score: 92,
-              skill_score: 88,
-              section: "A",
-            },
-          },
-          {
-            student_id: "s2",
-            rank: 2,
-            score: 0.894,
-            breakdown: {
-              name: "Priya Sharma",
-              reg_no: "AIML2013",
-              cgpa: 9.1,
-              test_score: 88,
-              skill_score: 85,
-              section: "B",
-            },
-          },
-          {
-            student_id: "s3",
-            rank: 3,
-            score: 0.876,
-            breakdown: {
-              name: "Rohan Verma",
-              reg_no: "AIML2087",
-              cgpa: 8.9,
-              test_score: 86,
-              skill_score: 82,
-              section: "A",
-            },
-          },
-          {
-            student_id: "s4",
-            rank: 4,
-            score: 0.852,
-            breakdown: {
-              name: "Ananya Singh",
-              reg_no: "AIML2012",
-              cgpa: 8.8,
-              test_score: 84,
-              skill_score: 80,
-              section: "A",
-            },
-          },
-          {
-            student_id: "s5",
-            rank: 5,
-            score: 0.831,
-            breakdown: {
-              name: "Karan Patel",
-              reg_no: "AIML2079",
-              cgpa: 8.7,
-              test_score: 82,
-              skill_score: 78,
-              section: "B",
-            },
-          },
-        ])
-      }
-    } catch (e) {
-      console.error("Failed to load rankings:", e)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchRankings()
-  }, [section, topN])
+  // Resolve data — use API results or demo fallback
+  const rawItems: RankingItem[] = data?.items ?? []
+  const items: RankingItem[] = rawItems.length > 0 ? rawItems : (!isLoading && !isFetching ? DEMO_ITEMS : [])
+  const isRefreshing = isFetching && !isLoading
 
   const exportCSV = () => {
     const headers = ["Rank", "Name", "Reg No", "CGPA", "Test Score", "Skill Score", "Final Score"]
@@ -141,14 +64,11 @@ export default function RankingPage() {
       it.breakdown?.skill_score || "75",
       it.score.toFixed(3),
     ])
-
     const csvContent =
       "data:text/csv;charset=utf-8," +
       [headers.join(","), ...rows.map((e) => e.join(","))].join("\n")
-
-    const encodedUri = encodeURI(csvContent)
     const link = document.createElement("a")
-    link.setAttribute("href", encodedUri)
+    link.setAttribute("href", encodeURI(csvContent))
     link.setAttribute("download", `student_rankings_${Date.now()}.csv`)
     document.body.appendChild(link)
     link.click()
@@ -157,21 +77,27 @@ export default function RankingPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header matching Panel 8 */}
+      {/* ── Header (always immediate) ────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
             Student Rankings
           </h1>
           <p className="text-xs text-[#555555]">
-            AI & ML student ranking based on multiple parameters (AHP + TOPSIS).
+            AI &amp; ML student ranking based on multiple parameters (AHP + TOPSIS).
           </p>
         </div>
-
         <div className="flex items-center gap-2">
+          {isRefreshing && (
+            <span className="text-[10px] text-[#888888] flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB] animate-pulse inline-block" />
+              Updating…
+            </span>
+          )}
           <Button
             onClick={exportCSV}
-            className="gap-2 bg-[#111111] text-white hover:bg-neutral-800 text-xs h-9 px-4 rounded-lg"
+            disabled={isLoading || items.length === 0}
+            className="gap-2 bg-[#111111] text-white hover:bg-neutral-800 text-xs h-9 px-4 rounded-lg disabled:opacity-50"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export CSV</span>
@@ -179,7 +105,7 @@ export default function RankingPage() {
         </div>
       </div>
 
-      {/* Filter Bar matching Panel 8 */}
+      {/* ── Filters (always immediate) ────────────────────────────────────── */}
       <div className="rounded-lg border border-[#E5E5E5] bg-white p-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3 text-xs">
           <div className="flex items-center gap-2">
@@ -195,7 +121,6 @@ export default function RankingPage() {
               <option value="2024">2024</option>
             </select>
           </div>
-
           <div className="flex items-center gap-2">
             <span className="text-[#777777] font-medium">Section</span>
             <select
@@ -209,7 +134,6 @@ export default function RankingPage() {
               <option value="C">Section C</option>
             </select>
           </div>
-
           <div className="flex items-center gap-2">
             <span className="text-[#777777] font-medium">Top N</span>
             <select
@@ -224,25 +148,27 @@ export default function RankingPage() {
             </select>
           </div>
         </div>
-
-        <div className="flex items-center gap-2 text-xs">
-          <Link
-            href="/ranking/config"
-            className="text-[#555555] hover:text-[#111111] text-xs font-medium px-2 py-1"
-          >
-            HOD Weight Config
-          </Link>
-        </div>
+        <Link
+          href="/ranking/config"
+          className="text-[#555555] hover:text-[#111111] text-xs font-medium px-2 py-1"
+        >
+          HOD Weight Config
+        </Link>
       </div>
 
-      {/* Main Ranking Table (Matching Panel 8) */}
-      <div className="rounded-lg border border-[#E5E5E5] bg-white overflow-hidden">
-        {isLoading ? (
-          <div className="p-12 text-center text-xs text-[#777777] animate-pulse">
-            Computing AHP + TOPSIS rankings...
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
+      {/* ── Table: Skeleton → Data → Error ───────────────────────────────── */}
+      {isLoading ? (
+        // LOADING — structured table skeleton (not "Computing..." text)
+        <RankingTableSkeleton rows={10} />
+      ) : isError ? (
+        <div className="rounded-lg border border-[#E5E5E5] bg-white p-12 text-center">
+          <p className="text-sm text-[#555555] mb-3">Failed to load rankings.</p>
+          <button className="text-xs text-[#2563EB] hover:underline">Retry</button>
+        </div>
+      ) : (
+        // SUCCESS — previous data stays visible while filter refetch is in-flight
+        <div className={`rounded-lg border border-[#E5E5E5] bg-white overflow-hidden transition-opacity ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+          <ResponsiveTable>
             <table className="w-full text-left text-xs">
               <thead className="bg-[#FAFAFA] border-b border-[#E5E5E5] text-[#555555] font-medium">
                 <tr>
@@ -258,13 +184,8 @@ export default function RankingPage() {
               </thead>
               <tbody className="divide-y divide-[#E5E5E5]">
                 {items.map((item, idx) => (
-                  <tr
-                    key={item.student_id || idx}
-                    className="hover:bg-[#FAFAFA] transition-colors"
-                  >
-                    <td className="p-3.5 text-center font-semibold text-[#111111]">
-                      {item.rank}
-                    </td>
+                  <tr key={item.student_id || idx} className="hover:bg-[#FAFAFA] transition-colors">
+                    <td className="p-3.5 text-center font-semibold text-[#111111]">{item.rank}</td>
                     <td className="p-3.5 font-medium text-[#111111]">
                       {item.breakdown?.name || `Student ${item.rank}`}
                     </td>
@@ -276,15 +197,9 @@ export default function RankingPage() {
                         ? Number(item.breakdown.cgpa).toFixed(2)
                         : (9.2 - idx * 0.1).toFixed(2)}
                     </td>
-                    <td className="p-3.5 text-[#555555]">
-                      {item.breakdown?.test_score || 92 - idx * 2}
-                    </td>
-                    <td className="p-3.5 text-[#555555]">
-                      {item.breakdown?.skill_score || 88 - idx * 2}
-                    </td>
-                    <td className="p-3.5 font-semibold text-[#2563EB]">
-                      {item.score.toFixed(3)}
-                    </td>
+                    <td className="p-3.5 text-[#555555]">{item.breakdown?.test_score || 92 - idx * 2}</td>
+                    <td className="p-3.5 text-[#555555]">{item.breakdown?.skill_score || 88 - idx * 2}</td>
+                    <td className="p-3.5 font-semibold text-[#2563EB]">{item.score.toFixed(3)}</td>
                     <td className="p-3.5 text-right">
                       <Button
                         size="sm"
@@ -299,74 +214,45 @@ export default function RankingPage() {
                 ))}
               </tbody>
             </table>
-          </div>
-        )}
-      </div>
+          </ResponsiveTable>
+        </div>
+      )}
 
-      {/* Score Breakdown Modal */}
-      {selectedStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-lg border border-[#E5E5E5] p-6 max-w-md w-full shadow-modal space-y-4">
-            <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
-              <div>
-                <h3 className="text-sm font-semibold text-[#111111]">
-                  Score Breakdown: {selectedStudent.breakdown?.name || `Rank #${selectedStudent.rank}`}
-                </h3>
-                <p className="text-[11px] text-[#777777]">
-                  Reg No: {selectedStudent.breakdown?.reg_no || "N/A"}
-                </p>
-              </div>
-              <button
-                onClick={() => setSelectedStudent(null)}
-                className="p-1 text-[#888888] hover:text-[#111111]"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
+      {/* ── Score Breakdown Modal ─────────────────────────────────────────── */}
+      <ResponsiveModal
+        isOpen={!!selectedStudent}
+        onClose={() => setSelectedStudent(null)}
+        title={`Score Breakdown: ${selectedStudent?.breakdown?.name || `Rank #${selectedStudent?.rank}`}`}
+        description={`Reg No: ${selectedStudent?.breakdown?.reg_no || "N/A"}`}
+        maxWidth="md"
+      >
+        {selectedStudent && (
+          <div className="space-y-4">
             <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-1 border-b border-[#F0F0F0]">
-                <span className="text-[#555555]">CGPA Weight (35%)</span>
-                <span className="font-medium text-[#111111]">
-                  {selectedStudent.breakdown?.cgpa || "9.0"} / 10
-                </span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#F0F0F0]">
-                <span className="text-[#555555]">AI/ML Test Weight (25%)</span>
-                <span className="font-medium text-[#111111]">
-                  {selectedStudent.breakdown?.test_score || "85"} / 100
-                </span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#F0F0F0]">
-                <span className="text-[#555555]">Verified Skills (20%)</span>
-                <span className="font-medium text-[#111111]">
-                  {selectedStudent.breakdown?.skill_score || "80"} pts
-                </span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-[#F0F0F0]">
-                <span className="text-[#555555]">Project Contributions (20%)</span>
-                <span className="font-medium text-[#111111]">
-                  {selectedStudent.breakdown?.project_score || "75"} pts
-                </span>
-              </div>
+              {[
+                { label: "CGPA Weight (35%)", value: `${selectedStudent.breakdown?.cgpa || "9.0"} / 10` },
+                { label: "AI/ML Test Weight (25%)", value: `${selectedStudent.breakdown?.test_score || "85"} / 100` },
+                { label: "Verified Skills (20%)", value: `${selectedStudent.breakdown?.skill_score || "80"} pts` },
+                { label: "Project Contributions (20%)", value: `${selectedStudent.breakdown?.project_score || "75"} pts` },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex justify-between py-1.5 border-b border-[#F0F0F0]">
+                  <span className="text-[#555555]">{label}</span>
+                  <span className="font-medium text-[#111111]">{value}</span>
+                </div>
+              ))}
               <div className="flex justify-between pt-2 text-sm font-semibold">
                 <span className="text-[#111111]">Normalized TOPSIS Score</span>
                 <span className="text-[#2563EB]">{selectedStudent.score.toFixed(3)}</span>
               </div>
             </div>
-
             <div className="pt-2 flex justify-end">
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => setSelectedStudent(null)}
-              >
+              <Button size="sm" variant="secondary" onClick={() => setSelectedStudent(null)} className="w-full sm:w-auto">
                 Close
               </Button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </ResponsiveModal>
     </div>
   )
 }

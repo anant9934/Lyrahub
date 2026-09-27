@@ -294,6 +294,16 @@ export function AIDAAssistant({
     }
   }
 
+  // Handle Escape key to close assistant
+  useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [isOpen, onClose])
+
   const handleSend = () => sendQuery(input)
 
   const handleEscalateCloud = (originalQuery: string) => {
@@ -303,10 +313,23 @@ export function AIDAAssistant({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[500px] bg-white border-l border-[#D6D6D6] shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
-      {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <div className="p-4 border-b border-[#D6D6D6] flex items-center justify-between bg-white">
-        <div className="flex items-center gap-2.5">
+    <div
+      className="fixed inset-0 z-50 flex justify-end"
+      role="dialog"
+      aria-modal="true"
+      aria-label="AIDA Intelligence Assistant"
+    >
+      {/* Mobile / Desktop Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+        onClick={onClose}
+      />
+
+      {/* Slide-over Container */}
+      <div className="relative z-10 w-full sm:w-[500px] h-[100dvh] max-h-[100dvh] bg-white border-l border-[#D6D6D6] shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+        {/* ── Header ──────────────────────────────────────────────────────────── */}
+        <div className="p-4 border-b border-[#D6D6D6] flex items-center justify-between bg-white shrink-0">
+          <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#1E1E1E] text-white flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-[#EEBE1E]" />
           </div>
@@ -514,8 +537,8 @@ export function AIDAAssistant({
 
                 {/* Tabular Data View */}
                 {m.table && (
-                  <div className="rounded-xl border border-[#D6D6D6] overflow-hidden bg-white text-xs shadow-xs ml-8">
-                    <div className="max-h-60 overflow-y-auto">
+                  <div className="rounded-xl border border-[#D6D6D6] overflow-hidden bg-white text-xs shadow-xs ml-0 sm:ml-8 my-2">
+                    <div className="max-h-60 overflow-x-auto overflow-y-auto scrollbar-thin">
                       <table className="w-full text-left">
                         <thead className="bg-[#F2F2F1] border-b border-[#D6D6D6] text-[10px] font-semibold text-[#5C5C5C] uppercase tracking-wider sticky top-0">
                           <tr>
@@ -572,7 +595,10 @@ export function AIDAAssistant({
       </div>
 
       {/* ── Input Form ──────────────────────────────────────────────────────── */}
-      <div className="p-3 border-t border-[#D6D6D6] bg-white">
+      <div
+        className="p-3 border-t border-[#D6D6D6] bg-white shrink-0"
+        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 0px))" }}
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault()
@@ -592,12 +618,13 @@ export function AIDAAssistant({
             type="submit"
             size="sm"
             disabled={isLoading || !input.trim()}
-            className="h-9 px-3 bg-[#1E1E1E] text-white hover:bg-neutral-800 disabled:opacity-50 rounded-lg"
+            className="h-9 px-3 bg-[#1E1E1E] text-white hover:bg-neutral-800 disabled:opacity-50 rounded-lg shrink-0"
           >
             <Send className="w-3.5 h-3.5" />
           </Button>
         </form>
       </div>
     </div>
+  </div>
   )
 }

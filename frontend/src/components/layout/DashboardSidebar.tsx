@@ -27,26 +27,38 @@ import {
   Award,
   Bell,
   CheckSquare,
-  Cpu
+  Cpu,
+  ChevronLeft,
+  ChevronRight,
+  LucideIcon
 } from "lucide-react"
 
 interface NavItem {
   label: string
   href: string
-  icon: any
+  icon: LucideIcon
   exact?: boolean
   badge?: string | number
 }
 
-export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
+interface DashboardSidebarProps {
+  onClose?: () => void
+  collapsed?: boolean
+  onToggleCollapse?: () => void
+}
+
+export function DashboardSidebar({
+  onClose,
+  collapsed = false,
+  onToggleCollapse,
+}: DashboardSidebarProps) {
   const pathname = usePathname()
   const { user, logout } = useAuth()
 
-  const rolesList: string[] = user?.roles ? user.roles.map((r: any) => r.name?.toLowerCase()) : []
+  const rolesList: string[] = user?.roles ? user.roles.map((r: { name?: string }) => r.name?.toLowerCase() || "") : []
   const isAdmin = rolesList.includes("admin") || user?.email === "admin@aiml.hub"
   const isHOD = rolesList.includes("hod") || user?.email === "hod@aiml.hub"
   const isFaculty = rolesList.includes("faculty")
-  const isStudent = !isAdmin && !isHOD && !isFaculty
 
   // Role-based Nav definition per Section 36
   let navItems: NavItem[] = []
@@ -131,21 +143,41 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
   }
 
   return (
-    <aside className="w-64 border-r border-[#E5E5E5] bg-white flex flex-col h-screen sticky top-0 z-30 select-none">
+    <aside
+      className={`border-r border-[#E5E5E5] bg-white flex flex-col h-screen sticky top-0 z-30 select-none transition-all duration-200 ${
+        collapsed ? "w-[68px]" : "w-64"
+      }`}
+    >
       {/* Brand Header */}
-      <div className="h-16 flex items-center px-6 border-b border-[#E5E5E5] gap-3">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-[#111111] flex items-center justify-center text-white text-[9px] font-bold tracking-tight">
+      <div
+        className={`h-16 flex items-center border-b border-[#E5E5E5] ${
+          collapsed ? "justify-center px-2" : "justify-between px-4 sm:px-6"
+        }`}
+      >
+        <Link href="/dashboard" className="flex items-center gap-2.5 overflow-hidden">
+          <div className="w-7 h-7 rounded-md bg-[#111111] flex items-center justify-center text-white text-[9px] font-bold tracking-tight shrink-0">
             AM
           </div>
-          <span className="font-bold text-sm tracking-[0.1em] text-[#111111] uppercase">
-            AIMETRA
-          </span>
+          {!collapsed && (
+            <span className="font-bold text-sm tracking-[0.1em] text-[#111111] uppercase truncate">
+              AIMETRA
+            </span>
+          )}
         </Link>
+        {onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            className="p-1 rounded-md text-[#777777] hover:text-[#111111] hover:bg-[#F5F5F5] transition-colors"
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </button>
+        )}
       </div>
 
       {/* Nav List */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+      <div className={`flex-1 overflow-y-auto py-4 space-y-1 ${collapsed ? "px-2" : "px-3"}`}>
         {navItems.map((item) => {
           const isActive = item.exact
             ? pathname === item.href
@@ -158,19 +190,22 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
               key={item.label}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+              title={collapsed ? item.label : undefined}
+              className={`flex items-center rounded-lg text-xs font-medium transition-colors ${
+                collapsed ? "justify-center p-2.5" : "justify-between px-3 py-2"
+              } ${
                 isActive
                   ? "bg-[#111111] text-white"
                   : "text-[#555555] hover:bg-[#F5F5F5] hover:text-[#111111]"
               }`}
             >
-              <div className="flex items-center gap-2.5">
-                <IconComponent className={`w-4 h-4 ${isActive ? "text-white" : "text-[#777777]"}`} />
-                <span>{item.label}</span>
+              <div className="flex items-center gap-2.5 min-w-0">
+                <IconComponent className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-[#777777]"}`} />
+                {!collapsed && <span className="truncate">{item.label}</span>}
               </div>
-              {item.badge && (
+              {item.badge && !collapsed && (
                 <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold shrink-0 ml-1.5 ${
                     isActive
                       ? "bg-white/20 text-white"
                       : "bg-[#E5E5E5] text-[#333333]"
@@ -185,28 +220,40 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
       </div>
 
       {/* User Footer Card */}
-      <div className="p-3 border-t border-[#E5E5E5]">
-        <div className="flex items-center justify-between p-2 rounded-lg hover:bg-[#FAFAFA] transition-colors">
-          <Link href="/dashboard/profile" className="flex items-center gap-2.5 min-w-0 flex-1">
+      <div className={`border-t border-[#E5E5E5] ${collapsed ? "p-2" : "p-3"}`}>
+        <div
+          className={`flex items-center rounded-lg hover:bg-[#FAFAFA] transition-colors ${
+            collapsed ? "justify-center p-1.5" : "justify-between p-2"
+          }`}
+        >
+          <Link
+            href="/dashboard/profile"
+            className="flex items-center gap-2.5 min-w-0 flex-1"
+            title={collapsed ? getDisplayName() : undefined}
+          >
             <div className="w-8 h-8 rounded-full bg-[#111111] text-white flex items-center justify-center font-medium text-xs shrink-0">
               {getDisplayName().charAt(0)}
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-xs font-semibold text-[#111111] truncate">
-                {getDisplayName()}
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-semibold text-[#111111] truncate">
+                  {getDisplayName()}
+                </div>
+                <div className="text-[10px] text-[#777777] truncate">
+                  {getRoleLabel()}
+                </div>
               </div>
-              <div className="text-[10px] text-[#777777] truncate">
-                {getRoleLabel()}
-              </div>
-            </div>
+            )}
           </Link>
-          <button
-            onClick={logout}
-            className="p-1.5 text-[#888888] hover:text-[#DC2626] rounded-md transition-colors"
-            title="Log Out"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+          {!collapsed && (
+            <button
+              onClick={logout}
+              className="p-1.5 text-[#888888] hover:text-[#DC2626] rounded-md transition-colors"
+              title="Log Out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </aside>

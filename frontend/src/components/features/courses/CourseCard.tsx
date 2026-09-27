@@ -37,11 +37,11 @@ export const getCourseTypeBadge = (type?: string) => {
 
 export const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
   return (
-    <div className="bg-white rounded-2xl border border-[#D6D6D6] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between p-5">
+    <div className="responsive-card bg-white rounded-2xl border border-[#D6D6D6] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between p-5">
       <div>
         {/* Top Badges */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div className="flex flex-wrap items-center gap-1.5">
             <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-[#1E1E1E] text-white">
               {course.code}
             </span>
@@ -63,7 +63,7 @@ export const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
         </div>
 
         {/* Course Title */}
-        <h3 className="text-lg font-bold text-[#1E1E1E] leading-snug line-clamp-1 mb-1">
+        <h3 className="text-base sm:text-lg font-bold text-[#1E1E1E] leading-snug mb-1.5">
           {course.name}
         </h3>
         {course.short_name && course.short_name !== course.name && (

@@ -1,20 +1,22 @@
 'use client';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import api from './api';
+import { useCurrentUser, QK } from './hooks';
 
-export interface User { 
-  id: string; 
-  email: string; 
-  is_active: boolean; 
-  created_at: string; 
-  role?: string; 
-  roles?: { name: string }[];
+export type { CurrentUser as User } from './hooks';
+import type { CurrentUser as User } from './hooks';
+
+interface TokenData {
+  access_token: string;
+  refresh_token: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (token_data: any) => Promise<void>;
+  login: (token_data: TokenData) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -22,47 +24,60 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { data: user, isLoading: loading, refetch } = useCurrentUser();
 
-  const refreshUser = async () => {
-    try {
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        const { data } = await api.get('/auth/me');
-        setUser(data);
-      } else {
-        setUser(null);
-      }
-    } catch (e) {
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+  /**
+   * Invalidate and refetch the current-user query from the cache.
+   * All components that call useCurrentUser() will reactively update.
+   */
+  const refreshUser = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: QK.CURRENT_USER });
+    await refetch();
+  }, [queryClient, refetch]);
 
-  useEffect(() => {
-    refreshUser();
-  }, []);
+  /**
+   * Called after successful login. Stores tokens, then seeds the cache
+   * with the returned user data so /auth/me isn't needed immediately.
+   */
+  const login = useCallback(
+    async (data: TokenData) => {
+      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('refresh_token', data.refresh_token);
+      // Invalidate cache so next access fetches fresh user
+      await queryClient.invalidateQueries({ queryKey: QK.CURRENT_USER });
+      await refetch();
+    },
+    [queryClient, refetch]
+  );
 
-  const login = async (data: any) => {
-    localStorage.setItem('access_token', data.access_token);
-    localStorage.setItem('refresh_token', data.refresh_token);
-    await refreshUser();
-  };
-
-  const logout = async () => {
-    try {
-      await api.post('/auth/logout');
-    } catch(e) {}
+  /**
+   * Logout — clears state immediately then revokes server-side.
+   * Uses router.replace (SPA navigation) instead of window.location.href
+   * so the app shell is not torn down and rebuilt.
+   */
+  const logout = useCallback(async () => {
+    // 1. Clear local session state FIRST — UI becomes visually logged out immediately
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    setUser(null);
-    window.location.href = '/login';
-  };
+    // Optimistically clear the user cache
+    queryClient.setQueryData(QK.CURRENT_USER, null);
+    queryClient.clear();
+
+    // 2. Revoke server-side session in the background (best-effort)
+    try {
+      await api.post('/auth/logout');
+    } catch {
+      // Non-blocking — session is already invalidated client-side
+    }
+
+    // 3. SPA transition to login page
+    router.replace('/login');
+  }, [queryClient, router]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user: user ?? null, loading, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
@@ -73,3 +88,4 @@ export const useAuth = () => {
   if (!ctx) throw new Error('useAuth must be inside AuthProvider');
   return ctx;
 };
+

@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { DashboardShell } from "@/components/layout/DashboardShell"
+import { AuthShellSkeleton } from "@/components/ui/skeletons"
 
 export default function SubDashboardLayout({
   children,
@@ -19,15 +20,12 @@ export default function SubDashboardLayout({
     }
   }, [user, loading, router])
 
-  if (loading || !user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-pulse space-y-3 w-48 text-center">
-          <div className="h-4 bg-[#E5E5E5] rounded w-3/4 mx-auto"></div>
-          <div className="h-3 bg-[#F0F0F0] rounded w-1/2 mx-auto"></div>
-        </div>
-      </div>
-    )
+  if (loading) {
+    return <AuthShellSkeleton />
+  }
+
+  if (!user) {
+    return <AuthShellSkeleton />
   }
 
   return <DashboardShell>{children}</DashboardShell>

@@ -91,8 +91,11 @@ async def _call_gemini(prompt: str, system: str, api_key: str) -> dict:
     model = "gemini-1.5-flash"
     async with httpx.AsyncClient(timeout=30) as client:
         resp = await client.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}",
-            headers={"Content-Type": "application/json"},
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+            headers={
+                "Content-Type": "application/json",
+                "x-goog-api-key": api_key,
+            },
             json={
                 "contents": [{"role": "user", "parts": [{"text": f"{system}\n\n{prompt}"}]}],
                 "generationConfig": {
@@ -240,6 +243,9 @@ async def route_to_cloud(
             # 5xx = server error, try next
             continue
 
+    clean_error = type(last_error).__name__ if last_error else "Provider unavailable"
+    if isinstance(last_error, httpx.HTTPStatusError):
+        clean_error = f"HTTP {last_error.response.status_code}"
     raise RuntimeError(
-        f"All cloud AI providers failed after {attempts} attempt(s). Last error: {last_error}"
+        f"All cloud AI providers failed after {attempts} attempt(s) ({clean_error})."
     )

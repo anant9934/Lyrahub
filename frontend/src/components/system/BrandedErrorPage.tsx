@@ -11,7 +11,6 @@ import {
   LogIn,
   ShieldAlert,
   Sparkles,
-  Compass,
   ServerOff,
   Clock,
   Ban,
@@ -253,11 +252,11 @@ export function BrandedErrorPage({
         </div>
 
         {/* Action Controls */}
-        <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
           <button
             type="button"
             onClick={() => handleAction(config.primaryAction.type)}
-            className="inline-flex items-center justify-center h-10 px-5 rounded-md bg-[#111111] text-white hover:bg-neutral-800 text-xs font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2"
+            className="inline-flex items-center justify-center h-10 px-5 rounded-md bg-[#111111] text-white hover:bg-neutral-800 text-xs font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 w-full sm:w-auto"
           >
             {config.primaryAction.type === "reset" && (
               <RotateCcw className="w-3.5 h-3.5 mr-2" />
@@ -278,7 +277,7 @@ export function BrandedErrorPage({
             <button
               type="button"
               onClick={() => handleAction(config.secondaryAction!.type)}
-              className="inline-flex items-center justify-center h-10 px-5 rounded-md border border-[#E5E5E5] bg-white text-[#333333] hover:bg-[#F9F9F9] text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-200"
+              className="inline-flex items-center justify-center h-10 px-5 rounded-md border border-[#E5E5E5] bg-white text-[#333333] hover:bg-[#F9F9F9] text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-200 w-full sm:w-auto"
             >
               {config.secondaryAction.type === "home" && (
                 <Home className="w-3.5 h-3.5 mr-2 text-[#777777]" />
@@ -306,7 +305,7 @@ export function BrandedErrorPage({
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888888] mb-3">
               Institutional Navigation
             </p>
-            <div className="grid grid-cols-2 gap-2.5 text-left">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
               <Link
                 href="/programs"
                 className="p-3 rounded-lg border border-[#E5E5E5] hover:border-[#111111] transition-colors bg-[#FAFAFA]"

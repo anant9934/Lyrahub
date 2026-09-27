@@ -37,7 +37,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const statusBadge = statusColors[project.status?.toLowerCase() || "ongoing"] || "bg-gray-100 text-gray-700";
 
   return (
-    <div className="bg-white border border-[#D6D6D6] rounded-xl overflow-hidden hover:shadow-md transition duration-200 flex flex-col justify-between">
+    <div className="responsive-card bg-white border border-[#D6D6D6] rounded-xl overflow-hidden hover:shadow-md transition duration-200 flex flex-col justify-between">
       <div
         className="h-36 bg-gray-100 bg-cover bg-center border-b border-[#D6D6D6]"
         style={{
@@ -46,7 +46,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       />
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
-          <div className="flex justify-between items-center gap-2 mb-3">
+          <div className="flex flex-wrap justify-between items-center gap-2 mb-3">
             <span className={`text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider ${domainBadge}`}>
               {project.domain || "AI/ML"}
             </span>
@@ -55,7 +55,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </span>
           </div>
 
-          <h3 className="text-lg font-bold text-[#1E1E1E] mb-1.5 line-clamp-1">{project.title}</h3>
+          <h3 className="text-base sm:text-lg font-bold text-[#1E1E1E] mb-1.5 leading-snug line-clamp-2">{project.title}</h3>
           <p className="text-xs text-[#5C5C5C] mb-3 line-clamp-2">
             {project.summary || "No project summary provided."}
           </p>
@@ -79,13 +79,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
           )}
         </div>
 
-        <div className="pt-3 border-t border-[#D6D6D6]/60 flex items-center justify-between mt-auto">
-          <div className="text-xs text-[#5C5C5C] truncate max-w-[60%]">
+        <div className="pt-3 border-t border-[#D6D6D6]/60 flex items-center justify-between mt-auto gap-2">
+          <div className="text-xs text-[#5C5C5C] truncate flex-1 min-w-0">
             {project.mentor_name ? `Mentor: ${project.mentor_name}` : "Self-guided"}
           </div>
           <Link
             href={`/projects/${project.slug}`}
-            className="text-xs font-semibold px-3 py-1.5 bg-[#1E1E1E] text-white rounded-lg hover:bg-gray-800 transition"
+            className="text-xs font-semibold px-3 py-1.5 bg-[#1E1E1E] text-white rounded-lg hover:bg-gray-800 transition shrink-0"
           >
             Details →
           </Link>
