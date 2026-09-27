@@ -53,7 +53,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <div className="hidden lg:flex items-center space-x-1 xl:space-x-2">
             <Link
               href="/dashboard"
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
@@ -213,7 +213,7 @@ export default function Navbar() {
           </div>
 
           {/* User Profile / Status */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden lg:flex items-center space-x-3">
             {user ? (
               <div className="flex items-center space-x-3 bg-canvas border border-border rounded-full pl-3 pr-1.5 py-1">
                 <div className="text-left">
@@ -258,7 +258,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-md text-ink-500 hover:text-ink hover:bg-canvas"
@@ -271,7 +271,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-border bg-surface px-4 pt-2 pb-6 space-y-3">
+        <div className="lg:hidden border-b border-border bg-surface px-4 pt-2 pb-6 space-y-3">
           <div className="space-y-1">
             <Link
               href="/dashboard"
