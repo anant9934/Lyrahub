@@ -53,3 +53,18 @@ backend/uploads/
 test_*.pdf
 test_*.xlsx
 export.*
+
+# Local scratch & verification scripts
+/benchmark_*.py
+/seed_*.py
+/test_*.py
+/verify_*.py
+/verify_*.sh
+/check_tables.py
+/*.png
+backend/seed_*.py
+backend/test_api.py
+backend/verify_db.py
+backend/force_recalc.py
+backend/query_plans.json
+

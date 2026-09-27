@@ -77,6 +77,11 @@ async def register_alumni(db: AsyncSession, data: schema.AlumniRegisterRequest) 
     if existing_user.scalar_one_or_none():
         raise HTTPException(status_code=409, detail="User with this email already exists")
 
+    if data.reg_no:
+        existing_reg = await db.execute(select(Alumni).where(Alumni.reg_no == data.reg_no, Alumni.deleted_at.is_(None)))
+        if existing_reg.scalar_one_or_none():
+            raise HTTPException(status_code=409, detail="Alumni with this registration number already registered")
+
     # Rule 1: Auto-populate from students table if reg_no matches
     full_name = data.full_name
     graduation_year = data.graduation_year

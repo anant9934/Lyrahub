@@ -106,7 +106,7 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
       { label: "Projects", href: "/projects", icon: FolderGit2 },
       { label: "Events", href: "/events", icon: Calendar },
       { label: "Opportunities", href: "/opportunities", icon: Briefcase },
-      { label: "EduRev Benefits", href: "/courses", icon: GraduationCap },
+      { label: "Academic Courses", href: "/courses", icon: GraduationCap },
       { label: "Documents", href: "/qr/my-code", icon: QrCode },
       { label: "Mentorship", href: "/alumni/mentors", icon: Compass },
       { label: "Clubs & SIGs", href: "/groups", icon: Users },

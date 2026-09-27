@@ -50,7 +50,12 @@ async def upload_file(
     
     # Check if we are actually using LocalStorageProvider to know if we should save here
     if hasattr(storage, "root_dir"):
-        target_path = os.path.join(storage.root_dir, key)
+        normalized_key = key.replace("\\", "/")
+        target_path = os.path.join(storage.root_dir, normalized_key)
+        # Defense against Path Traversal (Rule 29 & Rule 42)
+        resolved_path = os.path.realpath(target_path)
+        if not resolved_path.startswith(os.path.realpath(storage.root_dir)):
+            raise HTTPException(status_code=400, detail="Invalid path traversal sequence detected")
         os.makedirs(os.path.dirname(target_path), exist_ok=True)
         with open(target_path, "wb") as f:
             f.write(contents)
@@ -95,8 +100,13 @@ async def download_file(
         raise HTTPException(status_code=404, detail="File not found")
 
     if hasattr(storage, "root_dir"):
-        path = os.path.join(storage.root_dir, key)
-        return FileResponse(path, media_type="application/pdf", filename=os.path.basename(key))
+        normalized_key = key.replace("\\", "/")
+        path = os.path.join(storage.root_dir, normalized_key)
+        # Defense against Path Traversal (Rule 29)
+        resolved_path = os.path.realpath(path)
+        if not resolved_path.startswith(os.path.realpath(storage.root_dir)):
+            raise HTTPException(status_code=400, detail="Invalid path traversal sequence detected")
+        return FileResponse(resolved_path, media_type="application/pdf", filename=os.path.basename(normalized_key))
     else:
         # R2 provider reads bytes
         file_bytes = await storage.get_file_bytes(key)

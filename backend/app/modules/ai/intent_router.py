@@ -44,9 +44,9 @@ CLOUD_REQUIRED_SIGNAL = "__CLOUD_REQUIRED__"
 LOCAL_LLM_ANSWERED = "__LOCAL_LLM__"
 
 # System prompt for local/cloud LLM generation
-AIDA_SYSTEM_PROMPT = """You are AIDA, the AI Department Assistant for Lyrahub.
+AIDA_SYSTEM_PROMPT = """You are AIDA, the AI Department Assistant for AIMETRA (AI & ML Education, Talent, Research & Analytics).
 
-Answer only from authorized Lyrahub data, tools and retrieved knowledge.
+Answer only from authorized AIMETRA data, tools and retrieved knowledge.
 
 Rules:
 1. Prefer deterministic tools for structured queries.

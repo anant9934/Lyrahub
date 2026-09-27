@@ -10,7 +10,7 @@ export default function Home() {
     <div className="min-h-screen bg-white text-[#111111] flex flex-col">
       <PublicNav />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
 
         {/* ══ HERO — Full-bleed campus image with text overlay ══ */}
         <section className="relative w-full overflow-hidden" style={{ height: "calc(100vh - 64px)", minHeight: "560px", maxHeight: "820px" }}>
@@ -42,9 +42,8 @@ export default function Home() {
                   <br />
                   department.
                 </h1>
-                <p className="text-base sm:text-lg text-white/75 max-w-lg leading-relaxed mb-10">
-                  AIMETRA connects students, faculty, projects, research,
-                  opportunities and alumni into one structured institutional environment.
+                <p className="text-base sm:text-lg text-white/80 max-w-lg leading-relaxed mb-10">
+                  AIMETRA connects students, faculty, projects, research, opportunities, alumni and institutional data into one intelligent academic environment.
                 </p>
                 <div className="flex flex-wrap items-center gap-4">
                   <Link href="/login">
@@ -382,19 +381,58 @@ export default function Home() {
                 </p>
               </div>
               <div className="lg:col-span-8">
+                {/* Visual Sequence Pipeline Indicator */}
+                <div className="hidden sm:flex items-center gap-2 mb-4 px-4 py-2 rounded-lg bg-white border border-[#E5E5E5] text-[11px] font-medium text-[#777777]">
+                  <span className="text-[#111111] font-semibold">Question</span>
+                  <span className="text-[#CCCCCC]">→</span>
+                  <span className="text-[#111111] font-semibold">AIDA</span>
+                  <span className="text-[#CCCCCC]">→</span>
+                  <span className="text-[#555555]">Department Data &amp; Institutional Knowledge</span>
+                  <span className="text-[#CCCCCC]">→</span>
+                  <span className="text-[#16A34A] font-semibold">Structured Answer</span>
+                </div>
+
                 <div className="bg-white rounded-2xl border border-[#E5E5E5] overflow-hidden shadow-sm">
-                  <div className="px-5 py-3.5 border-b border-[#E5E5E5] flex items-center gap-2.5 bg-[#FAFAFA]">
-                    <Sparkles className="w-3.5 h-3.5 text-[#111111]" />
-                    <span className="text-xs font-semibold text-[#111111]">AIDA</span>
-                    <span className="text-xs text-[#AAAAAA]">—</span>
-                    <span className="text-xs text-[#AAAAAA]">AIMETRA Intelligence &amp; Data Assistant</span>
+                  <div className="px-5 py-3.5 border-b border-[#E5E5E5] flex items-center justify-between bg-[#FAFAFA]">
+                    <div className="flex items-center gap-2.5">
+                      <Sparkles className="w-3.5 h-3.5 text-[#111111]" />
+                      <span className="text-xs font-semibold text-[#111111]">AIDA</span>
+                      <span className="text-xs text-[#AAAAAA]">—</span>
+                      <span className="text-xs text-[#AAAAAA]">AIMETRA Intelligence &amp; Data Assistant</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-[#888888] bg-white px-2 py-0.5 rounded border border-[#E5E5E5]">
+                      Context: Dept. Verified Records
+                    </span>
                   </div>
+
+                  {/* Sample Query Presets */}
+                  <div className="px-5 py-2.5 bg-[#FCFCFC] border-b border-[#F0F0F0] flex flex-wrap gap-1.5 text-[10px]">
+                    <span className="text-[#888888] py-0.5 mr-1 font-medium">Try:</span>
+                    {[
+                      "Show students working on LLM projects.",
+                      "How many students have an 8+ CGPA?",
+                      "Which certifications are most common?",
+                      "Which students have computer vision research experience?",
+                    ].map((sampleQuery, idx) => (
+                      <span
+                        key={idx}
+                        className={`px-2.5 py-1 rounded-md border ${
+                          idx === 0
+                            ? "bg-[#111111] text-white border-[#111111]"
+                            : "bg-white text-[#555555] border-[#E5E5E5]"
+                        }`}
+                      >
+                        {sampleQuery}
+                      </span>
+                    ))}
+                  </div>
+
                   <div className="px-5 py-4 border-b border-[#F0F0F0] bg-white">
                     <div className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-[#111111] flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5">
                         U
                       </div>
-                      <p className="text-sm text-[#333333] pt-0.5">
+                      <p className="text-sm text-[#333333] pt-0.5 font-medium">
                         Show students working on LLM projects with a CGPA above 8.0.
                       </p>
                     </div>
@@ -424,28 +462,28 @@ export default function Home() {
                           ].map((row, i) => (
                             <div key={row.name} className={`grid grid-cols-12 px-4 py-2.5 text-xs ${i < 3 ? "border-b border-[#F5F5F5]" : ""}`}>
                               <span className="col-span-5 font-medium text-[#111111] truncate pr-2">{row.name}</span>
-                              <span className="col-span-2 text-[#333333]">{row.cgpa}</span>
+                              <span className="col-span-2 text-[#333333] font-mono">{row.cgpa}</span>
                               <span className="col-span-5 text-[#666666] truncate">{row.project}</span>
                             </div>
                           ))}
-                          <div className="px-4 py-2 bg-[#FAFAFA] border-t border-[#EEEEEE]">
+                          <div className="px-4 py-2 bg-[#FAFAFA] border-t border-[#EEEEEE] flex items-center justify-between">
                             <span className="text-[10px] text-[#AAAAAA]">+3 more · sorted by CGPA</span>
+                            <span className="text-[10px] text-[#888888] font-mono">Source: AIMETRA Projects DB + Academic Records</span>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div className="sm:ml-9 mt-4 flex flex-wrap gap-2">
                       {["Export as CSV","Show their certifications","Filter by semester"].map((q) => (
-                        <span key={q} className="text-[11px] text-[#555555] bg-[#F5F5F5] border border-[#E5E5E5] rounded-full px-3 py-1 cursor-default">
+                        <span key={q} className="text-[11px] text-[#555555] bg-[#F5F5F5] border border-[#E5E5E5] rounded-md px-3 py-1 cursor-default">
                           {q}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <div className="px-5 py-3 border-t border-[#F0F0F0] bg-[#FAFAFA]">
-                    <p className="text-[10px] text-[#CCCCCC]">
-                      AIDA finds, analyzes and presents. Authorized decisions remain with authorized people.
-                    </p>
+                  <div className="px-5 py-3 border-t border-[#F0F0F0] bg-[#FAFAFA] flex items-center justify-between text-[10px] text-[#888888]">
+                    <span>AIDA finds, analyzes and presents. Decisions remain with authorized people.</span>
+                    <span className="font-medium text-[#111111]">Evidence-backed visibility</span>
                   </div>
                 </div>
               </div>

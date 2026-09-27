@@ -24,6 +24,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
             raise credentials_exception
     except JWTError:
         raise credentials_exception
+
+    # Server-Side Token Revocation Check (Rule 8 & Section 14)
+    from app.core.redis import get_redis
+    try:
+        redis_client = await get_redis()
+        if redis_client and await redis_client.get(f"bl_{token}"):
+            raise credentials_exception
+    except HTTPException:
+        raise
+    except Exception:
+        pass
         
     result = await db.execute(select(User).where(User.email == email, User.deleted_at.is_(None)))
     user = result.scalar_one_or_none()

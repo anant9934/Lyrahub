@@ -1,0 +1,25 @@
+# AIMETRA — Institutional Intelligence Layer
+
+> AI & ML Education, Talent, Research & Analytics
+> Department of Artificial Intelligence & Machine Learning
+
+## About AIMETRA
+AIMETRA is the purpose-built intelligence ecosystem connecting students, faculty, research, projects, opportunities, alumni, and institutional data into one structured academic environment.
+
+## Core Capabilities
+- **Academic Programs**: Undergraduate (B.Tech in CSE - AI & ML), Graduate (M.Tech in Advanced Machine Learning), and Doctoral (Ph.D.) degrees.
+- **Research Laboratories**: High-Performance GPU Computing Cluster (NVIDIA DGX), Autonomous Systems & Robotics Arena, Edge AI & TinyML Lab, Center for Healthcare AI, Natural Language Processing Center.
+- **Talent Intelligence**: Multi-criteria student performance evaluation (AHP + TOPSIS algorithms) combining academic coursework, peer-reviewed publications, open-source repositories, and verified technical competencies.
+- **AIDA (AIMETRA Intelligence & Data Assistant)**: Context-aware conversational intelligence assistant providing authenticated department leadership, faculty mentors, and students with evidence-based query capabilities over institutional records.
+
+## Public Resources & Directory
+- Homepage: https://aimetra.institution.edu
+- About: https://aimetra.institution.edu/about
+- People & Faculty Directory: https://aimetra.institution.edu/people
+- Degree Programs: https://aimetra.institution.edu/programs
+- Research Thrusts & Publications: https://aimetra.institution.edu/research
+- Department Events & Hackathons: https://aimetra.institution.edu/events
+- Contact & Secretariat: https://aimetra.institution.edu/contact
+
+## Governance & Ethics
+AIMETRA maintains strict institutional data protection, cryptographic audit logs for credential issuance, role-based access control, and privacy standards aligned with institutional charters.

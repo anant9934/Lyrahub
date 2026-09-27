@@ -8,7 +8,7 @@ from app.core.database import get_db
 from app.models import User, Student
 from app.core.security import get_password_hash, verify_password, create_access_token, create_refresh_token
 from app.modules.auth.schemas import UserCreate, UserResponse, Token, RefreshRequest
-from app.core.dependencies import get_current_active_user
+from app.core.dependencies import get_current_active_user, oauth2_scheme
 import redis.asyncio as redis
 from app.core.redis import get_redis
 
@@ -127,5 +127,16 @@ async def get_me(current_user: User = Depends(get_current_active_user)):
     return user_dict
 
 @router.post("/logout", status_code=200)
-async def logout(current_user: User = Depends(get_current_active_user)):
+async def logout(
+    token: str = Depends(oauth2_scheme),
+    current_user: User = Depends(get_current_active_user),
+    redis_client: redis.Redis = Depends(get_redis)
+):
+    from app.core.config import get_settings
+    settings = get_settings()
+    if redis_client:
+        try:
+            await redis_client.setex(f"bl_{token}", settings.JWT_ACCESS_EXPIRY, "true")
+        except Exception:
+            pass
     return {"message": "Logged out successfully"}

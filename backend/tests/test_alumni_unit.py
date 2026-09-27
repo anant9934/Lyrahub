@@ -68,6 +68,7 @@ async def test_register_alumni_auto_populate_from_student():
 
     db.execute.side_effect = [
         MagicMock(scalar_one_or_none=MagicMock(return_value=None)), # existing_user
+        MagicMock(scalar_one_or_none=MagicMock(return_value=None)), # existing_reg
         MagicMock(first=MagicMock(return_value=(student, "john.doe@aiml.hub"))), # student match
         MagicMock(scalars=MagicMock(return_value=MagicMock(all=MagicMock(return_value=[])))) # experiences
     ]

@@ -62,7 +62,7 @@ export default function ProgramsPage() {
               </div>
               <div className="flex items-center gap-2 text-xs text-[#9A9A9A]">
                 <Award className="w-4 h-4 text-[#7A9A7E]" />
-                <span>EduRev & RPL credit eligible</span>
+                <span>Academic &amp; RPL credit eligible</span>
               </div>
             </div>
           </div>

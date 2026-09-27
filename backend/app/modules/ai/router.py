@@ -85,16 +85,35 @@ async def _resolve_role(user: User) -> str:
     return "student"
 
 
-# ─── Cache ─────────────────────────────────────────────────────────────────────
+# ─── Security: Prompt Injection Defense (Rules 56 & 57) ──────────────────────
+import re
+
+_PROMPT_INJECTION_RE = re.compile(
+    r"(ignore\s+(all\s+)?(previous|prior)\s+(instructions|directives|rules)|"
+    r"disregard\s+(all\s+)?(previous|prior)\s+(instructions|rules)|"
+    r"repeat\s+(your\s+)?system\s+prompt|"
+    r"show\s+(me\s+)?(your\s+)?system\s+prompt|"
+    r"you\s+are\s+now\s+in\s+developer\s+mode|"
+    r"dan\s+mode|jailbreak|"
+    r"act\s+as\s+(a\s+)?super_?admin|"
+    r"bypass\s+(all\s+)?authorization|"
+    r"drop\s+table|delete\s+from\s+users|truncate\s+table)",
+    re.IGNORECASE,
+)
+
+def _detect_prompt_injection(query: str) -> bool:
+    """Detects overt attempts to override system instructions or inject destructive SQL."""
+    return bool(_PROMPT_INJECTION_RE.search(query))
+
+
+# ─── Cache (Zero-Trust Isolated) ───────────────────────────────────────────────
 
 def _cache_key(user_id: str, query: str, role: str, mode: str) -> str:
-    """Scope-aware cache key. Strictly user-scoped for personal queries to prevent cross-user leakage."""
-    q_lower = query.lower()
-    personal_markers = ("my ", "me ", "mine", "i ", "my-", "profile", "attendance", "cgpa", "resume", "marks", "scores")
-    is_personal = any(m in q_lower for m in personal_markers)
-    scope = f"{user_id}:{role}:{mode}" if is_personal else f"{role}:{mode}"
-    scope_hash = hashlib.sha256(scope.encode()).hexdigest()[:10]
-    query_hash = hashlib.sha256(q_lower.strip().encode()).hexdigest()[:12]
+    """Scope-aware cache key strictly bound to user_id, role, and query hash to prevent cross-user leakage."""
+    q_lower = query.lower().strip()
+    scope = f"{user_id}:{role}:{mode}"
+    scope_hash = hashlib.sha256(scope.encode()).hexdigest()[:12]
+    query_hash = hashlib.sha256(q_lower.encode()).hexdigest()[:16]
     return f"aida:{scope_hash}:{query_hash}"
 
 
@@ -146,6 +165,18 @@ async def aida_query(
     role = await _resolve_role(current_user)
     user_id = str(current_user.id)
     mode = getattr(body, "mode", "hybrid") or "hybrid"
+
+    # ── Prompt Injection & Adversarial Filter (Rules 56 & 57) ─────────────────
+    if _detect_prompt_injection(body.query):
+        return AIDAQueryResponse(
+            request_id=request_id,
+            answer="I cannot fulfill requests attempting to alter system instructions, security boundaries, or administrative policies. Institutional inquiries must follow authorized protocols.",
+            source="security_barrier",
+            route="security_refusal",
+            intent="adversarial_attempt",
+            ai_mode="Security Barrier (Policy Enforced)",
+            metadata={"security_flag": True},
+        )
 
     # ── Cache check (Level 1) ─────────────────────────────────────────────────
     cache_key = _cache_key(user_id, body.query, role, mode)

@@ -1,0 +1,514 @@
+{
+  "total_queries": 50,
+  "successful_queries": 48,
+  "avg_latency_ms": 7042.39,
+  "p50_latency_ms": 6263.76,
+  "p95_latency_ms": 15122.87,
+  "p99_latency_ms": 15591.8,
+  "cache_hits": 15,
+  "cache_hit_avg_ms": 8336.92,
+  "uncached_avg_ms": 6453.96,
+  "routes_breakdown": {
+    "okf": 30,
+    "deterministic": 10,
+    "rag": 3,
+    "browser_slm": 5,
+    "error": 2
+  },
+  "results": [
+    {
+      "index": 1,
+      "query": "Who is the HOD?",
+      "status": 200,
+      "latency_ms": 10457.95,
+      "server_latency_ms": 30,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 177
+    },
+    {
+      "index": 2,
+      "query": "What is the department email?",
+      "status": 200,
+      "latency_ms": 5757.54,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 60
+    },
+    {
+      "index": 3,
+      "query": "How many students are enrolled?",
+      "status": 200,
+      "latency_ms": 4418.37,
+      "server_latency_ms": 872,
+      "route": "deterministic",
+      "cached": false,
+      "answer_len": 69
+    },
+    {
+      "index": 4,
+      "query": "What is the placement percentage?",
+      "status": 200,
+      "latency_ms": 6263.76,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 161
+    },
+    {
+      "index": 5,
+      "query": "Show me top students in ranking",
+      "status": 200,
+      "latency_ms": 4764.68,
+      "server_latency_ms": 1135,
+      "route": "deterministic",
+      "cached": false,
+      "answer_len": 40
+    },
+    {
+      "index": 6,
+      "query": "List courses offered by AI department",
+      "status": 200,
+      "latency_ms": 8787.33,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 60
+    },
+    {
+      "index": 7,
+      "query": "Who is the head of school?",
+      "status": 200,
+      "latency_ms": 4108.45,
+      "server_latency_ms": 6,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 177
+    },
+    {
+      "index": 8,
+      "query": "What degree programs are offered?",
+      "status": 200,
+      "latency_ms": 5842.57,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 83
+    },
+    {
+      "index": 9,
+      "query": "Show faculty members list",
+      "status": 200,
+      "latency_ms": 8577.02,
+      "server_latency_ms": 0,
+      "route": "deterministic",
+      "cached": false,
+      "answer_len": 46
+    },
+    {
+      "index": 10,
+      "query": "Tell me about B.Tech CSE AI ML program",
+      "status": 200,
+      "latency_ms": 6630.04,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 83
+    },
+    {
+      "index": 11,
+      "query": "What is my CGPA?",
+      "status": 200,
+      "latency_ms": 4678.36,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 161
+    },
+    {
+      "index": 12,
+      "query": "What is my current rank?",
+      "status": 200,
+      "latency_ms": 6459.85,
+      "server_latency_ms": 2457,
+      "route": "rag",
+      "cached": false,
+      "answer_len": 527
+    },
+    {
+      "index": 13,
+      "query": "Show my attendance summary",
+      "status": 200,
+      "latency_ms": 3808.08,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 152
+    },
+    {
+      "index": 14,
+      "query": "Show my profile details",
+      "status": 200,
+      "latency_ms": 4000.16,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 177
+    },
+    {
+      "index": 15,
+      "query": "What are my registered courses?",
+      "status": 200,
+      "latency_ms": 3726.07,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 165
+    },
+    {
+      "index": 16,
+      "query": "What are the laboratory guidelines?",
+      "status": 200,
+      "latency_ms": 7780.85,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 161
+    },
+    {
+      "index": 17,
+      "query": "How do I submit an achievement?",
+      "status": 200,
+      "latency_ms": 11548.85,
+      "server_latency_ms": 394,
+      "route": "browser_slm",
+      "cached": false,
+      "answer_len": 0
+    },
+    {
+      "index": 18,
+      "query": "How to register for alumni mentorship?",
+      "status": 200,
+      "latency_ms": 4463.1,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 161
+    },
+    {
+      "index": 19,
+      "query": "What are the criteria for departmental honors?",
+      "status": 200,
+      "latency_ms": 6441.96,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 161
+    },
+    {
+      "index": 20,
+      "query": "Explain the student ranking algorithm weights",
+      "status": 200,
+      "latency_ms": 3779.7,
+      "server_latency_ms": 460,
+      "route": "deterministic",
+      "cached": false,
+      "answer_len": 40
+    },
+    {
+      "index": 21,
+      "query": "Who is the HOD?",
+      "status": 200,
+      "latency_ms": 5506.35,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 177
+    },
+    {
+      "index": 22,
+      "query": "What is the department email?",
+      "status": 200,
+      "latency_ms": 15122.87,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 60
+    },
+    {
+      "index": 23,
+      "query": "How many students are enrolled?",
+      "status": 200,
+      "latency_ms": 15278.08,
+      "server_latency_ms": null,
+      "route": "deterministic",
+      "cached": true,
+      "answer_len": 69
+    },
+    {
+      "index": 24,
+      "query": "What is the placement percentage?",
+      "status": 200,
+      "latency_ms": 11156.24,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 161
+    },
+    {
+      "index": 25,
+      "query": "Show me top students in ranking",
+      "status": 200,
+      "latency_ms": 7794.83,
+      "server_latency_ms": null,
+      "route": "deterministic",
+      "cached": true,
+      "answer_len": 40
+    },
+    {
+      "index": 26,
+      "query": "List courses offered by AI department",
+      "status": 200,
+      "latency_ms": 7215.4,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 60
+    },
+    {
+      "index": 27,
+      "query": "Who is the head of school?",
+      "status": 200,
+      "latency_ms": 4549.37,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 177
+    },
+    {
+      "index": 28,
+      "query": "What degree programs are offered?",
+      "status": 200,
+      "latency_ms": 9874.08,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 83
+    },
+    {
+      "index": 29,
+      "query": "Show faculty members list",
+      "status": 200,
+      "latency_ms": 5410.38,
+      "server_latency_ms": null,
+      "route": "deterministic",
+      "cached": true,
+      "answer_len": 46
+    },
+    {
+      "index": 30,
+      "query": "Tell me about B.Tech CSE AI ML program",
+      "status": 200,
+      "latency_ms": 4289.82,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 83
+    },
+    {
+      "index": 31,
+      "query": "What is my CGPA?",
+      "status": 200,
+      "latency_ms": 4903.58,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 161
+    },
+    {
+      "index": 32,
+      "query": "What is my current rank?",
+      "status": 200,
+      "latency_ms": 5603.72,
+      "server_latency_ms": null,
+      "route": "rag",
+      "cached": true,
+      "answer_len": 527
+    },
+    {
+      "index": 33,
+      "query": "Show my attendance summary",
+      "status": 200,
+      "latency_ms": 5490.65,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 152
+    },
+    {
+      "index": 34,
+      "query": "What are the laboratory guidelines?",
+      "status": 200,
+      "latency_ms": 7266.69,
+      "server_latency_ms": null,
+      "route": "okf",
+      "cached": true,
+      "answer_len": 161
+    },
+    {
+      "index": 35,
+      "query": "Explain the student ranking algorithm weights",
+      "status": 200,
+      "latency_ms": 15591.8,
+      "server_latency_ms": null,
+      "route": "deterministic",
+      "cached": true,
+      "answer_len": 40
+    },
+    {
+      "index": 36,
+      "query": "Department performance overview",
+      "status": 200,
+      "latency_ms": 7228.42,
+      "server_latency_ms": 6,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 60
+    },
+    {
+      "index": 37,
+      "query": "Placement trends for last 3 years",
+      "status": 200,
+      "latency_ms": 3755.18,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 161
+    },
+    {
+      "index": 38,
+      "query": "Faculty to student ratio",
+      "status": 200,
+      "latency_ms": 14640.58,
+      "server_latency_ms": 0,
+      "route": "deterministic",
+      "cached": false,
+      "answer_len": 50
+    },
+    {
+      "index": 39,
+      "query": "Summary of pending achievement approvals",
+      "status": 500,
+      "latency_ms": 30002.43,
+      "error": "timed out"
+    },
+    {
+      "index": 40,
+      "query": "Alumni working in tier 1 companies",
+      "status": 200,
+      "latency_ms": 7858.38,
+      "server_latency_ms": 10,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 161
+    },
+    {
+      "index": 41,
+      "query": "Student research projects distribution",
+      "status": 200,
+      "latency_ms": 6876.08,
+      "server_latency_ms": 1028,
+      "route": "deterministic",
+      "cached": false,
+      "answer_len": 43
+    },
+    {
+      "index": 42,
+      "query": "Total alumni registered",
+      "status": 200,
+      "latency_ms": 5782.11,
+      "server_latency_ms": 800,
+      "route": "rag",
+      "cached": false,
+      "answer_len": 527
+    },
+    {
+      "index": 43,
+      "query": "Top programming skills in department",
+      "status": 200,
+      "latency_ms": 6338.03,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 60
+    },
+    {
+      "index": 44,
+      "query": "Active hackathons and events",
+      "status": 200,
+      "latency_ms": 12812.28,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 161
+    },
+    {
+      "index": 45,
+      "query": "Recent alumni job opportunities",
+      "status": 503,
+      "latency_ms": 15752.17,
+      "error": "{\"detail\":\"Cloud AI temporarily unavailable. All cloud AI providers failed after 3 attempt(s). Last "
+    },
+    {
+      "index": 46,
+      "query": "Hello AIDA",
+      "status": 200,
+      "latency_ms": 5612.27,
+      "server_latency_ms": 1020,
+      "route": "browser_slm",
+      "cached": false,
+      "answer_len": 0
+    },
+    {
+      "index": 47,
+      "query": "help",
+      "status": 200,
+      "latency_ms": 6359.25,
+      "server_latency_ms": 404,
+      "route": "browser_slm",
+      "cached": false,
+      "answer_len": 0
+    },
+    {
+      "index": 48,
+      "query": "What can you do?",
+      "status": 200,
+      "latency_ms": 4693.59,
+      "server_latency_ms": 529,
+      "route": "browser_slm",
+      "cached": false,
+      "answer_len": 0
+    },
+    {
+      "index": 49,
+      "query": "help",
+      "status": 200,
+      "latency_ms": 5273.48,
+      "server_latency_ms": 807,
+      "route": "browser_slm",
+      "cached": false,
+      "answer_len": 0
+    },
+    {
+      "index": 50,
+      "query": "Can you write a poem about AI department?",
+      "status": 200,
+      "latency_ms": 3456.44,
+      "server_latency_ms": 0,
+      "route": "okf",
+      "cached": false,
+      "answer_len": 60
+    }
+  ]
+}
