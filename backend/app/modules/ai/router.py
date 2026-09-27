@@ -91,8 +91,9 @@ import re
 _PROMPT_INJECTION_RE = re.compile(
     r"(ignore\s+(all\s+)?(previous|prior)\s+(instructions|directives|rules)|"
     r"disregard\s+(all\s+)?(previous|prior)\s+(instructions|rules)|"
-    r"repeat\s+(your\s+)?system\s+prompt|"
-    r"show\s+(me\s+)?(your\s+)?system\s+prompt|"
+    r"(?:what\s+is|show|print|reveal|repeat|output)\s+(?:me\s+)?(?:your\s+|the\s+)?(?:system|developer|hidden|initial)?\s*(?:prompt|instructions|directives|rules|api\s+keys|credentials)|"
+    r"(?:print|reveal|show|output)\s+(?:all\s+)?(?:the\s+)?(?:hidden|internal|developer)\s+(?:message|instructions|configuration|tools|apis)|"
+    r"repeat\s+(?:all\s+)?(?:the\s+)?(?:words|text|instructions)|"
     r"you\s+are\s+now\s+in\s+developer\s+mode|"
     r"dan\s+mode|jailbreak|"
     r"act\s+as\s+(a\s+)?super_?admin|"
