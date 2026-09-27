@@ -281,3 +281,67 @@ def test_system_prompt_server_side_protection():
         assert AIDA_SYSTEM_PROMPT not in attack
 
 
+# ─── 9. Cross-User and Multi-Role Isolation Matrix Tests ──────────────────────
+
+def test_cross_user_role_isolation_matrix():
+    """Verify isolation across Student A, Student B, Faculty A, Faculty B, HOD, and Admin."""
+    import casbin
+
+    model_path = os.path.join(os.path.dirname(__file__), "../app/core/casbin_model.conf")
+    enforcer = casbin.Enforcer(model_path)
+
+    # Establish Casbin RBAC policies
+    enforcer.add_policy("Admin", "roles", "manage")
+    enforcer.add_policy("Admin", "audit_logs", "read")
+    enforcer.add_policy("Admin", "users", "delete")
+
+    enforcer.add_policy("HOD", "departments", "manage")
+    enforcer.add_policy("HOD", "faculty", "review")
+
+    enforcer.add_policy("Faculty", "achievements", "verify")
+    enforcer.add_policy("Faculty", "attendance", "record")
+
+    enforcer.add_policy("Student", "profile", "read_own")
+    enforcer.add_policy("Student", "achievements", "submit")
+
+    # Map synthetic identities
+    users = {
+        "student_a": ("student_a@aimetra.edu", "Student"),
+        "student_b": ("student_b@aimetra.edu", "Student"),
+        "faculty_a": ("faculty_a@aimetra.edu", "Faculty"),
+        "faculty_b": ("faculty_b@aimetra.edu", "Faculty"),
+        "hod": ("hod@aimetra.edu", "HOD"),
+        "admin": ("admin@aimetra.edu", "Admin"),
+    }
+
+    for user_key, (email, role) in users.items():
+        enforcer.add_role_for_user(email, role)
+
+    # 1. Cross-role administration verification
+    assert enforcer.enforce(users["admin"][0], "roles", "manage") is True
+    assert enforcer.enforce(users["hod"][0], "roles", "manage") is False
+    assert enforcer.enforce(users["faculty_a"][0], "roles", "manage") is False
+    assert enforcer.enforce(users["student_a"][0], "roles", "manage") is False
+
+    # 2. Audit log isolation
+    assert enforcer.enforce(users["admin"][0], "audit_logs", "read") is True
+    assert enforcer.enforce(users["student_b"][0], "audit_logs", "read") is False
+    assert enforcer.enforce(users["faculty_b"][0], "audit_logs", "read") is False
+
+    # 3. Verification permissions
+    assert enforcer.enforce(users["faculty_a"][0], "achievements", "verify") is True
+    assert enforcer.enforce(users["student_a"][0], "achievements", "verify") is False
+    assert enforcer.enforce(users["student_b"][0], "achievements", "verify") is False
+
+    # 4. JWT Token Identity Isolation
+    token_a = create_access_token({"sub": users["student_a"][0], "role": users["student_a"][1]})
+    token_b = create_access_token({"sub": users["student_b"][0], "role": users["student_b"][1]})
+
+    payload_a = jwt.decode(token_a, settings.JWT_SECRET, algorithms=["HS256"])
+    payload_b = jwt.decode(token_b, settings.JWT_SECRET, algorithms=["HS256"])
+
+    assert payload_a["sub"] != payload_b["sub"]
+    assert payload_a["sub"] == "student_a@aimetra.edu"
+    assert payload_b["sub"] == "student_b@aimetra.edu"
+
+

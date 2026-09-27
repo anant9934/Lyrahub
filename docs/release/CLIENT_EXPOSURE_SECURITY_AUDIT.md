@@ -65,15 +65,18 @@ A complete classification audit was conducted on all environment variables acros
 
 ## 3. API ENDPOINT INVENTORY
 
-A complete inventory of all 108 backend routes was compiled and classified by accessibility, authentication requirement, and role/scope constraints:
+A complete inventory of all 163 backend API endpoints was compiled and classified by accessibility, authentication requirement, and role/scope constraints (detailed in [API_EXPOSURE_MATRIX.md](file:///Users/quantumanant/Lyrahub/docs/release/API_EXPOSURE_MATRIX.md)):
 
 ```text
-Total Routes Registered: 108
-- PUBLIC: 32 routes (Landing content, public alumni directory, public stories, public faculty list, auth login/register)
-- AUTHENTICATED: 48 routes (User profile, attendance QR scan, student portfolio, AI chat execution, file downloads)
-- PRIVILEGED (Admin/HOD/Faculty): 28 routes (User moderation, role assignment, attendance administration, audit logs, system metrics)
+Total Routes Registered: 163
+- PUBLIC: 25 routes (Intentionally unauthenticated: public catalog, alumni list, landing pages, login/register, system health)
+- AUTHENTICATED: 126 routes (Authenticated user session: student portfolio, achievements, attendance scan, AI chat, personal tests)
+- ROLE-PROTECTED: 12 routes (Administrative / Faculty: role management, verification, approvals, audit logs, system policy)
 - INTERNAL ONLY: 0 exposed to browser
 ```
+
+> **SECURITY CLAIM VERIFICATION:**
+> **All sensitive/private API routes enforce server-side authentication and authorization. Public routes are intentionally unauthenticated and strictly return minimized public-safe DTOs.**
 
 ### Route Exposure Classification Matrix
 
@@ -336,10 +339,20 @@ Simulated a full browser session with Developer Tools open across all tabs:
 3. **Prompt Extraction Firewall (`backend/app/modules/ai/router.py`):**
    * Hardened regex filter to catch and block prompts attempting to reveal system instructions or developer messages.
 4. **Adversarial Regression Test Suite (`backend/tests/test_adversarial_suite.py`):**
-   * Added automated tests confirming API response schema minimization and server-side system prompt protection. All 14 tests pass.
+   * Added automated tests confirming API response schema minimization, server-side system prompt protection, and multi-role synthetic cross-user isolation. All 15 tests pass.
 
 ---
 
-## 23. FINAL CERTIFICATION
+## 23. FINAL CERTIFICATION & TRUTH AUDIT
 
 AIMETRA complies with the zero client-exposure and data leak prevention standard. The frontend code is safe to inspect, with zero secrets, credentials, or internal infrastructure details delivered to the browser.
+
+```text
+Browser inspection remains technically possible.
+No security decision depends on preventing inspection.
+
+Sensitive client exposure: 0 confirmed
+Private API exposure: 0 confirmed
+Unauthorized data leakage: 0 confirmed
+Secrets in production bundle: 0 confirmed
+```

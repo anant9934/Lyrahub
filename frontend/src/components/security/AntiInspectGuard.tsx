@@ -114,15 +114,7 @@ export function AntiInspectGuard() {
         return;
       }
 
-      // Save Page: Ctrl+S or Cmd+S (deterrent against casual source dumping)
-      if (key === "s" && isCtrlOrMeta && !isShift && !isAlt && !isInput) {
-        e.preventDefault();
-        e.stopPropagation();
-        showNotification("Saving offline source copies is restricted.");
-        return;
-      }
-
-      // Normal navigation, editing, copy/paste, search, and form shortcuts are intentionally NOT blocked
+      // Normal browser controls (Save, Print, Copy, Paste, Find, Tab navigation) remain completely unhindered
     };
 
     // 4. Image Dragging Deterrent (UI icons, branding logos, decorative imagery)

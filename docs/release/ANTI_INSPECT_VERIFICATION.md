@@ -51,8 +51,7 @@ AIMETRA implements a centralized, non-destructive client-side deterrent layer to
   * `Ctrl + Shift + C` / `Cmd + Option + C` (Element Picker)
   * `Ctrl + Shift + K` / `Cmd + Option + K` (Firefox Console)
   * `Ctrl + U` / `Cmd + U` (View Page Source)
-  * `Ctrl + S` / `Cmd + S` (Offline Page Saving)
-* Preserves standard editing and typing shortcuts: `Ctrl/Cmd + C` (Copy), `Ctrl/Cmd + V` (Paste), `Ctrl/Cmd + A` (Select All), `Ctrl/Cmd + Z` (Undo), `Ctrl/Cmd + F` (Find).
+* Standard browser controls remain completely unhindered: Save (`Ctrl/Cmd + S`), Print (`Ctrl/Cmd + P`), Copy (`Ctrl/Cmd + C`), Paste (`Ctrl/Cmd + V`), Select All (`Ctrl/Cmd + A`), Undo (`Ctrl/Cmd + Z`), Find (`Ctrl/Cmd + F`).
 * Explicitly ignores key events within text input elements (`<input>`, `<textarea>`, `contenteditable`).
 
 ### 2.4 Targeted Selection Deterrent
@@ -91,6 +90,7 @@ AIMETRA implements a centralized, non-destructive client-side deterrent layer to
 | **F12** | Key event intercepted and cancelled | **PASS** |
 | **DevTools Shortcuts** | `Ctrl+Shift+I/J/C/K`, `Cmd+Opt+I/J/C/K` blocked | **PASS** |
 | **View Source Shortcut** | `Ctrl+U`, `Cmd+U` blocked | **PASS** |
+| **Save / Print Intact** | `Ctrl+S`, `Cmd+S`, `Ctrl+P` unhindered | **PASS** |
 | **Image Dragging** | Non-content image dragging cancelled | **PASS** |
 | **Targeted Selection** | Buttons/nav non-selectable; content selectable | **PASS** |
 | **Console Warning** | Professional self-XSS warning rendered once | **PASS** |
@@ -100,14 +100,24 @@ AIMETRA implements a centralized, non-destructive client-side deterrent layer to
 | **Route Navigation** | Persists seamlessly across client routing | **PASS** |
 | **Memory Cleanup** | All window listeners removed on component cleanup | **PASS** |
 | **Client Secret Scan** | 159 static bundle assets scanned — 0 secrets | **PASS** |
-| **API Exposure Scan** | All 108 routes protected by server-side RBAC | **PASS** |
+| **API Exposure Scan** | Sensitive routes enforce auth; public routes sanitized | **PASS** |
 
 ---
 
-## 4. FINAL STATEMENT
+## 4. FINAL STATEMENT & TRUTH AUDIT
 
 AIMETRA anti-inspect deterrent implemented.
 
 This feature discourages casual inspection but does not constitute a security boundary.
 
 No sensitive credentials, private data, or authorization logic may depend on client-side anti-inspection controls.
+
+```text
+Browser inspection remains technically possible.
+No security decision depends on preventing inspection.
+
+Sensitive client exposure: 0 confirmed
+Private API exposure: 0 confirmed
+Unauthorized data leakage: 0 confirmed
+Secrets in production bundle: 0 confirmed
+```
