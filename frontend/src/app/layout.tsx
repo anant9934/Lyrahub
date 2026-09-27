@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { QueryProvider } from "@/lib/query-provider";
+import { AntiInspectGuard } from "@/components/security/AntiInspectGuard";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://aimetra.institution.edu"),
@@ -119,7 +120,10 @@ export default function RootLayout({
           Skip to main content
         </a>
         <QueryProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <AntiInspectGuard />
+            {children}
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

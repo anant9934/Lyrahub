@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect } from "react"
+import { AntiInspectGuard } from "@/components/security/AntiInspectGuard"
 
 export default function GlobalError({
   error,
@@ -21,6 +22,7 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body className="min-h-screen bg-white text-[#111111] font-sans antialiased m-0 p-0 flex items-center justify-center">
+        <AntiInspectGuard />
         <div className="w-full max-w-xl mx-auto text-center px-6 py-16 space-y-6">
           {/* Brand Eyebrow */}
           <div className="space-y-1">

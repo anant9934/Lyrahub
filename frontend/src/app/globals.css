@@ -137,3 +137,17 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #D0D0D0;
 }
+
+/* Targeted selection deterrent on non-content UI elements (Section 5) */
+button,
+nav,
+[role="button"],
+.select-none,
+.no-select,
+.badge,
+.status-badge,
+.brand-mark,
+.icon-container {
+  -webkit-user-select: none;
+  user-select: none;
+}
