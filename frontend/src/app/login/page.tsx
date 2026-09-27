@@ -171,7 +171,7 @@ export default function LoginPage() {
                 <span>Quick demo:</span>
                 <button
                   type="button"
-                  onClick={() => quickFill("student@aiml.hub", "password123")}
+                  onClick={() => quickFill("student@aiml.hub", "student123")}
                   className="underline hover:text-[#111111]"
                 >
                   Student
