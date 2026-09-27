@@ -1,4 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+
+export interface AppApiError {
+  status: number;
+  code: string;
+  message: string;
+  requestId?: string;
+}
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1',
@@ -16,9 +23,9 @@ api.interceptors.request.use((config) => {
 let isRefreshing = false;
 api.interceptors.response.use(
   (res) => res,
-  async (err) => {
-    const original = err.config;
-    if (err.response?.status === 401 && !original._retry) {
+  async (err: AxiosError) => {
+    const original = err.config as any;
+    if (err.response?.status === 401 && original && !original._retry) {
       original._retry = true;
       if (isRefreshing) return Promise.reject(err);
       isRefreshing = true;
@@ -42,6 +49,31 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
+
+    // Normalize error payload to prevent raw server exception leakage
+    const status = err.response?.status || 500;
+    const responseData = err.response?.data as any;
+    const requestId =
+      (err.response?.headers?.['x-request-id'] as string) ||
+      responseData?.request_id ||
+      undefined;
+
+    let safeMessage = "An unexpected error occurred while communicating with AIMETRA services.";
+    if (status === 400) safeMessage = responseData?.detail?.title || responseData?.detail || "Invalid request parameters.";
+    else if (status === 401) safeMessage = "Authentication required. Please sign in to continue.";
+    else if (status === 403) safeMessage = "Access restricted. You do not have permission for this resource.";
+    else if (status === 404) safeMessage = "The requested resource was not found.";
+    else if (status === 429) safeMessage = "Too many requests. Please wait a moment before trying again.";
+    else if (status >= 500) safeMessage = "The server encountered an internal issue. Please try again shortly.";
+
+    const normalizedError: AppApiError = {
+      status,
+      code: responseData?.code || `HTTP_${status}`,
+      message: typeof safeMessage === 'string' ? safeMessage : JSON.stringify(safeMessage),
+      requestId,
+    };
+
+    (err as any).normalized = normalizedError;
     return Promise.reject(err);
   }
 );
