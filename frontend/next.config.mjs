@@ -30,7 +30,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https:",
-              "connect-src 'self' https://*.neon.tech https://*.render.com https://*.vercel.app http://localhost:8000",
+              "connect-src 'self' https://*.onrender.com https://lyrahub.onrender.com https://*.render.com https://*.neon.tech https://*.vercel.app http://localhost:8000 http://localhost:3000",
               "frame-ancestors 'none'",
             ].join("; "),
           },
@@ -48,6 +48,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**.vercel.app" },
+      { protocol: "https", hostname: "**.onrender.com" },
       { protocol: "https", hostname: "**.render.com" },
       { protocol: "https", hostname: "**.cloudflare.com" },
       { protocol: "https", hostname: "*.r2.dev" },

@@ -35,11 +35,17 @@ export default function LoginPage() {
       await login(data)
       router.push("/dashboard")
     } catch (err: any) {
-      setError(
-        err.response?.data?.detail?.title ||
-          err.response?.data?.detail ||
-          "Invalid credentials. Please verify your email and password."
-      )
+      if (!err.response) {
+        setError(
+          "Connection error connecting to backend API. Please check your network or try again."
+        )
+      } else {
+        setError(
+          err.response?.data?.detail?.title ||
+            err.response?.data?.detail ||
+            "Invalid credentials. Please verify your email and password."
+        )
+      }
     } finally {
       setLoading(false)
     }
