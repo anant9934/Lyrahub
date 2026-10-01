@@ -61,8 +61,34 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         
     access_token = create_access_token(data={"sub": user.email})
     refresh_token = create_refresh_token(data={"sub": user.email})
+
+    # Pre-resolve user roles in memory without extra roundtrips
+    from app.core.rbac import get_enforcer
+    enforcer = get_enforcer()
+    roles = []
+    if enforcer:
+        try:
+            group_roles = await enforcer.get_roles_for_user(user.email)
+            if not group_roles:
+                group_roles = await enforcer.get_implicit_roles_for_user(user.email)
+            roles = [{"name": r} for r in group_roles]
+        except Exception:
+            pass
+
+    user_resp = UserResponse(
+        id=user.id,
+        email=user.email,
+        is_active=user.is_active,
+        created_at=user.created_at,
+        roles=roles,
+    )
     
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+        "user": user_resp,
+    }
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token(
@@ -112,17 +138,13 @@ async def get_me(response: Response = Response(), current_user: User = Depends(g
     roles = []
     if enforcer:
         try:
-            await enforcer.load_policy()
             group_roles = await enforcer.get_roles_for_user(current_user.email)
             if not group_roles:
                 group_roles = await enforcer.get_implicit_roles_for_user(current_user.email)
             roles = [{"name": r} for r in group_roles]
         except Exception:
-            # fallback if casbin isn't fully loaded
             pass
-    # We must attach it to the Pydantic model response
-    # We can convert current_user to a dict or just set it
-    user_dict = {
+    return {
         "id": current_user.id,
         "email": current_user.email,
         "is_active": current_user.is_active,

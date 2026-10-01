@@ -11,6 +11,7 @@ import type { CurrentUser as User } from './hooks';
 interface TokenData {
   access_token: string;
   refresh_token: string;
+  user?: User;
 }
 
 interface AuthContextType {
@@ -45,12 +46,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (data: TokenData) => {
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
-      // Invalidate cache so next access fetches fresh user
-      await queryClient.invalidateQueries({ queryKey: QK.CURRENT_USER });
-      await refetch();
+      
+      if (data.user) {
+        // Immediate cache seed — zero-latency redirect to dashboard
+        queryClient.setQueryData(QK.CURRENT_USER, data.user);
+      } else {
+        await queryClient.invalidateQueries({ queryKey: QK.CURRENT_USER });
+        await refetch();
+      }
     },
     [queryClient, refetch]
   );
+
 
   /**
    * Logout — clears state immediately then revokes server-side.
