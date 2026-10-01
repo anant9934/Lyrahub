@@ -8,6 +8,7 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user, get_optional_current_user
 from app.models import User
 from app.core.rbac import get_enforcer
+from app.core.cache import catalog_cache
 from . import schema, service
 
 router = APIRouter(tags=["courses"])
@@ -54,6 +55,10 @@ async def list_courses(
             include_inactive = True
     else:
         response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+        cache_key = f"courses:list:{semester}:{course_type}:{category}:{search}:{page}:{page_size}"
+        cached = catalog_cache.get(cache_key)
+        if cached is not None:
+            return cached
 
     p = page if isinstance(page, int) else 1
     ps = page_size if isinstance(page_size, int) else 20
@@ -69,13 +74,16 @@ async def list_courses(
         include_inactive=include_inactive
     )
     pages = math.ceil(total / ps) if total > 0 else 1
-    return {
+    result = {
         "items": items,
         "total": total,
         "page": p,
         "page_size": ps,
         "pages": pages
     }
+    if not current_user:
+        catalog_cache.set(f"courses:list:{semester}:{course_type}:{category}:{search}:{page}:{page_size}", result, ttl=300)
+    return result
 
 
 @router.get("/stats", response_model=schema.CourseStatsResponse)
@@ -84,7 +92,14 @@ async def get_course_stats(
     db: AsyncSession = Depends(get_db)
 ):
     response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
-    return await service.get_course_stats(db)
+    cache_key = "courses:stats"
+    cached = catalog_cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    result = await service.get_course_stats(db)
+    catalog_cache.set(cache_key, result, ttl=300)
+    return result
 
 
 @router.get("/me", response_model=List[schema.CourseResponse])
@@ -113,8 +128,15 @@ async def get_course_by_code(
             include_inactive = True
     else:
         response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+        cache_key = f"courses:code:{code}"
+        cached = catalog_cache.get(cache_key)
+        if cached is not None:
+            return cached
 
-    return await service.get_course_by_code(db, code, include_inactive=include_inactive)
+    result = await service.get_course_by_code(db, code, include_inactive=include_inactive)
+    if not current_user:
+        catalog_cache.set(f"courses:code:{code}", result, ttl=300)
+    return result
 
 
 @router.get("/{slug}", response_model=schema.CourseDetailResponse)
@@ -132,11 +154,15 @@ async def get_course(
             include_inactive = True
     else:
         response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+        cache_key = f"courses:slug:{slug}"
+        cached = catalog_cache.get(cache_key)
+        if cached is not None:
+            return cached
 
-    return await service.get_course_by_slug(db, slug, include_inactive=include_inactive)
-
-
-
+    result = await service.get_course_by_slug(db, slug, include_inactive=include_inactive)
+    if not current_user:
+        catalog_cache.set(f"courses:slug:{slug}", result, ttl=300)
+    return result
 
 
 @router.post("", response_model=schema.CourseResponse, status_code=status.HTTP_201_CREATED)
@@ -147,6 +173,7 @@ async def create_course(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("courses:")
     return await service.create_course(db, data, current_user)
 
 
@@ -159,6 +186,7 @@ async def update_course(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("courses:")
     return await service.update_course(db, id, data, current_user)
 
 
@@ -170,6 +198,7 @@ async def delete_course(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("courses:")
     await service.delete_course(db, id, current_user)
     return {"message": "Course successfully deleted"}
 
@@ -183,6 +212,7 @@ async def assign_course_faculty(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("courses:")
     return await service.assign_course_faculty(db, id, data, current_user)
 
 
@@ -195,6 +225,7 @@ async def remove_course_faculty(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("courses:")
     await service.remove_course_faculty(db, id, faculty_id, current_user)
     return {"message": "Faculty assignment removed successfully"}
 
@@ -205,3 +236,4 @@ async def list_course_faculty(
     db: AsyncSession = Depends(get_db)
 ):
     return await service.get_course_faculty_list(db, id)
+

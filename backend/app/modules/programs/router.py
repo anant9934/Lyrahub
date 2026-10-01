@@ -7,6 +7,7 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user, get_optional_current_user
 from app.models import User
 from app.core.rbac import get_enforcer
+from app.core.cache import catalog_cache
 from . import schema, service
 
 router = APIRouter(tags=["programs"])
@@ -49,6 +50,10 @@ async def list_programs(
             include_inactive = True
     else:
         response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+        cache_key = f"programs:list:{level}:{degree}"
+        cached = catalog_cache.get(cache_key)
+        if cached is not None:
+            return cached
 
     items, total = await service.get_programs(
         db=db,
@@ -56,7 +61,10 @@ async def list_programs(
         degree=degree,
         include_inactive=include_inactive
     )
-    return {"items": items, "total": total}
+    result = {"items": items, "total": total}
+    if not current_user:
+        catalog_cache.set(f"programs:list:{level}:{degree}", result, ttl=300)
+    return result
 
 
 @router.get("/{slug}", response_model=schema.ProgramDetailResponse)
@@ -74,11 +82,15 @@ async def get_program(
             include_inactive = True
     else:
         response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+        cache_key = f"programs:slug:{slug}"
+        cached = catalog_cache.get(cache_key)
+        if cached is not None:
+            return cached
 
-    return await service.get_program_by_slug(db, slug, include_inactive=include_inactive)
-
-
-
+    result = await service.get_program_by_slug(db, slug, include_inactive=include_inactive)
+    if not current_user:
+        catalog_cache.set(f"programs:slug:{slug}", result, ttl=300)
+    return result
 
 
 @router.post("", response_model=schema.ProgramResponse, status_code=status.HTTP_201_CREATED)
@@ -89,6 +101,7 @@ async def create_program(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("programs:")
     return await service.create_program(db, data, current_user)
 
 
@@ -101,6 +114,7 @@ async def update_program(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("programs:")
     return await service.update_program(db, id, data, current_user)
 
 
@@ -112,6 +126,7 @@ async def delete_program(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("programs:")
     await service.delete_program(db, id, current_user)
     return {"message": "Program successfully deleted"}
 
@@ -125,6 +140,7 @@ async def add_program_course(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("programs:")
     pc = await service.add_program_course(db, id, data, current_user)
     return {
         "message": "Course mapped successfully",
@@ -144,5 +160,7 @@ async def remove_program_course(
 ):
     role = await _get_role(current_user)
     _require_admin_or_hod(role)
+    catalog_cache.invalidate("programs:")
     await service.remove_program_course(db, id, course_id, current_user)
     return {"message": "Course mapping removed successfully"}
+

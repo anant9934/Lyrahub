@@ -1,5 +1,15 @@
+import os
 from sqlalchemy import create_engine
-engine = create_engine('postgresql://neondb_owner:npg_eGlQ7XzaACO2@ep-wispy-mountain-a7s9mb0a-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require')
+
+database_url = os.getenv("DATABASE_URL")
+if not database_url:
+    raise RuntimeError("DATABASE_URL environment variable is required")
+
+# Handle asyncpg prefix if present for sync engine
+if database_url.startswith("postgresql+asyncpg://"):
+    database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+
+engine = create_engine(database_url)
 with engine.connect() as conn:
     conn.execute(engine.dialect.statement_compiler(engine.dialect, None).statement('CREATE EXTENSION IF NOT EXISTS vector'))
     conn.commit()

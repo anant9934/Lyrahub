@@ -1,3 +1,4 @@
+import asyncio
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 import redis.asyncio as redis
@@ -14,24 +15,22 @@ async def live(response: Response = Response()):
     return {"status": "ok"}
 
 @router.get("/ready")
-async def ready(response: Response = Response(), db: AsyncSession = Depends(get_db), redis_client: redis.Redis = Depends(get_redis)):
+async def ready(response: Response = Response(), db: AsyncSession = Depends(get_db)):
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
 
-
+    # Fast bounded check for DB connection
     try:
-        await db.execute(select(1))
+        await asyncio.wait_for(db.execute(select(1)), timeout=1.5)
         db_status = "ok"
-    except Exception:
-        db_status = "error"
-        
-    try:
-        await redis_client.ping()
-        redis_status = "ok"
-    except Exception:
-        redis_status = "error"
-        
-    if db_status != "ok" or redis_status != "ok":
-        raise HTTPException(status_code=503, detail={"status": "not ready", "checks": {"db": db_status, "redis": redis_status}})
-        
-    return {"status": "ready", "checks": {"db": db_status, "redis": redis_status}}
+    except Exception as e:
+        db_status = f"error: {str(e)[:50]}"
+
+    if db_status != "ok":
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={"status": "not ready", "checks": {"db": db_status}}
+        )
+
+    return {"status": "ready", "checks": {"db": db_status}}
+
 

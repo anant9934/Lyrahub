@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.dependencies import get_current_active_user
 from app.models import User
+from app.core.cache import catalog_cache
 from app.modules.leadership.schema import (
     LeadershipCreate,
     LeadershipUpdate,
@@ -24,7 +25,14 @@ async def list_leadership(
 ):
     """Public endpoint to list all leadership profiles."""
     response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
-    return await service.list_leadership(db, role=role)
+    cache_key = f"leadership:list:{role}"
+    cached = catalog_cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    result = await service.list_leadership(db, role=role)
+    catalog_cache.set(cache_key, result, ttl=300)
+    return result
 
 @router.get("/{role}/stats", response_model=LeadershipStatsResponse)
 async def get_leadership_stats(
@@ -34,7 +42,14 @@ async def get_leadership_stats(
 ):
     """Public endpoint returning department statistics for a leadership post."""
     response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
-    return await service.get_department_stats(db, role)
+    cache_key = f"leadership:stats:{role}"
+    cached = catalog_cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    result = await service.get_department_stats(db, role)
+    catalog_cache.set(cache_key, result, ttl=300)
+    return result
 
 @router.get("/{role}", response_model=LeadershipResponse)
 async def get_leadership_by_role(
@@ -44,7 +59,14 @@ async def get_leadership_by_role(
 ):
     """Public endpoint returning the active leadership profile for a role ('hod', 'cos', 'hos')."""
     response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
-    return await service.get_leadership_by_role(db, role)
+    cache_key = f"leadership:role:{role}"
+    cached = catalog_cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    result = await service.get_leadership_by_role(db, role)
+    catalog_cache.set(cache_key, result, ttl=300)
+    return result
 
 
 
@@ -75,6 +97,7 @@ async def create_leadership(
 ):
     """Create leadership profile (Admin only)."""
     await _require_admin(current_user)
+    catalog_cache.invalidate("leadership:")
     return await service.create_leadership(db, body, current_user.id)
 
 @router.patch("/{id}", response_model=LeadershipResponse)
@@ -86,6 +109,7 @@ async def update_leadership(
 ):
     """Update leadership profile (Admin only)."""
     await _require_admin(current_user)
+    catalog_cache.invalidate("leadership:")
     return await service.update_leadership(db, id, body, current_user.id)
 
 @router.delete("/{id}", response_model=Dict[str, Any])
@@ -96,5 +120,7 @@ async def delete_leadership(
 ):
     """Soft-delete leadership profile (Admin only)."""
     await _require_admin(current_user)
+    catalog_cache.invalidate("leadership:")
     return await service.delete_leadership(db, id, current_user.id)
+
 
