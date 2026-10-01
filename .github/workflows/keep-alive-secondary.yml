@@ -1,0 +1,35 @@
+name: Secondary Keep-Alive & Warm Monitor
+
+on:
+  schedule:
+    # Runs every 10 minutes as redundant fallback to the 4-min Cloudflare Worker
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-backend:
+    name: Ping Production Backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Send Warm Request to Backend
+        run: |
+          BACKEND_URL="${{ secrets.BACKEND_URL || 'https://lyrahub.onrender.com' }}"
+          TARGET_URL="${BACKEND_URL%/}/api/v1/health/warm"
+          echo "Sending keep-alive warm request to ${TARGET_URL}"
+          
+          HTTP_STATUS=$(curl -s -o /tmp/warm_resp.json -w "%{http_code}" --max-time 15 \
+            -H "User-Agent: Lyrahub-SecondaryMonitor/1.0" \
+            "${TARGET_URL}") || true
+            
+          echo "HTTP Response Status: ${HTTP_STATUS}"
+          if [ -f /tmp/warm_resp.json ]; then
+            cat /tmp/warm_resp.json
+            echo ""
+          fi
+          
+          if [ "${HTTP_STATUS}" != "200" ]; then
+            echo "WARNING: Backend returned status ${HTTP_STATUS}"
+            exit 1
+          fi
+          echo "Warm check successful. Database and process kept warm."

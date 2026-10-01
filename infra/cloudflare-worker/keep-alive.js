@@ -11,7 +11,7 @@
 
 const PING_TIMEOUT_MS = 10000;
 
-function resolveHealthUrl(rawBackendUrl) {
+function resolveHealthUrl(rawBackendUrl, customPath) {
   if (!rawBackendUrl || typeof rawBackendUrl !== "string") {
     return null;
   }
@@ -19,9 +19,10 @@ function resolveHealthUrl(rawBackendUrl) {
   // Strip trailing slashes
   base = base.replace(/\/+$/, "");
   // Strip existing health paths if provided in env var
-  base = base.replace(/\/api\/v1\/health\/(live|ready)$/, "");
+  base = base.replace(/\/api\/v1\/health\/(live|ready|warm)$/, "");
   base = base.replace(/\/api\/v1$/, "");
-  return `${base}/api/v1/health/ready`;
+  const path = customPath || "/api/v1/health/ready";
+  return `${base}${path.startsWith('/') ? path : '/' + path}`;
 }
 
 export default {
@@ -42,7 +43,9 @@ export default {
 
 async function pingBackend(env) {
   const backendUrl = env?.BACKEND_URL;
-  const targetUrl = resolveHealthUrl(backendUrl);
+  const targetPath = env?.TARGET_PATH || "/api/v1/health/ready";
+  const targetUrl = resolveHealthUrl(backendUrl, targetPath);
+
 
   if (!targetUrl) {
     return {
