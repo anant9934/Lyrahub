@@ -3,8 +3,9 @@ main = "keep-alive.js"
 compatibility_date = "2024-01-01"
 
 [triggers]
-crons = ["*/14 * * * *"]   # every 14 minutes
+crons = ["*/4 * * * *"]   # every 4 minutes (Render free spins down after 15 min idle)
 
 [vars]
-# Override BACKEND_URL here if needed, or set as a secret:
+# Configure BACKEND_URL (e.g. https://lyrahub-backend.onrender.com) or set as secret:
 # wrangler secret put BACKEND_URL
+

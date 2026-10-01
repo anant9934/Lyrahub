@@ -170,7 +170,7 @@ npx vercel --prod
 
    | Variable | Value |
    |---|---|
-   | `NEXT_PUBLIC_API_URL` | `https://your-backend.onrender.com/api/v1` |
+   | `NEXT_PUBLIC_API_URL` | `https://<your-backend>.onrender.com/api/v1` |
    | `NEXT_PUBLIC_APP_URL` | `https://lyrahub.vercel.app` |
 
 5. Deploy. Vercel builds with `npm ci && npm run build`.
@@ -184,7 +184,7 @@ npx vercel --prod
 
 ### Step 5 — Keep-Alive (Cloudflare Worker)
 
-Prevents Render free-tier from sleeping.
+Prevents Render free-tier from sleeping and exercises the database readiness check.
 
 ```bash
 # Install Wrangler
@@ -193,12 +193,16 @@ wrangler login
 
 cd infra/cloudflare-worker
 
-# Edit keep-alive.js — replace BACKEND_URL with your Render URL
+# Set your backend URL as a secret:
+wrangler secret put BACKEND_URL
+# Enter your Render URL (e.g. https://lyrahub-backend.onrender.com)
+
 # Then deploy:
 wrangler deploy
 ```
 
-The Worker runs on a cron every **14 minutes**, calling `/api/v1/health/live`.
+The Worker runs on a cron every **4 minutes**, calling `/api/v1/health/ready`.
+
 
 ---
 

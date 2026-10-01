@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi.security import OAuth2PasswordRequestForm
@@ -51,9 +51,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     is_valid = False
     if user:
         is_valid = verify_password(form_data.password, user.password_hash)
-        # Support both student123 and password123 for demo student account
-        if not is_valid and user.email == "student@aiml.hub" and form_data.password in ("student123", "password123"):
-            is_valid = True
             
     if not user or not is_valid:
         raise HTTPException(
@@ -108,7 +105,8 @@ async def refresh_token(
     return {"access_token": access_token, "refresh_token": refresh_token_new, "token_type": "bearer"}
 
 @router.get("/me", response_model=UserResponse)
-async def get_me(current_user: User = Depends(get_current_active_user)):
+async def get_me(response: Response = Response(), current_user: User = Depends(get_current_active_user)):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, private"
     from app.core.rbac import get_enforcer
     enforcer = get_enforcer()
     roles = []

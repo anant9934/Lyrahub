@@ -49,9 +49,8 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 
 EXPOSE ${PORT}
 
-# Run migrations then start server
-CMD alembic upgrade head && \
-    uvicorn app.main:app \
+# Start server (migrations run in pre-deploy phase)
+CMD uvicorn app.main:app \
         --host 0.0.0.0 \
         --port ${PORT} \
         --workers 2 \
@@ -59,3 +58,4 @@ CMD alembic upgrade head && \
         --http httptools \
         --proxy-headers \
         --forwarded-allow-ips='*'
+

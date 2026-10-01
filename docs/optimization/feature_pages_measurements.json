@@ -1,0 +1,36 @@
+{
+  "projects": {
+    "dom_loaded_ms": 642,
+    "initial_loading_text_visible": false,
+    "initial_skeleton_visible": true,
+    "total_time_to_cards_ms": 644,
+    "api_calls": [
+      {
+        "url": "http://localhost:8000/api/v1/auth/me",
+        "duration_ms": 2,
+        "status": 200
+      },
+      {
+        "url": "http://localhost:8000/api/v1/auth/me"
+      },
+      {
+        "url": "http://localhost:8000/api/v1/auth/me"
+      }
+    ]
+  },
+  "courses": {
+    "dom_loaded_ms": 531,
+    "initial_false_empty_state": false,
+    "shows_zero_of_zero_text": false,
+    "total_time_to_courses_loaded_ms": 9837
+  },
+  "ranking": {
+    "dom_loaded_ms": 329,
+    "total_time_to_table_ms": 329,
+    "breakdown_modal_latency": "Modal button not found or delayed"
+  },
+  "aida": {
+    "launcher_click_to_open_ms": null,
+    "query_to_rendered_response_ms": "SyntaxError: Failed to execute 'querySelector' on 'Document': 'button[aria-label=\"AIDA\"], button:has-text(\"AIDA\"), button:has-text(\"Ask AIDA\")' is not a valid selector."
+  }
+}

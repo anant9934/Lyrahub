@@ -1,6 +1,6 @@
 import uuid
 from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -18,27 +18,36 @@ router = APIRouter()
 
 @router.get("", response_model=List[LeadershipResponse])
 async def list_leadership(
+    response: Response = Response(),
     role: Optional[str] = Query(None, description="Optional role filter: 'hod', 'cos', 'hos'"),
     db: AsyncSession = Depends(get_db)
 ):
     """Public endpoint to list all leadership profiles."""
+    response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
     return await service.list_leadership(db, role=role)
 
 @router.get("/{role}/stats", response_model=LeadershipStatsResponse)
 async def get_leadership_stats(
     role: str,
+    response: Response = Response(),
     db: AsyncSession = Depends(get_db)
 ):
     """Public endpoint returning department statistics for a leadership post."""
+    response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
     return await service.get_department_stats(db, role)
 
 @router.get("/{role}", response_model=LeadershipResponse)
 async def get_leadership_by_role(
     role: str,
+    response: Response = Response(),
     db: AsyncSession = Depends(get_db)
 ):
     """Public endpoint returning the active leadership profile for a role ('hod', 'cos', 'hos')."""
+    response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
     return await service.get_leadership_by_role(db, role)
+
+
+
 
 async def _require_admin(user: User):
     if user.email in ["admin@aiml.hub"]:

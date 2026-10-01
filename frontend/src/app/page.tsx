@@ -16,10 +16,11 @@ export default function Home() {
         <section className="relative w-full overflow-hidden min-h-[min(560px,calc(100dvh-64px))] md:h-[calc(100dvh-64px)] md:max-h-[820px] flex items-center">
           {/* Campus image — fills entire hero */}
           <Image
-            src="/images/hero-campus.png"
+            src="/images/hero-campus.webp"
             alt="AI & Machine Learning Department Campus"
             fill
             priority
+            sizes="(max-width: 768px) 100vw, 1200px"
             className="object-cover object-center"
           />
 

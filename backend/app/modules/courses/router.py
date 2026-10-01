@@ -1,7 +1,7 @@
 import math
 from uuid import UUID
 from typing import Optional, List
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -36,6 +36,7 @@ def _require_admin_or_hod(role: str):
 
 @router.get("", response_model=schema.CourseListResponse)
 async def list_courses(
+    response: Response = Response(),
     semester: Optional[int] = None,
     course_type: Optional[str] = None,
     category: Optional[str] = None,
@@ -47,9 +48,12 @@ async def list_courses(
 ):
     include_inactive = False
     if current_user:
+        response.headers["Cache-Control"] = "private, no-cache"
         role = await _get_role(current_user)
         if role in ["admin", "hod"]:
             include_inactive = True
+    else:
+        response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
 
     p = page if isinstance(page, int) else 1
     ps = page_size if isinstance(page_size, int) else 20
@@ -76,16 +80,20 @@ async def list_courses(
 
 @router.get("/stats", response_model=schema.CourseStatsResponse)
 async def get_course_stats(
+    response: Response = Response(),
     db: AsyncSession = Depends(get_db)
 ):
+    response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
     return await service.get_course_stats(db)
 
 
 @router.get("/me", response_model=List[schema.CourseResponse])
 async def get_my_courses(
+    response: Response = Response(),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    response.headers["Cache-Control"] = "private, no-store, no-cache, must-revalidate"
     role = await _get_role(current_user)
     return await service.get_my_courses(db, current_user, role)
 
@@ -93,14 +101,18 @@ async def get_my_courses(
 @router.get("/code/{code}", response_model=schema.CourseDetailResponse)
 async def get_course_by_code(
     code: str,
+    response: Response = Response(),
     db: AsyncSession = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user)
 ):
     include_inactive = False
     if current_user:
+        response.headers["Cache-Control"] = "private, no-cache"
         role = await _get_role(current_user)
         if role in ["admin", "hod"]:
             include_inactive = True
+    else:
+        response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
 
     return await service.get_course_by_code(db, code, include_inactive=include_inactive)
 
@@ -108,16 +120,23 @@ async def get_course_by_code(
 @router.get("/{slug}", response_model=schema.CourseDetailResponse)
 async def get_course(
     slug: str,
+    response: Response = Response(),
     db: AsyncSession = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user)
 ):
     include_inactive = False
     if current_user:
+        response.headers["Cache-Control"] = "private, no-cache"
         role = await _get_role(current_user)
         if role in ["admin", "hod"]:
             include_inactive = True
+    else:
+        response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
 
     return await service.get_course_by_slug(db, slug, include_inactive=include_inactive)
+
+
+
 
 
 @router.post("", response_model=schema.CourseResponse, status_code=status.HTTP_201_CREATED)

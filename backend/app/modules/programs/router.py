@@ -1,6 +1,6 @@
 from uuid import UUID
 from typing import Optional, List
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -35,6 +35,7 @@ def _require_admin_or_hod(role: str):
 
 @router.get("", response_model=schema.ProgramListResponse)
 async def list_programs(
+    response: Response = Response(),
     level: Optional[str] = None,
     degree: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
@@ -42,9 +43,12 @@ async def list_programs(
 ):
     include_inactive = False
     if current_user:
+        response.headers["Cache-Control"] = "private, no-cache"
         role = await _get_role(current_user)
         if role in ["admin", "hod"]:
             include_inactive = True
+    else:
+        response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
 
     items, total = await service.get_programs(
         db=db,
@@ -58,16 +62,23 @@ async def list_programs(
 @router.get("/{slug}", response_model=schema.ProgramDetailResponse)
 async def get_program(
     slug: str,
+    response: Response = Response(),
     db: AsyncSession = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user)
 ):
     include_inactive = False
     if current_user:
+        response.headers["Cache-Control"] = "private, no-cache"
         role = await _get_role(current_user)
         if role in ["admin", "hod"]:
             include_inactive = True
+    else:
+        response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
 
     return await service.get_program_by_slug(db, slug, include_inactive=include_inactive)
+
+
+
 
 
 @router.post("", response_model=schema.ProgramResponse, status_code=status.HTTP_201_CREATED)

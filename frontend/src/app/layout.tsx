@@ -52,7 +52,7 @@ export const metadata: Metadata = {
       "The intelligence layer for the AI & ML department. Connecting students, faculty, research, projects, and institutional data.",
     images: [
       {
-        url: "/images/hero-campus.png",
+        url: "/images/hero-campus.webp",
         width: 1200,
         height: 630,
         alt: "AIMETRA — Department of Artificial Intelligence & Machine Learning",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     title: "AIMETRA — AI & ML Education, Talent, Research & Analytics",
     description:
       "The intelligence layer for the AI & ML department. Connecting students, faculty, research, projects, and institutional data.",
-    images: ["/images/hero-campus.png"],
+    images: ["/images/hero-campus.webp"],
   },
   icons: {
     icon: "/favicon.ico",

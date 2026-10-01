@@ -5,8 +5,8 @@
  */
 
 // Singleton pipeline instance (Lazy-loaded on first invocation)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let slmPipeline: any = null
-let isModelLoading = false
 
 export interface BrowserSLMResult {
   text: string
@@ -20,6 +20,7 @@ export interface BrowserSLMResult {
 
 export async function hasWebGPUSupport(): Promise<boolean> {
   if (typeof navigator === "undefined") return false
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return Boolean("gpu" in navigator && (navigator as any).gpu)
 }
 
@@ -35,7 +36,6 @@ export async function runBrowserSLM(
   let modelLoadMs = 0
 
   if (!slmPipeline) {
-    isModelLoading = true
     const t0 = performance.now()
 
     // Dynamically import @xenova/transformers only on client invocation
@@ -43,8 +43,10 @@ export async function runBrowserSLM(
     env.allowLocalModels = false
     env.useBrowserCache = true
 
-    slmPipeline = await pipeline("question-answering", modelId, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    slmPipeline = await (pipeline as any)("question-answering", modelId, {
       quantized: true,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       progress_callback: (p: any) => {
         if (p.status === "progress" && onProgress && p.progress !== undefined) {
           onProgress(Math.round(p.progress))
@@ -52,7 +54,6 @@ export async function runBrowserSLM(
       },
     })
     modelLoadMs = Math.round(performance.now() - t0)
-    isModelLoading = false
   }
 
   const defaultContext =

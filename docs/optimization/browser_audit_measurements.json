@@ -1,0 +1,130 @@
+{
+  "timestamp": "2026-09-27T09:39:25.461Z",
+  "startup": {
+    "dns_ms": 0,
+    "tcp_ms": 0,
+    "tls_ms": 0,
+    "ttfb_ms": 50,
+    "html_transfer_ms": 23,
+    "dom_interactive_ms": 133,
+    "dom_content_loaded_ms": 133,
+    "load_complete_ms": 182,
+    "fcp_ms": 140,
+    "lcp_ms": 140,
+    "total_duration_ms": 182
+  },
+  "loginFlow": {
+    "button_state_after_100ms": {
+      "text": "Sign in",
+      "disabled": false
+    },
+    "visual_ack_immediate": false,
+    "login_api_call": null,
+    "auth_me_api_call": null,
+    "student_me_api_call": null,
+    "login_click_to_dashboard_route_ms": 35002,
+    "login_click_to_dashboard_ready_ms": 35008,
+    "duplicate_requests": [],
+    "all_requests_during_login": []
+  },
+  "navigation": {
+    "Dashboard → Projects": {
+      "from": "/dashboard",
+      "to": "/projects",
+      "click_feedback_ms": 0,
+      "route_transition_ms": 629,
+      "total_interactive_ms": 1631,
+      "requests_triggered": 18,
+      "api_requests": []
+    },
+    "Projects → Courses": {
+      "from": "/projects",
+      "to": "/courses",
+      "click_feedback_ms": 0,
+      "route_transition_ms": 334,
+      "total_interactive_ms": 1336,
+      "requests_triggered": 17,
+      "api_requests": []
+    },
+    "Courses → Ranking": {
+      "from": "/courses",
+      "to": "/ranking",
+      "click_feedback_ms": 0,
+      "route_transition_ms": 313,
+      "total_interactive_ms": 1314,
+      "requests_triggered": 18,
+      "api_requests": []
+    },
+    "Ranking → Programs": {
+      "from": "/ranking",
+      "to": "/programs",
+      "click_feedback_ms": 0,
+      "route_transition_ms": 286,
+      "total_interactive_ms": 1288,
+      "requests_triggered": 17,
+      "api_requests": []
+    },
+    "Programs → Events": {
+      "from": "/programs",
+      "to": "/events",
+      "click_feedback_ms": 13,
+      "route_transition_ms": 227,
+      "total_interactive_ms": 1229,
+      "requests_triggered": 16,
+      "api_requests": []
+    },
+    "Events → Opportunities": {
+      "from": "/events",
+      "to": "/opportunities",
+      "click_feedback_ms": 6,
+      "route_transition_ms": 224,
+      "total_interactive_ms": 1225,
+      "requests_triggered": 17,
+      "api_requests": []
+    },
+    "Opportunities → Dashboard": {
+      "from": "/opportunities",
+      "to": "/dashboard",
+      "click_feedback_ms": 7,
+      "route_transition_ms": 504,
+      "total_interactive_ms": 1506,
+      "requests_triggered": 17,
+      "api_requests": []
+    }
+  },
+  "buttons": [],
+  "pageAudits": {
+    "projects": {
+      "initial_loader_visible": false,
+      "loader_duration_ms": 2
+    },
+    "courses": {
+      "false_empty_state_rendered_on_load": false,
+      "initial_loader_visible": false,
+      "time_to_courses_loaded_ms": 25002
+    },
+    "ranking": {
+      "initial_loader_visible": false,
+      "time_to_ranking_loaded_ms": 25001
+    }
+  },
+  "longTasks": [],
+  "networkWaterfalls": {},
+  "viewports": {
+    "Mobile_320": {
+      "render_ms": 88
+    },
+    "Mobile_375": {
+      "render_ms": 124
+    },
+    "Mobile_390": {
+      "render_ms": 127
+    },
+    "Tablet_768": {
+      "render_ms": 204
+    },
+    "Desktop_1440": {
+      "render_ms": 134
+    }
+  }
+}

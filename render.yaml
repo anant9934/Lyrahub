@@ -11,6 +11,7 @@ services:
     plan: free                 # Upgrade to starter ($7/mo) for always-on
     branch: main
     healthCheckPath: /api/v1/health/live
+    preDeployCommand: alembic upgrade head
     envVars:
       - key: ENVIRONMENT
         value: production

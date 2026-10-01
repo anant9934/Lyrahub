@@ -209,46 +209,63 @@ export default function LoginPage() {
               </Button>
 
               {/* Demo Quick Logins */}
-              <div className="pt-2 flex flex-wrap gap-2 text-[10px] text-[#777777]">
-                <span>Quick demo:</span>
+              <div className="pt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-[#777777]">
+                <span className="font-medium text-[#444]">Quick demo:</span>
                 <button
                   type="button"
                   onClick={() => quickFill("student@aiml.hub", "student123")}
-                  className="underline hover:text-[#111111]"
+                  className="px-1.5 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
                 >
                   Student
                 </button>
-                <span>•</span>
                 <button
                   type="button"
                   onClick={() => quickFill("faculty@aiml.hub", "faculty123")}
-                  className="underline hover:text-[#111111]"
+                  className="px-1.5 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
                 >
                   Faculty
                 </button>
-                <span>•</span>
                 <button
                   type="button"
                   onClick={() => quickFill("hod@aiml.hub", "hod123")}
-                  className="underline hover:text-[#111111]"
+                  className="px-1.5 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
                 >
                   HOD
                 </button>
-                <span>•</span>
                 <button
                   type="button"
                   onClick={() => quickFill("admin@aiml.hub", "admin123")}
-                  className="underline hover:text-[#111111]"
+                  className="px-1.5 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
                 >
                   Admin
                 </button>
-                <span>•</span>
                 <button
                   type="button"
                   onClick={() => quickFill("alumni@aiml.hub", "alumni123")}
-                  className="underline hover:text-[#111111]"
+                  className="px-1.5 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
                 >
                   Alumni
+                </button>
+                <button
+                  type="button"
+                  onClick={() => quickFill("staff@aiml.hub", "staff123")}
+                  className="px-1.5 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
+                >
+                  Staff
+                </button>
+                <button
+                  type="button"
+                  onClick={() => quickFill("cos@aiml.hub", "cos123")}
+                  className="px-1.5 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
+                >
+                  COS
+                </button>
+                <button
+                  type="button"
+                  onClick={() => quickFill("hos@aiml.hub", "hos123")}
+                  className="px-1.5 py-0.5 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
+                >
+                  HOS
                 </button>
               </div>
 
@@ -344,10 +361,11 @@ export default function LoginPage() {
       {/* Right Column: Campus photography — flowering building */}
       <div className="hidden lg:block lg:flex-1 relative overflow-hidden border-l border-[#E5E5E5]">
         <Image
-          src="/images/login-campus.png"
+          src="/images/login-campus.webp"
           alt="AI & Machine Learning Department — Campus"
           fill
           priority
+          sizes="(max-width: 1024px) 0vw, 50vw"
           className="object-cover object-top"
         />
         {/* Strong bottom gradient so text is always readable */}
