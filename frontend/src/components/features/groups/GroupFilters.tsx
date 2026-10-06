@@ -26,17 +26,17 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
   );
 
   return (
-    <div className="bg-white p-4 rounded-xl border border-[#D6D6D6] space-y-3">
+    <div className="bg-white p-4 rounded-xl border border-[#DCE5F1] space-y-3">
       <div className="flex flex-col md:flex-row items-center gap-3">
         {/* Search */}
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-[#7A7A7A] absolute left-3 top-3" />
+          <Search className="w-4 h-4 text-[#667A93] absolute left-3 top-3" />
           <input
             type="text"
             value={filters.search}
             onChange={(e) => onChange({ ...filters, search: e.target.value })}
             placeholder="Search clubs, interest groups, societies by name or keyword..."
-            className="w-full pl-9 pr-4 py-2 border border-[#D6D6D6] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
+            className="w-full pl-9 pr-4 py-2 border border-[#DCE5F1] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
           />
         </div>
 
@@ -44,7 +44,7 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
         <select
           value={filters.category}
           onChange={(e) => onChange({ ...filters, category: e.target.value })}
-          className="w-full md:w-44 py-2 px-3 border border-[#D6D6D6] rounded-lg text-xs bg-white text-[#1E1E1E] focus:outline-none focus:border-[#94B0B8]"
+          className="w-full md:w-44 py-2 px-3 border border-[#DCE5F1] rounded-lg text-xs bg-white text-[#0F172A] focus:outline-none focus:border-[#94B0B8]"
         >
           <option value="">All Categories</option>
           <option value="technical">Technical</option>
@@ -58,7 +58,7 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
         <select
           value={filters.group_type}
           onChange={(e) => onChange({ ...filters, group_type: e.target.value })}
-          className="w-full md:w-40 py-2 px-3 border border-[#D6D6D6] rounded-lg text-xs bg-white text-[#1E1E1E] focus:outline-none focus:border-[#94B0B8]"
+          className="w-full md:w-40 py-2 px-3 border border-[#DCE5F1] rounded-lg text-xs bg-white text-[#0F172A] focus:outline-none focus:border-[#94B0B8]"
         >
           <option value="">All Types</option>
           <option value="club">Clubs</option>
@@ -74,7 +74,7 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
           className={`w-full md:w-auto flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-colors ${
             filters.is_official
               ? 'bg-[#EEF3EE] text-[#7A9A7E] border-[#7A9A7E]'
-              : 'bg-[#F2F2F1] text-[#5C5C5C] border-[#D6D6D6] hover:bg-white'
+              : 'bg-[#F6F8FC] text-[#526783] border-[#DCE5F1] hover:bg-white'
           }`}
         >
           <CheckCircle className="w-3.5 h-3.5" /> Official Only
@@ -84,7 +84,7 @@ export const GroupFilters: React.FC<GroupFiltersProps> = ({
           <button
             type="button"
             onClick={onReset}
-            className="flex items-center gap-1 text-xs text-[#B85C5C] hover:text-[#1E1E1E] px-2 py-1.5 transition-colors self-end md:self-center"
+            className="flex items-center gap-1 text-xs text-[#B85C5C] hover:text-[#0F172A] px-2 py-1.5 transition-colors self-end md:self-center"
           >
             <X className="w-3.5 h-3.5" /> Clear
           </button>

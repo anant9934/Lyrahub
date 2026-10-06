@@ -97,7 +97,7 @@ export const PersonPicker: React.FC<PersonPickerProps> = ({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <label className="text-sm font-semibold text-[#1E1E1E]">
+        <label className="text-sm font-semibold text-[#0F172A]">
           Select {storyType === 'student' ? 'Student' : 'Alumni'} *
         </label>
         {selectedPerson && (
@@ -108,21 +108,21 @@ export const PersonPicker: React.FC<PersonPickerProps> = ({
       </div>
 
       <div className="relative">
-        <Search className="w-4 h-4 text-[#7A7A7A] absolute left-3 top-3" />
+        <Search className="w-4 h-4 text-[#667A93] absolute left-3 top-3" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={`Search ${storyType} by name, reg no, or role...`}
-          className="w-full pl-9 pr-4 py-2 border border-[#D6D6D6] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
+          className="w-full pl-9 pr-4 py-2 border border-[#DCE5F1] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
         />
       </div>
 
-      <div className="max-h-48 overflow-y-auto border border-[#D6D6D6] rounded-lg bg-white divide-y divide-[#D6D6D6]">
+      <div className="max-h-48 overflow-y-auto border border-[#DCE5F1] rounded-lg bg-white divide-y divide-[#D6D6D6]">
         {loading ? (
-          <div className="p-3 text-center text-sm text-[#7A7A7A]">Loading {storyType}s...</div>
+          <div className="p-3 text-center text-sm text-[#667A93]">Loading {storyType}s...</div>
         ) : results.length === 0 ? (
-          <div className="p-3 text-center text-sm text-[#7A7A7A]">No {storyType}s found</div>
+          <div className="p-3 text-center text-sm text-[#667A93]">No {storyType}s found</div>
         ) : (
           results.map((p) => {
             const isSelected = selectedPersonId === p.id || selectedPerson?.id === p.id;
@@ -131,17 +131,17 @@ export const PersonPicker: React.FC<PersonPickerProps> = ({
                 key={p.id}
                 type="button"
                 onClick={() => handleSelect(p)}
-                className={`w-full text-left p-2.5 flex items-center justify-between hover:bg-[#F2F2F1] transition-colors ${
+                className={`w-full text-left p-2.5 flex items-center justify-between hover:bg-[#F6F8FC] transition-colors ${
                   isSelected ? 'bg-[#FAF3E2]' : ''
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#94B0B8]/20 flex items-center justify-center text-[#1E1E1E] font-medium text-xs">
+                  <div className="w-8 h-8 rounded-full bg-[#94B0B8]/20 flex items-center justify-center text-[#0F172A] font-medium text-xs">
                     {p.type === 'student' ? <User className="w-4 h-4 text-[#6B8FA3]" /> : <GraduationCap className="w-4 h-4 text-[#EEBE1E]" />}
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-[#1E1E1E]">{p.name}</div>
-                    <div className="text-xs text-[#7A7A7A]">
+                    <div className="text-sm font-medium text-[#0F172A]">{p.name}</div>
+                    <div className="text-xs text-[#667A93]">
                       {p.role} {p.company ? `at ${p.company}` : ''} {p.batch_year ? `• Batch ${p.batch_year}` : ''}
                     </div>
                   </div>

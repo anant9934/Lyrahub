@@ -10,7 +10,7 @@ interface DeadlineCountdownProps {
 export const DeadlineCountdown: React.FC<DeadlineCountdownProps> = ({ deadline }) => {
   if (!deadline) {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-[#7A7A7A]">
+      <span className="inline-flex items-center gap-1 text-xs text-[#667A93]">
         <Clock className="w-3.5 h-3.5" />
         <span>Open / Rolling</span>
       </span>
@@ -51,8 +51,8 @@ export const DeadlineCountdown: React.FC<DeadlineCountdownProps> = ({ deadline }
   }
 
   return (
-    <span className="inline-flex items-center gap-1 text-xs text-[#5C5C5C]">
-      <Clock className="w-3.5 h-3.5 text-[#7A7A7A]" />
+    <span className="inline-flex items-center gap-1 text-xs text-[#526783]">
+      <Clock className="w-3.5 h-3.5 text-[#667A93]" />
       <span>{diffDays} days left</span>
     </span>
   );

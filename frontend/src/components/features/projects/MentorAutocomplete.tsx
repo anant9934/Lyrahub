@@ -28,13 +28,13 @@ export function MentorAutocomplete({ value, onChange, required = false }: Mentor
 
   return (
     <div className="space-y-1">
-      <label className="block text-xs font-semibold text-[#1E1E1E]">
+      <label className="block text-xs font-semibold text-[#0F172A]">
         Faculty Mentor {required && <span className="text-[#B85C5C]">*</span>}
       </label>
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3.5 py-2 text-sm text-[#1E1E1E] bg-[#F2F2F1] border border-[#D6D6D6] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1E1E1E]"
+        className="w-full px-3.5 py-2 text-sm text-[#0F172A] bg-[#F6F8FC] border border-[#DCE5F1] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#0F172A]"
         required={required}
       >
         <option value="">Select a Faculty Mentor...</option>

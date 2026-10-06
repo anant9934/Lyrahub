@@ -99,7 +99,7 @@ export function ResumeDropzone({ onSuccess }: ResumeDropzoneProps) {
       <div
         {...getRootProps()}
         className={`border-2 border-dashed p-10 text-center rounded-lg cursor-pointer transition-colors ${
-          isDragActive ? "border-sage-500 bg-canvas-alt" : "border-[#D6D6D6] hover:border-[#94BD88]"
+          isDragActive ? "border-sage-500 bg-canvas-alt" : "border-[#DCE5F1] hover:border-[#94BD88]"
         }`}
       >
         <input {...getInputProps()} />

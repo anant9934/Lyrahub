@@ -61,9 +61,9 @@ export function ProjectTeamGrid({
   };
 
   const roleColors: Record<string, string> = {
-    lead: "bg-[#EEBE1E]/20 text-[#855B00]",
+    lead: "bg-[#FACC15]/20 text-[#855B00]",
     advisor: "bg-[#94B0B8]/20 text-[#2C4A52]",
-    contributor: "bg-gray-100 text-[#1E1E1E]",
+    contributor: "bg-gray-100 text-[#0F172A]",
   };
 
   return (
@@ -72,10 +72,10 @@ export function ProjectTeamGrid({
         {members.map((m) => (
           <div
             key={m.id}
-            className="p-4 bg-white border border-[#D6D6D6] rounded-xl flex items-center justify-between shadow-sm"
+            className="p-4 bg-white border border-[#DCE5F1] rounded-xl flex items-center justify-between shadow-sm"
           >
             <div>
-              <div className="text-sm font-bold text-[#1E1E1E]">
+              <div className="text-sm font-bold text-[#0F172A]">
                 {m.student_reg_no ? `Reg No: ${m.student_reg_no}` : "Student"}
               </div>
               <span
@@ -99,8 +99,8 @@ export function ProjectTeamGrid({
       </div>
 
       {canManage && (
-        <form onSubmit={handleAdd} className="p-5 bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl space-y-3">
-          <h4 className="text-sm font-bold text-[#1E1E1E]">Add Team Member</h4>
+        <form onSubmit={handleAdd} className="p-5 bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl space-y-3">
+          <h4 className="text-sm font-bold text-[#0F172A]">Add Team Member</h4>
           {error && <div className="text-xs text-[#B85C5C]">{error}</div>}
           <div className="flex flex-col sm:flex-row gap-3">
             <input
@@ -108,13 +108,13 @@ export function ProjectTeamGrid({
               placeholder="Student UUID..."
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
-              className="flex-1 px-3 py-2 text-sm bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+              className="flex-1 px-3 py-2 text-sm bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
               required
             />
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="px-3 py-2 text-sm bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+              className="px-3 py-2 text-sm bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
             >
               <option value="contributor">Contributor</option>
               <option value="lead">Lead</option>
@@ -123,7 +123,7 @@ export function ProjectTeamGrid({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 bg-[#1E1E1E] text-white text-sm font-semibold rounded-lg hover:bg-gray-800 disabled:opacity-50"
+              className="px-4 py-2 bg-[#0F172A] text-white text-sm font-semibold rounded-lg hover:bg-gray-800 disabled:opacity-50"
             >
               {isSubmitting ? "Adding..." : "Add Member"}
             </button>

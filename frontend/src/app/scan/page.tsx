@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { WorkspaceHero } from "@/components/layout/WorkspaceHero";
 
 export default function QRScannerPage() {
   const { user } = useAuth();
@@ -159,17 +160,7 @@ export default function QRScannerPage() {
         </Link>
       </div>
 
-      <div className="text-center space-y-1">
-        <div className="w-12 h-12 rounded-2xl bg-[#0F766E]/10 text-[#0F766E] flex items-center justify-center mx-auto mb-2">
-          <QrCode className="w-6 h-6" />
-        </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Smart QR Scanner
-        </h1>
-        <p className="text-sm text-slate-500">
-          Scan attendance screens, symposium passes, or student badges.
-        </p>
-      </div>
+      <WorkspaceHero eyebrow="Campus tools" title={<>Scan. Check in. <span className="text-[#1478ef]">Keep moving.</span></>} description="Use your camera or enter a code to scan attendance screens, event passes, and student badges." tone="blue" icon={QrCode} />
 
       {/* Tabs */}
       <div className="flex bg-slate-100 p-1 rounded-2xl">
@@ -196,7 +187,7 @@ export default function QRScannerPage() {
       </div>
 
       {/* Scanner Box */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+      <div className="rounded-[26px] border border-[#dce5f1] bg-white p-6 shadow-[0_14px_38px_rgba(8,26,57,0.07)]">
         {activeTab === "camera" ? (
           <div className="space-y-4">
             <div

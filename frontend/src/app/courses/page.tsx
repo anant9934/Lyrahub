@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { BookOpen, PlusCircle, Sparkles } from 'lucide-react';
 import { CourseCard, Course } from '@/components/features/courses/CourseCard';
 import { CourseFilters } from '@/components/features/courses/CourseFilters';
@@ -54,16 +55,17 @@ export default function CoursesPage() {
     <div className="min-h-screen bg-white py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section — always immediate */}
-        <div className="relative overflow-hidden rounded-2xl bg-[#111111] text-white p-8 md:p-12 mb-8 shadow-subtle">
-          <div className="max-w-3xl relative z-10">
+        <div className="relative mb-8 overflow-hidden rounded-[30px] bg-[#071b3d] p-8 text-white shadow-[0_20px_52px_rgba(7,27,61,0.18)] md:p-12 lg:min-h-[320px] lg:pr-[40%]">
+          <div className="absolute inset-y-0 right-0 hidden w-[43%] [clip-path:polygon(20%_0,100%_0,100%_100%,0_100%)] lg:block"><Image src="/images/hero-campus.webp" alt="" fill sizes="43vw" className="object-cover" /><div className="absolute inset-0 bg-gradient-to-r from-[#071b3d]/75 to-transparent" /></div>
+          <div className="relative z-10 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/20 mb-4">
-              <Sparkles className="w-3.5 h-3.5 text-[#2563EB]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#ffcf36]" />
               <span>Department Syllabus Catalog</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-              AI/ML Courses &amp; Syllabi
+            <h1 className="mb-4 text-4xl font-black leading-[1.02] tracking-[-0.055em] md:text-5xl">
+              Learn what <span className="text-[#ffcf36]">moves you.</span>
             </h1>
-            <p className="text-[#D6D6D6] text-base md:text-lg leading-relaxed mb-6">
+            <p className="text-[#DCE5F1] text-base md:text-lg leading-relaxed mb-6">
               Browse course curriculum, course outcomes (COs), evaluation matrices, textbook
               references, and mapped faculty mentors.
             </p>
@@ -73,7 +75,7 @@ export default function CoursesPage() {
             <div className="mt-6 md:mt-0 md:absolute md:top-12 md:right-12 z-20">
               <Link
                 href="/courses/manage"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white hover:bg-neutral-100 text-[#111111] font-semibold text-xs transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white hover:bg-neutral-100 text-[#0F172A] font-semibold text-xs transition-all"
               >
                 <PlusCircle className="w-4 h-4" />
                 <span>Manage Courses</span>
@@ -98,7 +100,7 @@ export default function CoursesPage() {
         {/* Count row — only show when data is confirmed, never during loading */}
         <div className="flex items-center justify-between mb-6 px-1 h-6">
           {!isInitialLoad && !isError && (
-            <span className="text-xs font-semibold text-[#7A7A7A] flex items-center gap-2">
+            <span className="text-xs font-semibold text-[#667A93] flex items-center gap-2">
               Showing {courses.length} of {total} courses
               {isRefreshing && (
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#2563EB] animate-pulse" />
@@ -113,9 +115,9 @@ export default function CoursesPage() {
           <CoursesGridSkeleton count={6} />
         ) : isError ? (
           // ERROR state
-          <div className="bg-white rounded-2xl border border-[#D6D6D6] p-12 text-center text-[#7A7A7A]">
-            <BookOpen className="w-12 h-12 mx-auto text-[#9A9A9A] mb-3 opacity-50" />
-            <h3 className="text-lg font-bold text-[#1E1E1E] mb-1">Couldn&apos;t load courses</h3>
+          <div className="bg-white rounded-2xl border border-[#DCE5F1] p-12 text-center text-[#667A93]">
+            <BookOpen className="w-12 h-12 mx-auto text-[#71849B] mb-3 opacity-50" />
+            <h3 className="text-lg font-bold text-[#0F172A] mb-1">Couldn&apos;t load courses</h3>
             <p className="text-sm mb-4">
               There was a problem fetching the course catalog. Please try again.
             </p>
@@ -135,9 +137,9 @@ export default function CoursesPage() {
           </div>
         ) : (
           // SUCCESS EMPTY — only after confirmed empty response
-          <div className="bg-white rounded-2xl border border-[#D6D6D6] p-12 text-center text-[#7A7A7A]">
-            <BookOpen className="w-12 h-12 mx-auto text-[#9A9A9A] mb-3 opacity-50" />
-            <h3 className="text-lg font-bold text-[#1E1E1E] mb-1">No Courses Found</h3>
+          <div className="bg-white rounded-2xl border border-[#DCE5F1] p-12 text-center text-[#667A93]">
+            <BookOpen className="w-12 h-12 mx-auto text-[#71849B] mb-3 opacity-50" />
+            <h3 className="text-lg font-bold text-[#0F172A] mb-1">No Courses Found</h3>
             <p className="text-sm">
               {debouncedSearch || semester !== 'all' || courseType !== 'all' || category !== 'all'
                 ? 'Try broadening your search criteria or resetting filters.'

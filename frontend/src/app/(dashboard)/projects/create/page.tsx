@@ -72,14 +72,14 @@ export default function CreateProjectPage() {
   };
 
   return (
-    <div className="p-8 max-w-3xl mx-auto space-y-6 bg-[#F2F2F1] min-h-screen">
-      <Link href="/projects" className="text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E]">
+    <div className="p-8 max-w-3xl mx-auto space-y-6 bg-[#F6F8FC] min-h-screen">
+      <Link href="/projects" className="text-xs font-semibold text-[#526783] hover:text-[#0F172A]">
         ← Back to Projects
       </Link>
 
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-8 shadow-sm">
-        <h1 className="text-2xl font-extrabold text-[#1E1E1E] mb-2">Create New Project</h1>
-        <p className="text-xs text-[#5C5C5C] mb-6">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-8 shadow-sm">
+        <h1 className="text-2xl font-extrabold text-[#0F172A] mb-2">Create New Project</h1>
+        <p className="text-xs text-[#526783] mb-6">
           Submit your AI/ML capstone, hackathon or research project into the department repository.
         </p>
 
@@ -90,7 +90,7 @@ export default function CreateProjectPage() {
         )}
 
         {/* Step indicator */}
-        <div className="flex border-b border-[#D6D6D6] mb-6">
+        <div className="flex border-b border-[#DCE5F1] mb-6">
           {["Basics", "Mentorship", "Tech & Links"].map((name, i) => (
             <button
               key={name}
@@ -98,8 +98,8 @@ export default function CreateProjectPage() {
               onClick={() => setStep(i + 1)}
               className={`pb-2.5 px-4 text-xs font-bold transition ${
                 step === i + 1
-                  ? "text-[#1E1E1E] border-b-2 border-[#1E1E1E]"
-                  : "text-[#5C5C5C]"
+                  ? "text-[#0F172A] border-b-2 border-[#0F172A]"
+                  : "text-[#526783]"
               }`}
             >
               {i + 1}. {name}
@@ -111,7 +111,7 @@ export default function CreateProjectPage() {
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   Project Title *
                 </label>
                 <input
@@ -120,20 +120,20 @@ export default function CreateProjectPage() {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="e.g. Real-Time Vision Transformer for Autonomous Navigation"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#1E1E1E]"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0F172A]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   Domain
                 </label>
                 <select
                   name="domain"
                   value={formData.domain}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 >
                   <option value="cv">Computer Vision (CV)</option>
                   <option value="nlp">Natural Language Processing (NLP)</option>
@@ -144,7 +144,7 @@ export default function CreateProjectPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   Short Summary
                 </label>
                 <input
@@ -153,12 +153,12 @@ export default function CreateProjectPage() {
                   value={formData.summary}
                   onChange={handleChange}
                   placeholder="Brief one-line summary (max 500 chars)"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   Full Description
                 </label>
                 <textarea
@@ -167,7 +167,7 @@ export default function CreateProjectPage() {
                   onChange={handleChange}
                   rows={4}
                   placeholder="Detailed architectural approach, dataset, model design..."
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
 
@@ -175,7 +175,7 @@ export default function CreateProjectPage() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-5 py-2 bg-[#1E1E1E] text-white text-xs font-semibold rounded-xl hover:bg-gray-800"
+                  className="px-5 py-2 bg-[#0F172A] text-white text-xs font-semibold rounded-xl hover:bg-gray-800"
                 >
                   Next: Mentorship →
                 </button>
@@ -192,7 +192,7 @@ export default function CreateProjectPage() {
               />
 
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   Outcomes / Deliverables
                 </label>
                 <textarea
@@ -201,7 +201,7 @@ export default function CreateProjectPage() {
                   onChange={handleChange}
                   rows={3}
                   placeholder="Achieved latency, mAP score, live deployment metrics..."
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
 
@@ -209,14 +209,14 @@ export default function CreateProjectPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="px-5 py-2 bg-[#F2F2F1] text-xs font-semibold rounded-xl hover:bg-gray-200"
+                  className="px-5 py-2 bg-[#F6F8FC] text-xs font-semibold rounded-xl hover:bg-gray-200"
                 >
                   ← Back
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="px-5 py-2 bg-[#1E1E1E] text-white text-xs font-semibold rounded-xl hover:bg-gray-800"
+                  className="px-5 py-2 bg-[#0F172A] text-white text-xs font-semibold rounded-xl hover:bg-gray-800"
                 >
                   Next: Tech & Links →
                 </button>
@@ -227,7 +227,7 @@ export default function CreateProjectPage() {
           {step === 3 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   Tech Stack (comma-separated)
                 </label>
                 <input
@@ -236,12 +236,12 @@ export default function CreateProjectPage() {
                   value={formData.tech_stack}
                   onChange={handleChange}
                   placeholder="PyTorch, FastAPI, ONNX, Docker, ROS"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   GitHub URL
                 </label>
                 <input
@@ -250,12 +250,12 @@ export default function CreateProjectPage() {
                   value={formData.github_url}
                   onChange={handleChange}
                   placeholder="https://github.com/..."
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   Live Demo URL
                 </label>
                 <input
@@ -264,12 +264,12 @@ export default function CreateProjectPage() {
                   value={formData.demo_url}
                   onChange={handleChange}
                   placeholder="https://demo..."
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">
                   Paper / Preprint URL
                 </label>
                 <input
@@ -278,22 +278,22 @@ export default function CreateProjectPage() {
                   value={formData.paper_url}
                   onChange={handleChange}
                   placeholder="https://arxiv.org/..."
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
 
-              <div className="flex justify-between pt-6 border-t border-[#D6D6D6]">
+              <div className="flex justify-between pt-6 border-t border-[#DCE5F1]">
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-5 py-2 bg-[#F2F2F1] text-xs font-semibold rounded-xl hover:bg-gray-200"
+                  className="px-5 py-2 bg-[#F6F8FC] text-xs font-semibold rounded-xl hover:bg-gray-200"
                 >
                   ← Back
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-2.5 bg-[#1E1E1E] text-white text-xs font-bold rounded-xl hover:bg-gray-800 disabled:opacity-50 shadow-sm"
+                  className="px-6 py-2.5 bg-[#0F172A] text-white text-xs font-bold rounded-xl hover:bg-gray-800 disabled:opacity-50 shadow-sm"
                 >
                   {loading ? "Publishing..." : "Publish Project"}
                 </button>

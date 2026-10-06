@@ -62,7 +62,7 @@ export function DashboardPageSkeleton() {
 export function ProjectCardSkeleton() {
   return (
     <div
-      className="bg-white rounded-xl border border-[#E5E5E5] overflow-hidden"
+      className="bg-white rounded-xl border border-[#DCE5F1] overflow-hidden"
       aria-hidden="true"
     >
       {/* Thumbnail area */}
@@ -104,7 +104,7 @@ export function ProjectsGridSkeleton({ count = 8 }: { count?: number }) {
 export function CourseCardSkeleton() {
   return (
     <div
-      className="bg-white rounded-xl border border-[#E5E5E5] p-5 space-y-3"
+      className="bg-white rounded-xl border border-[#DCE5F1] p-5 space-y-3"
       aria-hidden="true"
     >
       {/* Course code + type badge */}
@@ -147,12 +147,12 @@ export function CoursesGridSkeleton({ count = 9 }: { count?: number }) {
 export function RankingTableSkeleton({ rows = 10 }: { rows?: number }) {
   return (
     <div
-      className="rounded-lg border border-[#E5E5E5] bg-white overflow-hidden"
+      className="rounded-lg border border-[#DCE5F1] bg-white overflow-hidden"
       aria-busy="true"
       aria-label="Loading rankings"
     >
       {/* Table header */}
-      <div className="bg-[#FAFAFA] border-b border-[#E5E5E5] px-4 py-3 grid grid-cols-8 gap-4">
+      <div className="bg-[#F6F8FC] border-b border-[#DCE5F1] px-4 py-3 grid grid-cols-8 gap-4">
         {['w-6', 'w-24', 'w-20', 'w-16', 'w-16', 'w-16', 'w-16', 'w-16'].map((w, i) => (
           <Pulse key={i} className={`h-3 ${w}`} />
         ))}
@@ -161,7 +161,7 @@ export function RankingTableSkeleton({ rows = 10 }: { rows?: number }) {
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="px-4 py-3 grid grid-cols-8 gap-4 border-b border-[#F5F5F5] last:border-0"
+          className="px-4 py-3 grid grid-cols-8 gap-4 border-b border-[#EDF4FC] last:border-0"
         >
           <Pulse className="h-3 w-4" />
           <Pulse className="h-3 w-24" />
@@ -180,7 +180,7 @@ export function RankingTableSkeleton({ rows = 10 }: { rows?: number }) {
 // ── Stat card skeleton ────────────────────────────────────────────────────────
 export function StatCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-[#E5E5E5] p-5 space-y-3" aria-hidden="true">
+    <div className="bg-white rounded-xl border border-[#DCE5F1] p-5 space-y-3" aria-hidden="true">
       <div className="flex items-center justify-between">
         <Pulse className="h-3 w-24" />
         <Pulse className="h-8 w-8 rounded-lg" />
@@ -195,7 +195,7 @@ export function StatCardSkeleton() {
 export function ChartSkeleton({ height = 200 }: { height?: number }) {
   return (
     <div
-      className="bg-white rounded-xl border border-[#E5E5E5] p-5"
+      className="bg-white rounded-xl border border-[#DCE5F1] p-5"
       aria-hidden="true"
       style={{ height: height + 40 }}
     >
@@ -209,16 +209,16 @@ export function ChartSkeleton({ height = 200 }: { height?: number }) {
 export function TableSkeleton({ rows = 8, cols = 5 }: { rows?: number; cols?: number }) {
   return (
     <div
-      className="rounded-lg border border-[#E5E5E5] bg-white overflow-hidden"
+      className="rounded-lg border border-[#DCE5F1] bg-white overflow-hidden"
       aria-busy="true"
     >
-      <div className="bg-[#FAFAFA] border-b border-[#E5E5E5] px-4 py-3 flex gap-4">
+      <div className="bg-[#F6F8FC] border-b border-[#DCE5F1] px-4 py-3 flex gap-4">
         {Array.from({ length: cols }).map((_, i) => (
           <Pulse key={i} className="h-3 flex-1" />
         ))}
       </div>
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="px-4 py-3 flex gap-4 border-b border-[#F5F5F5] last:border-0">
+        <div key={i} className="px-4 py-3 flex gap-4 border-b border-[#EDF4FC] last:border-0">
           {Array.from({ length: cols }).map((_, j) => (
             <Pulse key={j} className="h-3 flex-1" />
           ))}
@@ -252,7 +252,7 @@ export function AuthShellSkeleton() {
   return (
     <div className="min-h-screen bg-white flex" aria-busy="true" aria-label="Loading AIMETRA">
       {/* Sidebar skeleton */}
-      <div className="hidden md:flex flex-col w-60 border-r border-[#E5E5E5] bg-white p-5 space-y-2 shrink-0">
+      <div className="hidden md:flex flex-col w-60 border-r border-[#DCE5F1] bg-white p-5 space-y-2 shrink-0">
         {/* Logo */}
         <div className="flex items-center gap-2 mb-6">
           <Pulse className="h-7 w-7 rounded-md" />
@@ -269,7 +269,7 @@ export function AuthShellSkeleton() {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         {/* Topbar */}
-        <div className="h-16 border-b border-[#E5E5E5] px-6 flex items-center justify-between">
+        <div className="h-16 border-b border-[#DCE5F1] px-6 flex items-center justify-between">
           <Pulse className="h-5 w-32" />
           <div className="flex items-center gap-3">
             <Pulse className="h-9 w-48 rounded-lg hidden sm:block" />

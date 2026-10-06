@@ -41,13 +41,13 @@ export const ApplicationStatusBadge: React.FC<ApplicationStatusBadgeProps> = ({ 
       );
     case 'withdrawn':
       return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#F2F2F1] text-[#7A7A7A] border border-[#D6D6D6]">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#F6F8FC] text-[#667A93] border border-[#DCE5F1]">
           <span>Withdrawn</span>
         </span>
       );
     default:
       return (
-        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs bg-[#F2F2F1] text-[#1E1E1E] capitalize">
+        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs bg-[#F6F8FC] text-[#0F172A] capitalize">
           {status}
         </span>
       );

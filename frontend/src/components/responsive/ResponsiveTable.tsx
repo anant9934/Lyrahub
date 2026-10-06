@@ -51,7 +51,7 @@ export function ResponsiveTable({
     <div className="relative w-full my-2">
       {/* Optional scroll instruction for narrow devices */}
       {scrollHint && canScrollRight && (
-        <div className="sm:hidden text-[10px] text-[#777777] mb-1.5 flex items-center justify-between">
+        <div className="sm:hidden text-[10px] text-[#667A93] mb-1.5 flex items-center justify-between">
           <span>{caption || "Table data"}</span>
           <span className="font-medium text-[#2563EB]">Scroll horizontally →</span>
         </div>
@@ -71,7 +71,7 @@ export function ResponsiveTable({
       <div
         ref={containerRef}
         className={cn(
-          "w-full overflow-x-auto rounded-lg border border-[#E5E5E5] bg-white scrollbar-thin",
+          "w-full overflow-x-auto rounded-lg border border-[#DCE5F1] bg-white scrollbar-thin",
           className
         )}
         style={{ WebkitOverflowScrolling: "touch" }}

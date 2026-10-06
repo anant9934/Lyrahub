@@ -143,12 +143,12 @@ export default function ManageProgramsPage() {
 
   if (!isAuthorized && !loading) {
     return (
-      <div className="min-h-screen bg-[#F2F2F1] p-8 flex items-center justify-center">
-        <div className="bg-white rounded-2xl border border-[#D6D6D6] p-8 text-center max-w-md">
+      <div className="min-h-screen bg-[#F6F8FC] p-8 flex items-center justify-center">
+        <div className="bg-white rounded-2xl border border-[#DCE5F1] p-8 text-center max-w-md">
           <AlertCircle className="w-12 h-12 text-[#B85C5C] mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-[#1E1E1E] mb-2">Access Restricted</h2>
-          <p className="text-sm text-[#5C5C5C] mb-6">Only HOD or Administrators can manage degree programs and curriculum mappings.</p>
-          <Link href="/programs" className="px-4 py-2 rounded-xl bg-[#1E1E1E] text-white text-sm font-semibold">
+          <h2 className="text-xl font-bold text-[#0F172A] mb-2">Access Restricted</h2>
+          <p className="text-sm text-[#526783] mb-6">Only HOD or Administrators can manage degree programs and curriculum mappings.</p>
+          <Link href="/programs" className="px-4 py-2 rounded-xl bg-[#0F172A] text-white text-sm font-semibold">
             View Public Catalog
           </Link>
         </div>
@@ -157,25 +157,25 @@ export default function ManageProgramsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F2F1] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F6F8FC] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
             <Link
               href="/programs"
-              className="inline-flex items-center gap-1.5 text-xs text-[#7A7A7A] hover:text-[#1E1E1E] transition-colors mb-2 font-medium"
+              className="inline-flex items-center gap-1.5 text-xs text-[#667A93] hover:text-[#0F172A] transition-colors mb-2 font-medium"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Public Catalog</span>
             </Link>
-            <h1 className="text-2xl md:text-3xl font-bold text-[#1E1E1E]">Programs & Curriculum Management</h1>
-            <p className="text-xs md:text-sm text-[#7A7A7A]">Configure degree offerings, semester mappings, and course requirements</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-[#0F172A]">Programs & Curriculum Management</h1>
+            <p className="text-xs md:text-sm text-[#667A93]">Configure degree offerings, semester mappings, and course requirements</p>
           </div>
 
           <button
             onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1E1E1E] hover:bg-black text-white text-sm font-semibold transition-all shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0F172A] hover:bg-black text-white text-sm font-semibold transition-all shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Add Degree Program</span>
@@ -184,8 +184,8 @@ export default function ManageProgramsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Programs List (Sidebar) */}
-          <div className="bg-white rounded-2xl border border-[#D6D6D6] p-5">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[#7A7A7A] mb-4">Academic Programs</h2>
+          <div className="bg-white rounded-2xl border border-[#DCE5F1] p-5">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#667A93] mb-4">Academic Programs</h2>
             <div className="space-y-2">
               {programs.map(prog => (
                 <div
@@ -193,14 +193,14 @@ export default function ManageProgramsPage() {
                   onClick={() => handleSelectProgram(prog.slug)}
                   className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                     selectedProgram?.id === prog.id
-                      ? 'border-[#1E1E1E] bg-[#F2F2F1]'
-                      : 'border-[#E5E5E4] hover:bg-[#F2F2F1]/50'
+                      ? 'border-[#0F172A] bg-[#F6F8FC]'
+                      : 'border-[#E5E5E4] hover:bg-[#F6F8FC]/50'
                   }`}
                 >
                   <div>
-                    <span className="font-mono text-xs font-bold text-[#1E1E1E]">{prog.code}</span>
-                    <h4 className="text-sm font-semibold text-[#1E1E1E] line-clamp-1">{prog.name}</h4>
-                    <p className="text-xs text-[#7A7A7A]">{prog.degree} &bull; {prog.duration_years} Years</p>
+                    <span className="font-mono text-xs font-bold text-[#0F172A]">{prog.code}</span>
+                    <h4 className="text-sm font-semibold text-[#0F172A] line-clamp-1">{prog.name}</h4>
+                    <p className="text-xs text-[#667A93]">{prog.degree} &bull; {prog.duration_years} Years</p>
                   </div>
                   <button
                     onClick={(e) => {
@@ -221,33 +221,33 @@ export default function ManageProgramsPage() {
             {selectedProgram ? (
               <>
                 {/* Details header */}
-                <div className="bg-white rounded-2xl border border-[#D6D6D6] p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#F2F2F1]">
+                <div className="bg-white rounded-2xl border border-[#DCE5F1] p-6">
+                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#F6F8FC]">
                     <div>
-                      <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#1E1E1E] text-white">
+                      <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#0F172A] text-white">
                         {selectedProgram.code}
                       </span>
-                      <h2 className="text-xl font-bold text-[#1E1E1E] mt-1">{selectedProgram.name}</h2>
-                      <p className="text-xs text-[#7A7A7A]">{selectedProgram.degree} &bull; {selectedProgram.level}</p>
+                      <h2 className="text-xl font-bold text-[#0F172A] mt-1">{selectedProgram.name}</h2>
+                      <p className="text-xs text-[#667A93]">{selectedProgram.degree} &bull; {selectedProgram.level}</p>
                     </div>
 
                     <Link
                       href={`/programs/${selectedProgram.slug}`}
-                      className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D6D6D6] hover:bg-[#F2F2F1] text-[#1E1E1E]"
+                      className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#DCE5F1] hover:bg-[#F6F8FC] text-[#0F172A]"
                     >
                       View Public Page
                     </Link>
                   </div>
 
                   {/* Add course mapping form */}
-                  <form onSubmit={handleAddCourseMapping} className="mt-6 pt-4 border-t border-[#F2F2F1]">
-                    <h3 className="text-sm font-bold text-[#1E1E1E] mb-3">Map Course to Semester</h3>
+                  <form onSubmit={handleAddCourseMapping} className="mt-6 pt-4 border-t border-[#F6F8FC]">
+                    <h3 className="text-sm font-bold text-[#0F172A] mb-3">Map Course to Semester</h3>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                       <div className="md:col-span-2">
                         <select
                           value={selectedCourseId}
                           onChange={(e) => setSelectedCourseId(e.target.value)}
-                          className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6] bg-white text-[#1E1E1E]"
+                          className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1] bg-white text-[#0F172A]"
                           required
                         >
                           <option value="">Select a Course to map...</option>
@@ -263,7 +263,7 @@ export default function ManageProgramsPage() {
                         <select
                           value={mappingSemester}
                           onChange={(e) => setMappingSemester(Number(e.target.value))}
-                          className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6] bg-white text-[#1E1E1E]"
+                          className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1] bg-white text-[#0F172A]"
                         >
                           {[1, 2, 3, 4, 5, 6, 7, 8].map(s => (
                             <option key={s} value={s}>Semester {s}</option>
@@ -274,7 +274,7 @@ export default function ManageProgramsPage() {
                       <div>
                         <button
                           type="submit"
-                          className="w-full px-4 py-2.5 rounded-xl bg-[#1E1E1E] text-white text-xs font-semibold hover:bg-black transition-all"
+                          className="w-full px-4 py-2.5 rounded-xl bg-[#0F172A] text-white text-xs font-semibold hover:bg-black transition-all"
                         >
                           Add Mapping
                         </button>
@@ -287,9 +287,9 @@ export default function ManageProgramsPage() {
                         id="mandatory"
                         checked={isMandatory}
                         onChange={(e) => setIsMandatory(e.target.checked)}
-                        className="rounded border-[#D6D6D6]"
+                        className="rounded border-[#DCE5F1]"
                       />
-                      <label htmlFor="mandatory" className="text-xs text-[#5C5C5C]">
+                      <label htmlFor="mandatory" className="text-xs text-[#526783]">
                         Mandatory Course
                       </label>
                     </div>
@@ -303,8 +303,8 @@ export default function ManageProgramsPage() {
                 </div>
 
                 {/* Mapped courses list */}
-                <div className="bg-white rounded-2xl border border-[#D6D6D6] p-6">
-                  <h3 className="text-base font-bold text-[#1E1E1E] mb-4">Current Mapped Curriculum</h3>
+                <div className="bg-white rounded-2xl border border-[#DCE5F1] p-6">
+                  <h3 className="text-base font-bold text-[#0F172A] mb-4">Current Mapped Curriculum</h3>
                   {selectedProgram.courses_by_semester && Object.keys(selectedProgram.courses_by_semester).length > 0 ? (
                     <div className="space-y-4">
                       {Object.keys(selectedProgram.courses_by_semester)
@@ -312,7 +312,7 @@ export default function ManageProgramsPage() {
                         .sort((a, b) => a - b)
                         .map(sem => (
                           <div key={sem} className="border border-[#E5E5E4] rounded-xl overflow-hidden">
-                            <div className="bg-[#F2F2F1] px-4 py-2 text-xs font-bold text-[#1E1E1E]">
+                            <div className="bg-[#F6F8FC] px-4 py-2 text-xs font-bold text-[#0F172A]">
                               Semester {sem}
                             </div>
                             <div className="divide-y divide-[#E5E5E4]">
@@ -320,8 +320,8 @@ export default function ManageProgramsPage() {
                                 <div key={c.id} className="p-3 px-4 flex items-center justify-between text-xs">
                                   <div>
                                     <span className="font-mono font-bold mr-2">{c.code}</span>
-                                    <span className="font-medium text-[#1E1E1E]">{c.name}</span>
-                                    <span className="ml-2 text-[#7A7A7A]">({c.credits} cr)</span>
+                                    <span className="font-medium text-[#0F172A]">{c.name}</span>
+                                    <span className="ml-2 text-[#667A93]">({c.credits} cr)</span>
                                   </div>
                                   <button
                                     onClick={() => handleRemoveCourseMapping(c.course_id)}
@@ -336,13 +336,13 @@ export default function ManageProgramsPage() {
                         ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-[#7A7A7A]">No courses mapped yet.</p>
+                    <p className="text-xs text-[#667A93]">No courses mapped yet.</p>
                   )}
                 </div>
               </>
             ) : (
-              <div className="bg-white rounded-2xl border border-[#D6D6D6] p-12 text-center text-[#7A7A7A]">
-                <Layers className="w-10 h-10 mx-auto text-[#9A9A9A] mb-2 opacity-50" />
+              <div className="bg-white rounded-2xl border border-[#DCE5F1] p-12 text-center text-[#667A93]">
+                <Layers className="w-10 h-10 mx-auto text-[#71849B] mb-2 opacity-50" />
                 <p className="text-sm">Select a program to view and edit its semester course mappings.</p>
               </div>
             )}
@@ -352,50 +352,50 @@ export default function ManageProgramsPage() {
         {/* Create Modal */}
         {showCreateModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="bg-white rounded-2xl border border-[#D6D6D6] p-6 w-full max-w-lg shadow-xl">
-              <h3 className="text-lg font-bold text-[#1E1E1E] mb-4">Add Degree Program</h3>
+            <div className="bg-white rounded-2xl border border-[#DCE5F1] p-6 w-full max-w-lg shadow-xl">
+              <h3 className="text-lg font-bold text-[#0F172A] mb-4">Add Degree Program</h3>
               <form onSubmit={handleCreateProgram} className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-[#1E1E1E] block mb-1">Program Name *</label>
+                  <label className="text-xs font-bold text-[#0F172A] block mb-1">Program Name *</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1]"
                     placeholder="e.g. B.Tech Computer Science (AI & ML)"
                     required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-[#1E1E1E] block mb-1">Code *</label>
+                    <label className="text-xs font-bold text-[#0F172A] block mb-1">Code *</label>
                     <input
                       type="text"
                       value={formData.code}
                       onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6] font-mono"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1] font-mono"
                       placeholder="BTCS-AIML"
                       required
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#1E1E1E] block mb-1">Short Name</label>
+                    <label className="text-xs font-bold text-[#0F172A] block mb-1">Short Name</label>
                     <input
                       type="text"
                       value={formData.short_name}
                       onChange={(e) => setFormData({ ...formData, short_name: e.target.value })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1]"
                       placeholder="B.Tech AI&ML"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-[#1E1E1E] block mb-1">Degree</label>
+                    <label className="text-xs font-bold text-[#0F172A] block mb-1">Degree</label>
                     <select
                       value={formData.degree}
                       onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1]"
                     >
                       <option value="B.Tech">B.Tech</option>
                       <option value="M.Tech">M.Tech</option>
@@ -403,11 +403,11 @@ export default function ManageProgramsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#1E1E1E] block mb-1">Level</label>
+                    <label className="text-xs font-bold text-[#0F172A] block mb-1">Level</label>
                     <select
                       value={formData.level}
                       onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1]"
                     >
                       <option value="undergraduate">Undergraduate</option>
                       <option value="postgraduate">Postgraduate</option>
@@ -417,31 +417,31 @@ export default function ManageProgramsPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-[#1E1E1E] block mb-1">Duration (Years)</label>
+                    <label className="text-xs font-bold text-[#0F172A] block mb-1">Duration (Years)</label>
                     <input
                       type="number"
                       step="0.5"
                       value={formData.duration_years}
                       onChange={(e) => setFormData({ ...formData, duration_years: parseFloat(e.target.value) })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1]"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#1E1E1E] block mb-1">Total Credits</label>
+                    <label className="text-xs font-bold text-[#0F172A] block mb-1">Total Credits</label>
                     <input
                       type="number"
                       value={formData.total_credits}
                       onChange={(e) => setFormData({ ...formData, total_credits: parseInt(e.target.value) })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#1E1E1E] block mb-1">Description</label>
+                  <label className="text-xs font-bold text-[#0F172A] block mb-1">Description</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#D6D6D6] h-20"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#DCE5F1] h-20"
                     placeholder="Program curriculum overview and outcomes..."
                   />
                 </div>
@@ -449,13 +449,13 @@ export default function ManageProgramsPage() {
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold border border-[#D6D6D6] hover:bg-[#F2F2F1]"
+                    className="px-4 py-2 rounded-xl text-xs font-semibold border border-[#DCE5F1] hover:bg-[#F6F8FC]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-[#1E1E1E] text-white text-xs font-semibold hover:bg-black"
+                    className="px-4 py-2 rounded-xl bg-[#0F172A] text-white text-xs font-semibold hover:bg-black"
                   >
                     Create Program
                   </button>

@@ -32,26 +32,26 @@ export default function AlumniMentorsPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 bg-[#F2F2F1] min-h-screen">
+    <div className="p-8 max-w-7xl mx-auto space-y-8 bg-[#F6F8FC] min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Link href="/alumni" className="text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E]">
+            <Link href="/alumni" className="text-xs font-semibold text-[#526783] hover:text-[#0F172A]">
               ← All Alumni
             </Link>
           </div>
-          <h1 className="text-3xl font-extrabold text-[#1E1E1E]">Alumni Mentorship Network</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
+          <h1 className="text-3xl font-extrabold text-[#0F172A]">Alumni Mentorship Network</h1>
+          <p className="text-sm text-[#526783] mt-1">
             Verified department graduates actively offering 1:1 guidance, resume reviews, and career counseling.
           </p>
         </div>
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-[#5C5C5C]">Loading mentors network...</div>
+        <div className="text-center py-16 text-[#526783]">Loading mentors network...</div>
       ) : mentors.length === 0 ? (
-        <div className="p-12 text-center bg-white border border-[#D6D6D6] rounded-2xl shadow-sm">
-          <p className="text-sm text-[#5C5C5C]">No verified mentors available right now.</p>
+        <div className="p-12 text-center bg-white border border-[#DCE5F1] rounded-2xl shadow-sm">
+          <p className="text-sm text-[#526783]">No verified mentors available right now.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

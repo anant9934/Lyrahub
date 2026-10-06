@@ -9,6 +9,7 @@ import {
   usePrefetchCriticalData,
 } from "@/lib/hooks"
 import { StatCard } from "@/components/ui/stat-card"
+import { WorkspaceHero } from "@/components/layout/WorkspaceHero"
 import { Button } from "@/components/ui/button"
 import {
   User,
@@ -22,6 +23,9 @@ import {
   Clock,
   Users,
   Sparkles,
+  BarChart3,
+  GraduationCap,
+  ShieldCheck,
 } from "lucide-react"
 import dynamic from "next/dynamic"
 
@@ -78,59 +82,38 @@ export default function DashboardPage() {
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Role Switcher Pill if Privileged User */}
       {canSwitchViews && (
-        <div className="flex items-center justify-between bg-[#FAFAFA] border border-[#E5E5E5] p-2.5 rounded-lg">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#111111]">
-              View Perspective:
-            </span>
-            <span className="text-[11px] text-[#777777]">
-              Switch dashboard mode
-            </span>
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#D4E0F0] bg-white px-4 py-3 shadow-sm dark:bg-[#101e35] dark:border-[#1E3456]">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1478ef]/10 text-[#1478ef]">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-[12px] font-bold text-[#091936] dark:text-white">View Perspective</span>
+              <span className="ml-2 text-[11px] text-[#9ab5d0]">Switch dashboard mode</span>
+            </div>
           </div>
-          <div className="overflow-x-auto max-w-full pb-1">
-            <div className="inline-flex h-8 items-center rounded-md bg-white border border-[#E5E5E5] p-0.5 text-xs whitespace-nowrap">
-            <button
-              onClick={() => setActiveRoleView("student")}
-              className={`px-3 py-1 rounded transition-colors ${
-                activeRoleView === "student"
-                  ? "bg-[#111111] text-white font-medium"
-                  : "text-[#555555] hover:text-[#111111]"
-              }`}
-            >
-              Student
-            </button>
-            <button
-              onClick={() => setActiveRoleView("faculty")}
-              className={`px-3 py-1 rounded transition-colors ${
-                activeRoleView === "faculty"
-                  ? "bg-[#111111] text-white font-medium"
-                  : "text-[#555555] hover:text-[#111111]"
-              }`}
-            >
-              Faculty
-            </button>
-            <button
-              onClick={() => setActiveRoleView("hod")}
-              className={`px-3 py-1 rounded transition-colors ${
-                activeRoleView === "hod"
-                  ? "bg-[#111111] text-white font-medium"
-                  : "text-[#555555] hover:text-[#111111]"
-              }`}
-            >
-              HOD
-            </button>
-            <button
-              onClick={() => setActiveRoleView("admin")}
-              className={`px-3 py-1 rounded transition-colors ${
-                activeRoleView === "admin"
-                  ? "bg-[#111111] text-white font-medium"
-                  : "text-[#555555] hover:text-[#111111]"
-              }`}
-            >
-              Admin
-            </button>
+          <div className="inline-flex h-8 items-center rounded-xl border border-[#D4E0F0] bg-[#F0F4FA] p-0.5 text-[11px] font-semibold dark:bg-[#0f1829] dark:border-[#1E3456]">
+            {(["student", "faculty", "hod", "admin"] as const).map((role) => (
+              <button
+                key={role}
+                onClick={() => setActiveRoleView(role)}
+                className={`px-3 py-1 rounded-[9px] capitalize transition-all ${
+                  activeRoleView === role
+                    ? "bg-[#071b3d] text-white shadow-sm"
+                    : "text-[#526783] hover:text-[#091936] dark:text-[#7aace0] dark:hover:text-white"
+                }`}
+              >
+                {role}
+              </button>
+            ))}
           </div>
         </div>
+      )}
+
+      {activeRoleView !== "student" && (
+        <div className="flex items-center gap-2.5 rounded-2xl border border-[#FDE68A] bg-[#FFFBEB] px-4 py-2.5 text-[12px] font-semibold text-[#92400E]">
+          <span className="text-base">👁</span>
+          <span>Preview mode — sample data shown for the <strong className="capitalize">{activeRoleView}</strong> dashboard view.</span>
         </div>
       )}
 
@@ -165,112 +148,111 @@ function StudentDashboardView({
   user: any
   profile: any
 }) {
-  const studentName = profile?.user?.name || user?.email?.split("@")[0] || "Rahul"
+  const studentName = profile?.user?.name || user?.email?.split("@")[0] || "there"
   const displayName =
     studentName.charAt(0).toUpperCase() + studentName.slice(1)
 
   return (
     <div className="space-y-8">
-      {/* Header (Matching Panel 3) */}
-      <div className="space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
-          Welcome back, {displayName} 👋
-        </h1>
-        <p className="text-xs text-[#555555]">
-          Here&apos;s your AI & ML journey at a glance.
-        </p>
-      </div>
+      <WorkspaceHero eyebrow="Your AIMETRA space" title={<>Welcome back, <span className="text-[#ffcf36]">{displayName}.</span></>} description="Your work, connections, and next opportunities are all here." tone="navy" icon={Sparkles} visual="aida" />
 
-      {/* 4 Stat Cards in a row (Matching Panel 3) */}
+      {/* 4 Stat Cards in a row (Matching Panel 13) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
+          label="CGPA"
+          value={profile?.cgpa != null ? profile.cgpa.toFixed(1) : "8.4"}
+          subValue="Target: 8.5+"
+          progress={profile?.cgpa != null ? (profile.cgpa / 10) * 100 : 84}
+          accentColor="#16A34A"
+          icon={<GraduationCap className="w-4 h-4 text-[#16A34A]" />}
+        />
+        <StatCard
+          label="Attendance"
+          value="92%"
+          subValue="Semester 6 · Regular"
+          progress={92}
+          accentColor="#1478ef"
+          icon={<Clock className="w-4 h-4 text-[#1478ef]" />}
+        />
+        <StatCard
+          label="Readiness"
+          value={profile?.readiness_score != null ? `${profile.readiness_score}%` : "78%"}
+          subValue="Placement eligible"
+          progress={profile?.readiness_score || 78}
+          accentColor="#7C3AED"
+          icon={<Sparkles className="w-4 h-4 text-[#7C3AED]" />}
+        />
+        <StatCard
           label="My Rank"
-          value={profile?.rank ? `#${profile.rank}` : "#42"}
-          subValue="(out of 1240)"
+          value={profile?.rank ? `#${profile.rank}` : "#12/120"}
+          subValue="Top 10% in Batch"
+          accentColor="#CA8A04"
           icon={<Trophy className="w-4 h-4 text-[#CA8A04]" />}
-        />
-        <StatCard
-          label="Test Score"
-          value="82 / 100"
-          subValue="Verified"
-          icon={<FileCheck2 className="w-4 h-4 text-[#2563EB]" />}
-        />
-        <StatCard
-          label="Skills"
-          value={profile?.skills?.length || "18"}
-          subValue="verified"
-          icon={<Sparkles className="w-4 h-4 text-[#16A34A]" />}
-        />
-        <StatCard
-          label="Projects"
-          value="5"
-          subValue="with 2 publications"
-          icon={<GitBranch className="w-4 h-4 text-[#111111]" />}
         />
       </div>
 
       {/* Quick Actions (Matching Panel 3) */}
       <div className="space-y-3">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#777777]">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#667A93]">
           Quick Actions
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <Link
             href="/dashboard/profile"
-            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#DCE5F1] bg-white hover:border-[#0F172A] hover:bg-[#F6F8FC] transition-all text-center group"
           >
-            <User className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
-            <span className="text-xs font-medium text-[#111111]">
+            <User className="w-4 h-4 text-[#526783] group-hover:text-[#0F172A] mb-2" />
+            <span className="text-xs font-medium text-[#0F172A]">
               Update Profile
             </span>
           </Link>
 
           <Link
             href="/qr/my-code"
-            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#DCE5F1] bg-white hover:border-[#0F172A] hover:bg-[#F6F8FC] transition-all text-center group"
           >
-            <Upload className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
-            <span className="text-xs font-medium text-[#111111]">
+            <Upload className="w-4 h-4 text-[#526783] group-hover:text-[#0F172A] mb-2" />
+            <span className="text-xs font-medium text-[#0F172A]">
               Upload Documents
             </span>
           </Link>
 
           <Link
             href="/tests"
-            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#DCE5F1] bg-white hover:border-[#0F172A] hover:bg-[#F6F8FC] transition-all text-center group"
           >
-            <FileCheck2 className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
-            <span className="text-xs font-medium text-[#111111]">
+            <FileCheck2 className="w-4 h-4 text-[#526783] group-hover:text-[#0F172A] mb-2" />
+            <span className="text-xs font-medium text-[#0F172A]">
               Take AI/ML Test
             </span>
           </Link>
 
           <Link
             href="/ranking"
-            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#DCE5F1] bg-white hover:border-[#0F172A] hover:bg-[#F6F8FC] transition-all text-center group"
           >
-            <Trophy className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
-            <span className="text-xs font-medium text-[#111111]">
+            <Trophy className="w-4 h-4 text-[#526783] group-hover:text-[#0F172A] mb-2" />
+            <span className="text-xs font-medium text-[#0F172A]">
               View My Rank
             </span>
           </Link>
 
           <Link
             href="/events"
-            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#DCE5F1] bg-white hover:border-[#0F172A] hover:bg-[#F6F8FC] transition-all text-center group"
           >
-            <Calendar className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
-            <span className="text-xs font-medium text-[#111111]">
+            <Calendar className="w-4 h-4 text-[#526783] group-hover:text-[#0F172A] mb-2" />
+            <span className="text-xs font-medium text-[#0F172A]">
               Register for Event
             </span>
           </Link>
 
           <Link
             href="/opportunities"
-            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#E5E5E5] bg-white hover:border-[#111111] hover:bg-[#FAFAFA] transition-all text-center group"
+            className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#DCE5F1] bg-white hover:border-[#0F172A] hover:bg-[#F6F8FC] transition-all text-center group"
           >
-            <Briefcase className="w-4 h-4 text-[#555555] group-hover:text-[#111111] mb-2" />
-            <span className="text-xs font-medium text-[#111111]">
+            <Briefcase className="w-4 h-4 text-[#526783] group-hover:text-[#0F172A] mb-2" />
+            <span className="text-xs font-medium text-[#0F172A]">
               Find Opportunities
             </span>
           </Link>
@@ -280,62 +262,62 @@ function StudentDashboardView({
       {/* Two Columns: Recent Activities & My Progress (Matching Panel 3) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Recent Activities */}
-        <div className="lg:col-span-7 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
-            <h3 className="text-sm font-semibold text-[#111111]">
+        <div className="lg:col-span-7 rounded-lg border border-[#DCE5F1] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#DCE5F1] pb-3">
+            <h3 className="text-sm font-semibold text-[#0F172A]">
               Recent Activities
             </h3>
-            <span className="text-xs text-[#777777]">Last 7 days</span>
+            <span className="text-xs text-[#667A93]">Last 7 days</span>
           </div>
 
           <div className="space-y-3.5">
-            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#FAFAFA] transition-colors">
-              <div className="w-8 h-8 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#111111] shrink-0 mt-0.5">
+            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#F6F8FC] transition-colors">
+              <div className="w-8 h-8 rounded-full bg-[#EDF4FC] flex items-center justify-center text-[#0F172A] shrink-0 mt-0.5">
                 <GitBranch className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-medium text-[#111111]">
+                <div className="text-xs font-medium text-[#0F172A]">
                   GitHub profile updated
                 </div>
-                <div className="text-[11px] text-[#777777]">
+                <div className="text-[11px] text-[#667A93]">
                   2 repositories synced with capstone showcase
                 </div>
               </div>
-              <span className="text-[10px] text-[#888888] shrink-0">
+              <span className="text-[10px] text-[#71849B] shrink-0">
                 2 hours ago
               </span>
             </div>
 
-            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#FAFAFA] transition-colors">
-              <div className="w-8 h-8 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#2563EB] shrink-0 mt-0.5">
+            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#F6F8FC] transition-colors">
+              <div className="w-8 h-8 rounded-full bg-[#EDF4FC] flex items-center justify-center text-[#2563EB] shrink-0 mt-0.5">
                 <Award className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-medium text-[#111111]">
+                <div className="text-xs font-medium text-[#0F172A]">
                   Certificate uploaded (AWS ML Specialty)
                 </div>
-                <div className="text-[11px] text-[#777777]">
+                <div className="text-[11px] text-[#667A93]">
                   Credential verified by faculty advisor
                 </div>
               </div>
-              <span className="text-[10px] text-[#888888] shrink-0">
+              <span className="text-[10px] text-[#71849B] shrink-0">
                 1 day ago
               </span>
             </div>
 
-            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#FAFAFA] transition-colors">
-              <div className="w-8 h-8 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#16A34A] shrink-0 mt-0.5">
+            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#F6F8FC] transition-colors">
+              <div className="w-8 h-8 rounded-full bg-[#EDF4FC] flex items-center justify-center text-[#16A34A] shrink-0 mt-0.5">
                 <Calendar className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-medium text-[#111111]">
+                <div className="text-xs font-medium text-[#0F172A]">
                   Registered for GenAI Hackathon 2026
                 </div>
-                <div className="text-[11px] text-[#777777]">
+                <div className="text-[11px] text-[#667A93]">
                   Team confirmed: Neural Knights (3 members)
                 </div>
               </div>
-              <span className="text-[10px] text-[#888888] shrink-0">
+              <span className="text-[10px] text-[#71849B] shrink-0">
                 3 days ago
               </span>
             </div>
@@ -343,9 +325,9 @@ function StudentDashboardView({
         </div>
 
         {/* Right Column: My Progress (Matching Panel 3) */}
-        <div className="lg:col-span-5 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-6">
-          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
-            <h3 className="text-sm font-semibold text-[#111111]">
+        <div className="lg:col-span-5 rounded-lg border border-[#DCE5F1] bg-white p-6 space-y-6">
+          <div className="flex items-center justify-between border-b border-[#DCE5F1] pb-3">
+            <h3 className="text-sm font-semibold text-[#0F172A]">
               My Progress
             </h3>
             <span className="text-xs font-medium text-[#16A34A]">
@@ -355,14 +337,14 @@ function StudentDashboardView({
 
           {/* Circular Indicator & Breakdown */}
           <div className="flex items-center gap-6">
-            <div className="relative w-20 h-20 rounded-full border-4 border-[#E5E5E5] border-t-[#111111] border-r-[#111111] flex items-center justify-center shrink-0">
-              <span className="text-xl font-bold text-[#111111]">78%</span>
+            <div className="relative w-20 h-20 rounded-full border-4 border-[#DCE5F1] border-t-[#111111] border-r-[#111111] flex items-center justify-center shrink-0">
+              <span className="text-xl font-bold text-[#0F172A]">78%</span>
             </div>
-            <div className="text-xs text-[#555555] space-y-1">
-              <div className="font-medium text-[#111111]">
+            <div className="text-xs text-[#526783] space-y-1">
+              <div className="font-medium text-[#0F172A]">
                 Profile Readiness
               </div>
-              <p className="text-[11px] leading-relaxed text-[#777777]">
+              <p className="text-[11px] leading-relaxed text-[#667A93]">
                 Your profile is 78% complete for upcoming campus recruitment drives.
               </p>
             </div>
@@ -372,51 +354,51 @@ function StudentDashboardView({
           <div className="space-y-3 pt-2">
             <div>
               <div className="flex justify-between text-[11px] mb-1">
-                <span className="text-[#555555]">Profile Completeness</span>
-                <span className="font-medium text-[#111111]">90%</span>
+                <span className="text-[#526783]">Profile Completeness</span>
+                <span className="font-medium text-[#0F172A]">90%</span>
               </div>
-              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
-                <div className="h-full bg-[#111111] rounded-full w-[90%]" />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-[11px] mb-1">
-                <span className="text-[#555555]">Skills & Certifications</span>
-                <span className="font-medium text-[#111111]">80%</span>
-              </div>
-              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
-                <div className="h-full bg-[#111111] rounded-full w-[80%]" />
+              <div className="h-1.5 w-full bg-[#EDF4FC] rounded-full overflow-hidden">
+                <div className="h-full bg-[#0F172A] rounded-full w-[90%]" />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between text-[11px] mb-1">
-                <span className="text-[#555555]">Projects & Publications</span>
-                <span className="font-medium text-[#111111]">75%</span>
+                <span className="text-[#526783]">Skills & Certifications</span>
+                <span className="font-medium text-[#0F172A]">80%</span>
               </div>
-              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
-                <div className="h-full bg-[#111111] rounded-full w-[75%]" />
+              <div className="h-1.5 w-full bg-[#EDF4FC] rounded-full overflow-hidden">
+                <div className="h-full bg-[#0F172A] rounded-full w-[80%]" />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between text-[11px] mb-1">
-                <span className="text-[#555555]">AI/ML Test Score</span>
-                <span className="font-medium text-[#111111]">82%</span>
+                <span className="text-[#526783]">Projects & Publications</span>
+                <span className="font-medium text-[#0F172A]">75%</span>
               </div>
-              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
+              <div className="h-1.5 w-full bg-[#EDF4FC] rounded-full overflow-hidden">
+                <div className="h-full bg-[#0F172A] rounded-full w-[75%]" />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="text-[#526783]">AI/ML Test Score</span>
+                <span className="font-medium text-[#0F172A]">82%</span>
+              </div>
+              <div className="h-1.5 w-full bg-[#EDF4FC] rounded-full overflow-hidden">
                 <div className="h-full bg-[#2563EB] rounded-full w-[82%]" />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between text-[11px] mb-1">
-                <span className="text-[#555555]">Verified Documents</span>
-                <span className="font-medium text-[#111111]">65%</span>
+                <span className="text-[#526783]">Verified Documents</span>
+                <span className="font-medium text-[#0F172A]">65%</span>
               </div>
-              <div className="h-1.5 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
-                <div className="h-full bg-[#111111] rounded-full w-[65%]" />
+              <div className="h-1.5 w-full bg-[#EDF4FC] rounded-full overflow-hidden">
+                <div className="h-full bg-[#0F172A] rounded-full w-[65%]" />
               </div>
             </div>
           </div>
@@ -448,22 +430,7 @@ function HODDashboardView() {
   return (
     <div className="space-y-8">
       {/* Header (Matching Panel 4) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
-            HOD Dashboard
-          </h1>
-          <p className="text-xs text-[#555555]">
-            Department overview and key insights.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <select className="h-9 px-3 rounded-lg border border-[#E5E5E5] bg-white text-xs text-[#111111] focus:outline-none focus:border-[#111111]">
-            <option>Academic Year 2025-26</option>
-            <option>Academic Year 2024-25</option>
-          </select>
-        </div>
-      </div>
+      <WorkspaceHero eyebrow="Department intelligence · Preview" title={<>See the whole <span className="text-[#1478ef]">picture.</span></>} description="An overview of learning, research, and outcomes across the department." tone="blue" icon={BarChart3} visual="campus" />
 
       {/* 4 Stat Cards in a row (Matching Panel 4) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -496,12 +463,12 @@ function HODDashboardView() {
       {/* Charts Row: Placement & Rankings + Top Skills (Matching Panel 4) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Placement & Rankings Bar Chart */}
-        <div className="lg:col-span-7 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
+        <div className="lg:col-span-7 rounded-lg border border-[#DCE5F1] bg-white p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-[#111111]">
+            <h3 className="text-sm font-semibold text-[#0F172A]">
               Placement & Rankings
             </h3>
-            <div className="flex items-center gap-4 text-[11px] text-[#777777]">
+            <div className="flex items-center gap-4 text-[11px] text-[#667A93]">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-sm bg-[#2563EB]" /> Placed
               </span>
@@ -517,26 +484,26 @@ function HODDashboardView() {
         </div>
 
         {/* Right: Top Skills in Department */}
-        <div className="lg:col-span-5 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
-            <h3 className="text-sm font-semibold text-[#111111]">
+        <div className="lg:col-span-5 rounded-lg border border-[#DCE5F1] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#DCE5F1] pb-3">
+            <h3 className="text-sm font-semibold text-[#0F172A]">
               Top Skills in Department
             </h3>
-            <span className="text-xs text-[#777777]">Cohort 2026</span>
+            <span className="text-xs text-[#667A93]">Cohort 2026</span>
           </div>
 
           <div className="space-y-4 pt-2">
             {topSkills.map((skill) => (
               <div key={skill.name} className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="font-medium text-[#111111]">
+                  <span className="font-medium text-[#0F172A]">
                     {skill.name}
                   </span>
-                  <span className="text-[#555555] font-semibold">
+                  <span className="text-[#526783] font-semibold">
                     {skill.percentage}%
                   </span>
                 </div>
-                <div className="h-2 w-full bg-[#F5F5F5] rounded-full overflow-hidden">
+                <div className="h-2 w-full bg-[#EDF4FC] rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#2563EB] rounded-full"
                     style={{ width: `${skill.percentage}%` }}
@@ -549,9 +516,9 @@ function HODDashboardView() {
       </div>
 
       {/* Bottom: Recent Approvals Table (Matching Panel 4) */}
-      <div className="rounded-lg border border-[#E5E5E5] bg-white overflow-hidden">
-        <div className="p-5 border-b border-[#E5E5E5] flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-[#111111]">
+      <div className="rounded-lg border border-[#DCE5F1] bg-white overflow-hidden">
+        <div className="p-5 border-b border-[#DCE5F1] flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-[#0F172A]">
             Recent Approvals
           </h3>
           <Link
@@ -564,7 +531,7 @@ function HODDashboardView() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#FAFAFA] border-b border-[#E5E5E5] text-[#555555] font-medium">
+            <thead className="bg-[#F6F8FC] border-b border-[#DCE5F1] text-[#526783] font-medium">
               <tr>
                 <th className="p-3.5">Type</th>
                 <th className="p-3.5">Requested By</th>
@@ -575,15 +542,15 @@ function HODDashboardView() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E5E5E5]">
-              <tr className="hover:bg-[#FAFAFA]">
-                <td className="p-3.5 font-medium text-[#111111]">
+              <tr className="hover:bg-[#F6F8FC]">
+                <td className="p-3.5 font-medium text-[#0F172A]">
                   Profile Update
                 </td>
-                <td className="p-3.5 text-[#555555]">Dr. S. Mehta</td>
-                <td className="p-3.5 text-[#777777]">
+                <td className="p-3.5 text-[#526783]">Dr. S. Mehta</td>
+                <td className="p-3.5 text-[#667A93]">
                   Student skill update - Ananya
                 </td>
-                <td className="p-3.5 text-[#777777]">12 Sep 2026</td>
+                <td className="p-3.5 text-[#667A93]">12 Sep 2026</td>
                 <td className="p-3.5">
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#FEF9C3] text-[#A16207]">
                     Pending
@@ -598,15 +565,15 @@ function HODDashboardView() {
                 </td>
               </tr>
 
-              <tr className="hover:bg-[#FAFAFA]">
-                <td className="p-3.5 font-medium text-[#111111]">
+              <tr className="hover:bg-[#F6F8FC]">
+                <td className="p-3.5 font-medium text-[#0F172A]">
                   New Project
                 </td>
-                <td className="p-3.5 text-[#555555]">Prof. R. Singh</td>
-                <td className="p-3.5 text-[#777777]">
+                <td className="p-3.5 text-[#526783]">Prof. R. Singh</td>
+                <td className="p-3.5 text-[#667A93]">
                   LLM Research Project
                 </td>
-                <td className="p-3.5 text-[#777777]">11 Sep 2026</td>
+                <td className="p-3.5 text-[#667A93]">11 Sep 2026</td>
                 <td className="p-3.5">
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#DCFCE7] text-[#15803D]">
                     Approved
@@ -619,11 +586,11 @@ function HODDashboardView() {
                 </td>
               </tr>
 
-              <tr className="hover:bg-[#FAFAFA]">
-                <td className="p-3.5 font-medium text-[#111111]">Event</td>
-                <td className="p-3.5 text-[#555555]">Prof. K. Verma</td>
-                <td className="p-3.5 text-[#777777]">GenAI Workshop</td>
-                <td className="p-3.5 text-[#777777]">10 Sep 2026</td>
+              <tr className="hover:bg-[#F6F8FC]">
+                <td className="p-3.5 font-medium text-[#0F172A]">Event</td>
+                <td className="p-3.5 text-[#526783]">Prof. K. Verma</td>
+                <td className="p-3.5 text-[#667A93]">GenAI Workshop</td>
+                <td className="p-3.5 text-[#667A93]">10 Sep 2026</td>
                 <td className="p-3.5">
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#FEF9C3] text-[#A16207]">
                     Pending
@@ -689,18 +656,11 @@ function FacultyDashboardView() {
   return (
     <div className="space-y-8">
       {/* Header (Matching Panel 5) */}
-      <div className="space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
-          Welcome, Prof. R. Singh
-        </h1>
-        <p className="text-xs text-[#555555]">
-          Manage your students, projects and academic activities.
-        </p>
-      </div>
+      <WorkspaceHero eyebrow="Faculty workspace · Preview" title={<>Good to see you <span className="text-[#1478ef]">here.</span></>} description="A clear view of mentoring, projects, requests, and academic activity." tone="blue" icon={GraduationCap} />
 
       {/* 4 Stat Cards in a row (Matching Panel 5) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="My Students" value="28" icon={<Users className="w-4 h-4 text-[#111111]" />} />
+        <StatCard label="My Students" value="28" icon={<Users className="w-4 h-4 text-[#0F172A]" />} />
         <StatCard label="Active Projects" value="6" icon={<GitBranch className="w-4 h-4 text-[#2563EB]" />} />
         <StatCard label="Pending Requests" value="3" highlight icon={<Clock className="w-4 h-4 text-[#DC2626]" />} />
         <StatCard label="Events Conducted" value="4" icon={<Calendar className="w-4 h-4 text-[#16A34A]" />} />
@@ -709,13 +669,13 @@ function FacultyDashboardView() {
       {/* Tabs: [My Students] [Projects] [Requests] [Upcoming Events] (Matching Panel 5) */}
       <div className="space-y-4">
         <div className="overflow-x-auto max-w-full pb-1">
-          <div className="inline-flex h-9 items-center rounded-lg bg-[#F5F5F5] p-1 text-xs font-medium text-[#555555] whitespace-nowrap">
+          <div className="inline-flex h-9 items-center rounded-lg bg-[#EDF4FC] p-1 text-xs font-medium text-[#526783] whitespace-nowrap">
           <button
             onClick={() => setTab("students")}
             className={`px-3 py-1 rounded-md transition-all ${
               tab === "students"
-                ? "bg-white text-[#111111] shadow-subtle"
-                : "text-[#555555] hover:text-[#111111]"
+                ? "bg-white text-[#0F172A] shadow-subtle"
+                : "text-[#526783] hover:text-[#0F172A]"
             }`}
           >
             My Students
@@ -724,8 +684,8 @@ function FacultyDashboardView() {
             onClick={() => setTab("projects")}
             className={`px-3 py-1 rounded-md transition-all ${
               tab === "projects"
-                ? "bg-white text-[#111111] shadow-subtle"
-                : "text-[#555555] hover:text-[#111111]"
+                ? "bg-white text-[#0F172A] shadow-subtle"
+                : "text-[#526783] hover:text-[#0F172A]"
             }`}
           >
             Projects
@@ -734,8 +694,8 @@ function FacultyDashboardView() {
             onClick={() => setTab("requests")}
             className={`px-3 py-1 rounded-md transition-all ${
               tab === "requests"
-                ? "bg-white text-[#111111] shadow-subtle"
-                : "text-[#555555] hover:text-[#111111]"
+                ? "bg-white text-[#0F172A] shadow-subtle"
+                : "text-[#526783] hover:text-[#0F172A]"
             }`}
           >
             Requests
@@ -744,8 +704,8 @@ function FacultyDashboardView() {
             onClick={() => setTab("events")}
             className={`px-3 py-1 rounded-md transition-all ${
               tab === "events"
-                ? "bg-white text-[#111111] shadow-subtle"
-                : "text-[#555555] hover:text-[#111111]"
+                ? "bg-white text-[#0F172A] shadow-subtle"
+                : "text-[#526783] hover:text-[#0F172A]"
             }`}
           >
             Upcoming Events
@@ -755,10 +715,10 @@ function FacultyDashboardView() {
 
         {/* Student Table (Matching Panel 5) */}
         {tab === "students" && (
-          <div className="rounded-lg border border-[#E5E5E5] bg-white overflow-hidden">
+          <div className="rounded-lg border border-[#DCE5F1] bg-white overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#FAFAFA] border-b border-[#E5E5E5] text-[#555555] font-medium">
+                <thead className="bg-[#F6F8FC] border-b border-[#DCE5F1] text-[#526783] font-medium">
                   <tr>
                     <th className="p-3.5">Reg. No.</th>
                     <th className="p-3.5">Name</th>
@@ -771,16 +731,16 @@ function FacultyDashboardView() {
                 </thead>
                 <tbody className="divide-y divide-[#E5E5E5]">
                   {studentsList.map((st) => (
-                    <tr key={st.regNo} className="hover:bg-[#FAFAFA]">
-                      <td className="p-3.5 font-medium text-[#111111]">
+                    <tr key={st.regNo} className="hover:bg-[#F6F8FC]">
+                      <td className="p-3.5 font-medium text-[#0F172A]">
                         {st.regNo}
                       </td>
-                      <td className="p-3.5 font-medium text-[#111111]">
+                      <td className="p-3.5 font-medium text-[#0F172A]">
                         {st.name}
                       </td>
-                      <td className="p-3.5 text-[#555555]">{st.section}</td>
-                      <td className="p-3.5 text-[#555555]">{st.cgpa}</td>
-                      <td className="p-3.5 text-[#111111] font-medium">
+                      <td className="p-3.5 text-[#526783]">{st.section}</td>
+                      <td className="p-3.5 text-[#526783]">{st.cgpa}</td>
+                      <td className="p-3.5 text-[#0F172A] font-medium">
                         {st.rank}
                       </td>
                       <td className="p-3.5">
@@ -808,19 +768,19 @@ function FacultyDashboardView() {
         )}
 
         {tab === "projects" && (
-          <div className="p-8 text-center border border-[#E5E5E5] rounded-lg bg-white text-xs text-[#777777]">
+          <div className="p-8 text-center border border-[#DCE5F1] rounded-lg bg-white text-xs text-[#667A93]">
             Active student capstone & research projects will appear here.
           </div>
         )}
 
         {tab === "requests" && (
-          <div className="p-8 text-center border border-[#E5E5E5] rounded-lg bg-white text-xs text-[#777777]">
+          <div className="p-8 text-center border border-[#DCE5F1] rounded-lg bg-white text-xs text-[#667A93]">
             3 change requests awaiting submission or HOD review.
           </div>
         )}
 
         {tab === "events" && (
-          <div className="p-8 text-center border border-[#E5E5E5] rounded-lg bg-white text-xs text-[#777777]">
+          <div className="p-8 text-center border border-[#DCE5F1] rounded-lg bg-white text-xs text-[#667A93]">
             4 departmental workshops scheduled for this semester.
           </div>
         )}
@@ -860,14 +820,7 @@ function AdminDashboardView() {
   return (
     <div className="space-y-8">
       {/* Header (Matching Panel 6) */}
-      <div className="space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
-          Admin Dashboard
-        </h1>
-        <p className="text-xs text-[#555555]">
-          System overview and health status.
-        </p>
-      </div>
+      <WorkspaceHero eyebrow="Platform overview · Preview" title={<>Keep AIMETRA <span className="text-[#ffcf36]">running.</span></>} description="Review platform activity, administration, and system information in one place." tone="navy" icon={ShieldCheck} />
 
       {/* 4 Stat Cards in a row (Matching Panel 6) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -885,20 +838,20 @@ function AdminDashboardView() {
       {/* Mid Row: User Distribution Donut + Recent Logins (Matching Panel 6) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: User Distribution Donut */}
-        <div className="lg:col-span-7 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
-            <h3 className="text-sm font-semibold text-[#111111]">
+        <div className="lg:col-span-7 rounded-lg border border-[#DCE5F1] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#DCE5F1] pb-3">
+            <h3 className="text-sm font-semibold text-[#0F172A]">
               User Distribution
             </h3>
-            <span className="text-xs text-[#777777]">1,435 Total</span>
+            <span className="text-xs text-[#667A93]">1,435 Total</span>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-around gap-6 pt-2">
             <div className="w-48 h-48 relative">
               <UserDistributionChart data={userDistribution} />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                <span className="text-lg font-bold text-[#111111]">1,435</span>
-                <span className="text-[10px] text-[#777777]">Users</span>
+                <span className="text-lg font-bold text-[#0F172A]">1,435</span>
+                <span className="text-[10px] text-[#667A93]">Users</span>
               </div>
             </div>
 
@@ -910,9 +863,9 @@ function AdminDashboardView() {
                       className="w-2.5 h-2.5 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="text-[#555555]">{item.name}</span>
+                    <span className="text-[#526783]">{item.name}</span>
                   </div>
-                  <span className="font-semibold text-[#111111]">
+                  <span className="font-semibold text-[#0F172A]">
                     {item.value.toLocaleString()}
                   </span>
                 </div>
@@ -922,34 +875,34 @@ function AdminDashboardView() {
         </div>
 
         {/* Right: Recent Logins */}
-        <div className="lg:col-span-5 rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
-            <h3 className="text-sm font-semibold text-[#111111]">
+        <div className="lg:col-span-5 rounded-lg border border-[#DCE5F1] bg-white p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#DCE5F1] pb-3">
+            <h3 className="text-sm font-semibold text-[#0F172A]">
               Recent Logins
             </h3>
-            <span className="text-xs text-[#777777]">Live telemetry</span>
+            <span className="text-xs text-[#667A93]">Live telemetry</span>
           </div>
 
           <div className="space-y-3 pt-1">
             {recentLogins.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center justify-between p-2 rounded-lg hover:bg-[#FAFAFA] transition-colors text-xs"
+                className="flex items-center justify-between p-2 rounded-lg hover:bg-[#F6F8FC] transition-colors text-xs"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-full bg-[#111111] text-white flex items-center justify-center text-xs font-medium">
+                  <div className="w-7 h-7 rounded-full bg-[#0F172A] text-white flex items-center justify-center text-xs font-medium">
                     {item.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-medium text-[#111111]">
+                    <div className="font-medium text-[#0F172A]">
                       {item.name}
                     </div>
-                    <div className="text-[10px] text-[#777777]">
+                    <div className="text-[10px] text-[#667A93]">
                       {item.role}
                     </div>
                   </div>
                 </div>
-                <span className="text-[10px] text-[#888888]">
+                <span className="text-[10px] text-[#71849B]">
                   {item.time}
                 </span>
               </div>
@@ -959,12 +912,12 @@ function AdminDashboardView() {
       </div>
 
       {/* Bottom: System Activity (Last 7 Days) Area Chart (Matching Panel 6) */}
-      <div className="rounded-lg border border-[#E5E5E5] bg-white p-6 space-y-4">
+      <div className="rounded-lg border border-[#DCE5F1] bg-white p-6 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-[#111111]">
+          <h3 className="text-sm font-semibold text-[#0F172A]">
             System Activity (Last 7 Days)
           </h3>
-          <span className="text-xs text-[#777777]">1.2k - 1.5k requests/day</span>
+          <span className="text-xs text-[#667A93]">1.2k - 1.5k requests/day</span>
         </div>
 
         <div className="h-60 w-full pt-2">

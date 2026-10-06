@@ -47,29 +47,29 @@ export default function MyProjectsPage() {
   });
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 bg-[#F2F2F1] min-h-screen">
+    <div className="p-8 max-w-7xl mx-auto space-y-8 bg-[#F6F8FC] min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#1E1E1E]">My Project Workspaces</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
+          <h1 className="text-3xl font-extrabold text-[#0F172A]">My Project Workspaces</h1>
+          <p className="text-sm text-[#526783] mt-1">
             Projects you created, contribute to, or guide as faculty mentor.
           </p>
         </div>
         <Link
           href="/projects/create"
-          className="px-4 py-2 text-sm font-semibold text-white bg-[#1E1E1E] rounded-xl hover:bg-gray-800 transition"
+          className="px-4 py-2 text-sm font-semibold text-white bg-[#0F172A] rounded-xl hover:bg-gray-800 transition"
         >
           + New Project
         </Link>
       </div>
 
-      <div className="flex border-b border-[#D6D6D6] gap-8">
+      <div className="flex border-b border-[#DCE5F1] gap-8">
         <button
           onClick={() => setTab("my")}
           className={`pb-3 text-sm font-semibold transition ${
             tab === "my"
-              ? "text-[#1E1E1E] border-b-2 border-[#1E1E1E]"
-              : "text-[#5C5C5C] hover:text-[#1E1E1E]"
+              ? "text-[#0F172A] border-b-2 border-[#0F172A]"
+              : "text-[#526783] hover:text-[#0F172A]"
           }`}
         >
           My Projects ({projects.filter((p: any) => p.mentor_id !== currentUserId).length})
@@ -78,8 +78,8 @@ export default function MyProjectsPage() {
           onClick={() => setTab("mentoring")}
           className={`pb-3 text-sm font-semibold transition ${
             tab === "mentoring"
-              ? "text-[#1E1E1E] border-b-2 border-[#1E1E1E]"
-              : "text-[#5C5C5C] hover:text-[#1E1E1E]"
+              ? "text-[#0F172A] border-b-2 border-[#0F172A]"
+              : "text-[#526783] hover:text-[#0F172A]"
           }`}
         >
           Mentoring ({projects.filter((p: any) => p.mentor_id === currentUserId).length})
@@ -87,13 +87,13 @@ export default function MyProjectsPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-[#5C5C5C]">Loading your projects...</div>
+        <div className="text-center py-16 text-[#526783]">Loading your projects...</div>
       ) : filteredProjects.length === 0 ? (
-        <div className="p-12 text-center bg-white border border-[#D6D6D6] rounded-2xl">
-          <p className="text-sm text-[#5C5C5C] mb-4">No projects found in this tab.</p>
+        <div className="p-12 text-center bg-white border border-[#DCE5F1] rounded-2xl">
+          <p className="text-sm text-[#526783] mb-4">No projects found in this tab.</p>
           <Link
             href="/projects"
-            className="text-xs font-semibold text-[#1E1E1E] underline"
+            className="text-xs font-semibold text-[#0F172A] underline"
           >
             Browse all projects in repository
           </Link>

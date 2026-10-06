@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { apiGet } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { TestimonialCard } from '@/components/features/testimonials/TestimonialCard';
+import { WorkspaceHero } from '@/components/layout/WorkspaceHero';
 import { Plus, MessageSquare, ShieldCheck, UserCheck } from 'lucide-react';
 
 export default function TestimonialsPage() {
@@ -48,33 +49,20 @@ export default function TestimonialsPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#D6D6D6] pb-6">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs bg-[#EAF0F3] text-[#6B8FA3] px-2.5 py-0.5 rounded-full font-semibold">
-              Community Voices
-            </span>
-          </div>
-          <h1 className="text-3xl font-bold text-[#1E1E1E]">Testimonials & Reviews</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
-            What our students, alumni, faculty, and industry partners say about the AI/ML department.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5 flex-wrap">
+      <WorkspaceHero eyebrow="Community voices" title={<>Real people. <span className="text-[#1478ef]">Real stories.</span></>} description="Hear from the students, alumni, faculty, and partners who shape AIMETRA." tone="blue" icon={MessageSquare} actions={<>
           {user && (
             <Link
               href="/testimonials/me"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 border border-[#D6D6D6] rounded-lg text-xs font-semibold text-[#1E1E1E] hover:bg-[#F2F2F1] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#b9d9ff] bg-white px-4 py-2.5 text-xs font-bold text-[#081a39] transition hover:bg-[#f5faff]"
             >
-              <UserCheck className="w-4 h-4 text-[#5C5C5C]" /> My Submissions
+              <UserCheck className="w-4 h-4 text-[#526783]" /> My Submissions
             </Link>
           )}
 
           {isHODorAdmin && (
             <Link
               href="/testimonials/pending"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 border border-[#94B0B8] bg-[#EAF0F3] text-[#6B8FA3] rounded-lg text-xs font-semibold hover:bg-[#94B0B8]/20 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#b9d9ff] bg-white px-4 py-2.5 text-xs font-bold text-[#081a39] transition hover:bg-[#f5faff]"
             >
               <ShieldCheck className="w-4 h-4" /> Moderation Queue
             </Link>
@@ -82,15 +70,14 @@ export default function TestimonialsPage() {
 
           <Link
             href="/testimonials/create"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#081a39] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#1478ef]"
           >
             <Plus className="w-4 h-4" /> Share Your Experience
           </Link>
-        </div>
-      </div>
+      </>}/>
 
       {/* Filter Bar */}
-      <div className="bg-white p-4 rounded-xl border border-[#D6D6D6] flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-white p-4 rounded-xl border border-[#DCE5F1] flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Author Type Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
           {[
@@ -109,8 +96,8 @@ export default function TestimonialsPage() {
               }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                 authorTypeFilter === type.id
-                  ? 'bg-[#1E1E1E] text-white font-semibold'
-                  : 'bg-[#F2F2F1] text-[#5C5C5C] hover:text-[#1E1E1E]'
+                  ? 'bg-[#0F172A] text-white font-semibold'
+                  : 'bg-[#F6F8FC] text-[#526783] hover:text-[#0F172A]'
               }`}
             >
               {type.label}
@@ -126,7 +113,7 @@ export default function TestimonialsPage() {
               setContextFilter(e.target.value);
               setPage(1);
             }}
-            className="w-full sm:w-60 py-2 px-3 border border-[#D6D6D6] rounded-lg text-xs bg-white text-[#1E1E1E] focus:outline-none focus:border-[#94B0B8]"
+            className="w-full sm:w-60 py-2 px-3 border border-[#DCE5F1] rounded-lg text-xs bg-white text-[#0F172A] focus:outline-none focus:border-[#94B0B8]"
           >
             <option value="">All Contexts</option>
             <option value="about_department">About Department</option>
@@ -140,21 +127,21 @@ export default function TestimonialsPage() {
       {/* Testimonials Masonry / Grid */}
       {loading ? (
         <div className="py-20 text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-[#1E1E1E] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-[#7A7A7A]">Loading testimonials...</p>
+          <div className="w-8 h-8 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-[#667A93]">Loading testimonials...</p>
         </div>
       ) : totalCount === 0 ? (
-        <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
-          <div className="w-12 h-12 bg-[#F2F2F1] rounded-full flex items-center justify-center mx-auto text-[#7A7A7A]">
+        <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
+          <div className="w-12 h-12 bg-[#F6F8FC] rounded-full flex items-center justify-center mx-auto text-[#667A93]">
             <MessageSquare className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[#1E1E1E]">No testimonials yet</h3>
-          <p className="text-xs text-[#7A7A7A] leading-relaxed">
+          <h3 className="text-lg font-bold text-[#0F172A]">No testimonials yet</h3>
+          <p className="text-xs text-[#667A93] leading-relaxed">
             Be the first to share your experience with the department!
           </p>
           <Link
             href="/testimonials/create"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E1E1E] bg-[#EEBE1E] px-4 py-2 rounded-lg"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[#0F172A] bg-[#FACC15] px-4 py-2 rounded-lg"
           >
             Submit Testimonial
           </Link>
@@ -174,18 +161,18 @@ export default function TestimonialsPage() {
             type="button"
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="px-3 py-1.5 border border-[#D6D6D6] rounded-md text-xs font-medium text-[#1E1E1E] disabled:opacity-40 hover:bg-[#F2F2F1]"
+            className="px-3 py-1.5 border border-[#DCE5F1] rounded-md text-xs font-medium text-[#0F172A] disabled:opacity-40 hover:bg-[#F6F8FC]"
           >
             Previous
           </button>
-          <span className="text-xs text-[#5C5C5C] px-2">
+          <span className="text-xs text-[#526783] px-2">
             Page {page} of {totalPages}
           </span>
           <button
             type="button"
             disabled={page >= totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            className="px-3 py-1.5 border border-[#D6D6D6] rounded-md text-xs font-medium text-[#1E1E1E] disabled:opacity-40 hover:bg-[#F2F2F1]"
+            className="px-3 py-1.5 border border-[#DCE5F1] rounded-md text-xs font-medium text-[#0F172A] disabled:opacity-40 hover:bg-[#F6F8FC]"
           >
             Next
           </button>

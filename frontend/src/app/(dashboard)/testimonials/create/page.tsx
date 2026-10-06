@@ -11,12 +11,12 @@ export default function CreateTestimonialPage() {
       <div>
         <Link
           href="/testimonials"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E] mb-2"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#526783] hover:text-[#0F172A] mb-2"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Testimonials
         </Link>
-        <h1 className="text-2xl font-bold text-[#1E1E1E]">Share Your Experience</h1>
-        <p className="text-xs text-[#5C5C5C] mt-0.5">
+        <h1 className="text-2xl font-bold text-[#0F172A]">Share Your Experience</h1>
+        <p className="text-xs text-[#526783] mt-0.5">
           Your feedback and reflections help prospective students, recruiters, and the department flourish.
         </p>
       </div>

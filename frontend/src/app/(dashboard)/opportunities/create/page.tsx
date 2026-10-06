@@ -35,14 +35,14 @@ export default function CreateOpportunityPage() {
 
   if (!canPost) {
     return (
-      <div className="min-h-screen bg-[#F2F2F1] p-8 flex items-center justify-center">
-        <div className="bg-white rounded-2xl border border-[#D6D6D6] p-8 text-center max-w-md">
+      <div className="min-h-screen bg-[#F6F8FC] p-8 flex items-center justify-center">
+        <div className="bg-white rounded-2xl border border-[#DCE5F1] p-8 text-center max-w-md">
           <AlertCircle className="w-12 h-12 text-[#B85C5C] mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-[#1E1E1E] mb-2">Access Restricted</h2>
-          <p className="text-sm text-[#5C5C5C] mb-6">
+          <h2 className="text-xl font-bold text-[#0F172A] mb-2">Access Restricted</h2>
+          <p className="text-sm text-[#526783] mb-6">
             Only Faculty, Alumni, and Department Administrators can publish internships and training opportunities.
           </p>
-          <Link href="/opportunities" className="px-4 py-2 rounded-xl bg-[#1E1E1E] text-white text-sm font-semibold">
+          <Link href="/opportunities" className="px-4 py-2 rounded-xl bg-[#0F172A] text-white text-sm font-semibold">
             Browse Opportunities
           </Link>
         </div>
@@ -92,22 +92,22 @@ export default function CreateOpportunityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F1] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F6F8FC] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Back Link */}
         <Link
           href="/opportunities"
-          className="inline-flex items-center gap-1.5 text-xs text-[#7A7A7A] hover:text-[#1E1E1E] transition-colors mb-6 font-medium"
+          className="inline-flex items-center gap-1.5 text-xs text-[#667A93] hover:text-[#0F172A] transition-colors mb-6 font-medium"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Opportunities</span>
         </Link>
 
         {/* Card Form */}
-        <div className="bg-white rounded-3xl border border-[#D6D6D6] p-6 md:p-10 shadow-sm">
+        <div className="bg-white rounded-3xl border border-[#DCE5F1] p-6 md:p-10 shadow-sm">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-[#1E1E1E]">Post Opportunity or Training</h1>
-            <p className="text-xs md:text-sm text-[#7A7A7A] mt-1">
+            <h1 className="text-2xl font-bold text-[#0F172A]">Post Opportunity or Training</h1>
+            <p className="text-xs md:text-sm text-[#667A93] mt-1">
               Share corporate openings, research internships, or workshops with AI/ML department students.
             </p>
           </div>
@@ -122,37 +122,37 @@ export default function CreateOpportunityPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Opportunity Title *</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Opportunity Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. AI Research Intern (Vision Models)"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Organization / Company *</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Organization / Company *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Microsoft Research India"
                   value={formData.organization}
                   onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Type</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Type</label>
                 <select
                   value={formData.opportunity_type}
                   onChange={(e) => setFormData({ ...formData, opportunity_type: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 >
                   <option value="internship">Internship</option>
                   <option value="training">Industrial Training</option>
@@ -164,11 +164,11 @@ export default function CreateOpportunityPage() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Working Mode</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Working Mode</label>
                 <select
                   value={formData.mode}
                   onChange={(e) => setFormData({ ...formData, mode: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 >
                   <option value="remote">Remote</option>
                   <option value="hybrid">Hybrid</option>
@@ -177,106 +177,106 @@ export default function CreateOpportunityPage() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Location</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Location</label>
                 <input
                   type="text"
                   placeholder="e.g. Bengaluru, India"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Stipend Amount (Monthly)</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Stipend Amount (Monthly)</label>
                 <input
                   type="number"
                   placeholder="e.g. 35000"
                   value={formData.stipend_amount}
                   onChange={(e) => setFormData({ ...formData, stipend_amount: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Duration (Weeks)</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Duration (Weeks)</label>
                 <input
                   type="number"
                   placeholder="e.g. 12"
                   value={formData.duration_weeks}
                   onChange={(e) => setFormData({ ...formData, duration_weeks: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Application Deadline</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Application Deadline</label>
                 <input
                   type="datetime-local"
                   value={formData.application_deadline}
                   onChange={(e) => setFormData({ ...formData, application_deadline: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Description & Role Responsibilities *</label>
+              <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Description & Role Responsibilities *</label>
               <textarea
                 required
                 rows={4}
                 placeholder="Overview of the work, expected outcomes, mentoring environment..."
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
               />
             </div>
 
             <div>
-              <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Eligibility Criteria</label>
+              <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Eligibility Criteria</label>
               <textarea
                 rows={2}
                 placeholder="e.g. B.Tech Sem 6+ or M.Tech students with CGPA > 7.5"
                 value={formData.eligibility}
                 onChange={(e) => setFormData({ ...formData, eligibility: e.target.value })}
-                className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Required Skills (Comma separated)</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Required Skills (Comma separated)</label>
                 <input
                   type="text"
                   placeholder="PyTorch, OpenCV, Transformers, Linux"
                   value={formData.required_skills}
                   onChange={(e) => setFormData({ ...formData, required_skills: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#1E1E1E] block mb-1.5">Official Application URL</label>
+                <label className="text-xs font-bold text-[#0F172A] block mb-1.5">Official Application URL</label>
                 <input
                   type="url"
                   placeholder="https://careers.company.com/job/12345"
                   value={formData.application_url}
                   onChange={(e) => setFormData({ ...formData, application_url: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-[#D6D6D6] bg-white focus:outline-none focus:border-[#1E1E1E]"
+                  className="w-full text-xs p-3 rounded-xl border border-[#DCE5F1] bg-white focus:outline-none focus:border-[#0F172A]"
                 />
               </div>
             </div>
 
-            <div className="pt-4 border-t border-[#F2F2F1] flex items-center justify-between">
-              <span className="text-xs text-[#7A7A7A]">
+            <div className="pt-4 border-t border-[#F6F8FC] flex items-center justify-between">
+              <span className="text-xs text-[#667A93]">
                 Submitted postings will be reviewed by the HOD prior to public student broadcast.
               </span>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-6 py-3 rounded-xl bg-[#1E1E1E] hover:bg-black text-white text-xs font-bold transition-all shadow-sm"
+                className="px-6 py-3 rounded-xl bg-[#0F172A] hover:bg-black text-white text-xs font-bold transition-all shadow-sm"
               >
                 {submitting ? 'Submitting...' : 'Post Listing'}
               </button>

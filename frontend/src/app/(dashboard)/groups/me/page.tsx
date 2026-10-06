@@ -32,23 +32,23 @@ export default function MyGroupsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D6D6D6] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#DCE5F1] pb-6">
         <div>
           <Link
             href="/groups"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E] mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#526783] hover:text-[#0F172A] mb-2"
           >
             <ArrowLeft className="w-4 h-4" /> Back to All Groups
           </Link>
-          <h1 className="text-3xl font-bold text-[#1E1E1E]">My Memberships & Clubs</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
+          <h1 className="text-3xl font-bold text-[#0F172A]">My Memberships & Clubs</h1>
+          <p className="text-sm text-[#526783] mt-1">
             Groups, clubs, and societies where you hold an active membership, core, or leadership role.
           </p>
         </div>
 
         <Link
           href="/groups"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors shadow-sm self-start"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] rounded-lg text-xs font-semibold transition-colors shadow-sm self-start"
         >
           <Plus className="w-4 h-4" /> Explore More Clubs
         </Link>
@@ -56,21 +56,21 @@ export default function MyGroupsPage() {
 
       {loading ? (
         <div className="py-20 text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-[#1E1E1E] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-[#7A7A7A]">Loading your groups...</p>
+          <div className="w-8 h-8 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-[#667A93]">Loading your groups...</p>
         </div>
       ) : groups.length === 0 ? (
-        <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
-          <div className="w-12 h-12 bg-[#F2F2F1] rounded-full flex items-center justify-center mx-auto text-[#7A7A7A]">
+        <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
+          <div className="w-12 h-12 bg-[#F6F8FC] rounded-full flex items-center justify-center mx-auto text-[#667A93]">
             <Users className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[#1E1E1E]">Not in any groups yet</h3>
-          <p className="text-xs text-[#7A7A7A] leading-relaxed">
+          <h3 className="text-lg font-bold text-[#0F172A]">Not in any groups yet</h3>
+          <p className="text-xs text-[#667A93] leading-relaxed">
             Join student technical clubs or interest groups to collaborate on projects and events.
           </p>
           <Link
             href="/groups"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] rounded-lg text-xs font-semibold transition-colors"
           >
             Browse Clubs Directory
           </Link>

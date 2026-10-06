@@ -77,15 +77,15 @@ export default function CreateGroupPage() {
 
   if (!isHODorAdmin) {
     return (
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center max-w-md mx-auto my-12 space-y-4">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center max-w-md mx-auto my-12 space-y-4">
         <div className="w-12 h-12 bg-[#F5EAEA] text-[#B85C5C] rounded-full flex items-center justify-center mx-auto">
           <AlertCircle className="w-6 h-6" />
         </div>
-        <h2 className="text-xl font-bold text-[#1E1E1E]">Access Restricted</h2>
-        <p className="text-xs text-[#7A7A7A]">Only HOD or Admin can charter new student groups or societies.</p>
+        <h2 className="text-xl font-bold text-[#0F172A]">Access Restricted</h2>
+        <p className="text-xs text-[#667A93]">Only HOD or Admin can charter new student groups or societies.</p>
         <Link
           href="/groups"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E1E1E] bg-[#F2F2F1] hover:bg-[#D6D6D6] px-4 py-2 rounded-lg"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] bg-[#F6F8FC] hover:bg-[#DCE5F1] px-4 py-2 rounded-lg"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Groups
         </Link>
@@ -98,17 +98,17 @@ export default function CreateGroupPage() {
       <div>
         <Link
           href="/groups"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E] mb-2"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#526783] hover:text-[#0F172A] mb-2"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Groups
         </Link>
-        <h1 className="text-2xl font-bold text-[#1E1E1E]">Charter New Group or Club</h1>
-        <p className="text-xs text-[#5C5C5C] mt-0.5">
+        <h1 className="text-2xl font-bold text-[#0F172A]">Charter New Group or Club</h1>
+        <p className="text-xs text-[#526783] mt-0.5">
           Establish an official student organization, interest group, or chapter within the department.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white border border-[#D6D6D6] rounded-2xl p-6 sm:p-8 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white border border-[#DCE5F1] rounded-2xl p-6 sm:p-8 space-y-6">
         {error && (
           <div className="p-3.5 bg-[#F5EAEA] border border-[#B85C5C]/30 text-[#B85C5C] rounded-lg text-xs font-medium">
             {error}
@@ -118,24 +118,24 @@ export default function CreateGroupPage() {
         {/* Group Name & Tagline */}
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Group Name *</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Group Name *</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g. AI & Robotics Club, Quantum ML Chapter"
-              className="w-full px-3.5 py-2.5 border border-[#D6D6D6] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3.5 py-2.5 border border-[#DCE5F1] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Tagline / Motto</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Tagline / Motto</label>
             <input
               type="text"
               value={formData.tagline}
               onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
               placeholder="e.g. Building autonomous robotic systems and competing in national hackathons"
-              className="w-full px-3.5 py-2 border border-[#D6D6D6] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3.5 py-2 border border-[#DCE5F1] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
         </div>
@@ -143,11 +143,11 @@ export default function CreateGroupPage() {
         {/* Category & Type */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Category *</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Category *</label>
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full px-3.5 py-2.5 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3.5 py-2.5 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             >
               <option value="technical">Technical</option>
               <option value="cultural">Cultural</option>
@@ -158,11 +158,11 @@ export default function CreateGroupPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Group Type *</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Group Type *</label>
             <select
               value={formData.group_type}
               onChange={(e) => setFormData({ ...formData, group_type: e.target.value })}
-              className="w-full px-3.5 py-2.5 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3.5 py-2.5 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             >
               <option value="club">Club</option>
               <option value="society">Society</option>
@@ -174,37 +174,37 @@ export default function CreateGroupPage() {
 
         {/* Description */}
         <div>
-          <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">About & Objectives</label>
+          <label className="block text-xs font-semibold text-[#0F172A] mb-1">About & Objectives</label>
           <textarea
             rows={4}
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             placeholder="Describe the club's mission, regular workshops, hands-on projects, and who should join..."
-            className="w-full p-3.5 border border-[#D6D6D6] rounded-xl text-sm bg-white focus:outline-none focus:border-[#94B0B8] leading-relaxed"
+            className="w-full p-3.5 border border-[#DCE5F1] rounded-xl text-sm bg-white focus:outline-none focus:border-[#94B0B8] leading-relaxed"
           />
         </div>
 
         {/* Images URLs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Logo URL</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Logo URL</label>
             <input
               type="text"
               value={formData.logo_url}
               onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
               placeholder="https://example.com/logo.png"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Cover Image URL</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Cover Image URL</label>
             <input
               type="text"
               value={formData.cover_image_url}
               onChange={(e) => setFormData({ ...formData, cover_image_url: e.target.value })}
               placeholder="https://example.com/cover.jpg"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
         </div>
@@ -212,24 +212,24 @@ export default function CreateGroupPage() {
         {/* Schedule & Venue */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Meeting Schedule</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Meeting Schedule</label>
             <input
               type="text"
               value={formData.meeting_schedule}
               onChange={(e) => setFormData({ ...formData, meeting_schedule: e.target.value })}
               placeholder="e.g. Every Wednesday 4:30 PM"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Meeting Venue</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Meeting Venue</label>
             <input
               type="text"
               value={formData.meeting_venue}
               onChange={(e) => setFormData({ ...formData, meeting_venue: e.target.value })}
               placeholder="e.g. AI Innovation Lab, Room 402"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
         </div>
@@ -237,37 +237,37 @@ export default function CreateGroupPage() {
         {/* Contact info */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Contact Email</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Contact Email</label>
             <input
               type="email"
               value={formData.contact_email}
               onChange={(e) => setFormData({ ...formData, contact_email: e.target.value })}
               placeholder="robotics@aiml.hub"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Contact Phone</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Contact Phone</label>
             <input
               type="text"
               value={formData.contact_phone}
               onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
               placeholder="+91 9876543210"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
         </div>
 
         {/* Tags */}
         <div>
-          <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Tags (comma-separated)</label>
+          <label className="block text-xs font-semibold text-[#0F172A] mb-1">Tags (comma-separated)</label>
           <input
             type="text"
             value={formData.tags}
             onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
             placeholder="e.g. robotics, ros, automation, hardware"
-            className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+            className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
           />
         </div>
 
@@ -275,7 +275,7 @@ export default function CreateGroupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full inline-flex items-center justify-center gap-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] py-3 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 shadow-sm"
+            className="w-full inline-flex items-center justify-center gap-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] py-3 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 shadow-sm"
           >
             {loading ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

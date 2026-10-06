@@ -4,21 +4,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-text disabled:pointer-events-none disabled:opacity-50 select-none",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-semibold transition-[background-color,box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none",
   {
     variants: {
       variant: {
-        default: "bg-[#111111] text-white hover:bg-neutral-800 active:bg-neutral-950",
-        primary: "bg-[#111111] text-white hover:bg-neutral-800 active:bg-neutral-950",
-        secondary: "bg-white text-[#111111] border border-[#E5E5E5] hover:bg-[#FAFAFA] active:bg-[#F5F5F5]",
-        outline: "bg-white text-[#111111] border border-[#E5E5E5] hover:bg-[#FAFAFA]",
-        ghost: "bg-transparent text-[#555555] hover:bg-[#F5F5F5] hover:text-[#111111]",
-        link: "text-[#111111] underline-offset-4 hover:underline",
+        default: "bg-brand-navy text-white hover:bg-[#173667] active:bg-[#0B2852]",
+        primary: "bg-brand-navy text-white hover:bg-[#173667] active:bg-[#0B2852]",
+        secondary: "border border-border bg-surface text-ink hover:bg-canvas-alt active:bg-canvas",
+        outline: "border border-border bg-surface text-ink hover:bg-canvas-alt",
+        ghost: "bg-transparent text-ink-500 hover:bg-canvas-alt hover:text-ink",
+        link: "text-brand-blue underline-offset-4 hover:underline",
         danger: "bg-[#DC2626] text-white hover:bg-[#B91C1C]",
         info: "bg-[#2563EB] text-white hover:bg-[#1D4ED8]",
         // legacy compatibility
-        accent: "bg-[#111111] text-white hover:bg-neutral-800",
-        sage: "bg-[#111111] text-white hover:bg-neutral-800",
+        accent: "bg-brand-yellow text-brand-navy hover:bg-[#FFE05B]",
+        sage: "bg-sage-bg text-brand-blue hover:bg-[#D9EAFF]",
       },
       size: {
         default: "h-9 px-4 py-2",

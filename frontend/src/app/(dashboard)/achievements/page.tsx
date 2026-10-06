@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { getCookie } from "cookies-next";
 import { format } from "date-fns";
+import { Trophy } from "lucide-react";
+import { WorkspaceHero } from "@/components/layout/WorkspaceHero";
 
 export default function AchievementsPage() {
   const [achievements, setAchievements] = useState([]);
@@ -32,23 +34,20 @@ export default function AchievementsPage() {
     international: "bg-[#EE8E1E] text-white", // amber
     national: "bg-[#94BD88] text-white", // sage
     state: "bg-[#7195BB] text-white", // info
-    university: "bg-[#1E1E1E] text-white", // ink
+    university: "bg-[#0F172A] text-white", // ink
     college: "bg-gray-200 text-gray-800",
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-[#1E1E1E]">Hall of Fame</h1>
-        <div className="flex gap-4">
-          <Link href="/achievements/me" className="px-4 py-2 text-[#1E1E1E] bg-[#D6D6D6] rounded hover:bg-gray-300 transition">
+    <div className="mx-auto max-w-7xl space-y-8 p-4 sm:p-8">
+      <WorkspaceHero eyebrow="Rewards & recognition" title={<>Your effort <span className="text-[#b97800]">deserves more.</span></>} description="Celebrate the achievements, contributions, and moments that move our community forward." tone="yellow" icon={Trophy} actions={<>
+          <Link href="/achievements/me" className="rounded-full border border-[#efd695] bg-white px-4 py-2.5 text-xs font-bold text-[#081a39] transition hover:bg-[#fffbeb]">
             My Achievements
           </Link>
-          <Link href="/achievements/create" className="px-4 py-2 text-white bg-[#EE8E1E] rounded hover:bg-[#d67b15] transition">
+          <Link href="/achievements/create" className="rounded-full bg-[#081a39] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#1478ef]">
             Add Achievement
           </Link>
-        </div>
-      </div>
+      </>}/>
 
       {isLoading ? (
         <div className="text-center py-10">Loading achievements...</div>
@@ -57,7 +56,7 @@ export default function AchievementsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {achievements.map((ach: any) => (
-            <div key={ach.id} className="bg-white border border-[#D6D6D6] rounded-lg p-5 shadow-sm hover:shadow-md transition">
+            <div key={ach.id} className="rounded-[24px] border border-[#DCE5F1] bg-white p-5 shadow-[0_9px_25px_rgba(8,26,57,0.05)] transition hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(8,26,57,0.1)]">
               <div className="flex justify-between items-start mb-3">
                 <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${levelColors[ach.level] || levelColors.college}`}>
                   {ach.level || "Award"}
@@ -66,7 +65,7 @@ export default function AchievementsPage() {
                   {ach.achieved_on ? format(new Date(ach.achieved_on), "MMM yyyy") : ""}
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-[#1E1E1E] mb-1">{ach.title}</h3>
+              <h3 className="text-lg font-bold text-[#0F172A] mb-1">{ach.title}</h3>
               <p className="text-sm font-semibold text-[#EE8E1E] mb-3">{ach.category}</p>
               <p className="text-xs text-gray-500 mb-4">{ach.issuer}</p>
               <p className="text-sm text-gray-700 line-clamp-3">{ach.description}</p>

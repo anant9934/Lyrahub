@@ -66,23 +66,23 @@ export default function GroupDetailPage() {
   if (loading) {
     return (
       <div className="py-24 text-center space-y-3">
-        <div className="w-8 h-8 border-2 border-[#1E1E1E] border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-sm text-[#7A7A7A]">Loading group details...</p>
+        <div className="w-8 h-8 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-sm text-[#667A93]">Loading group details...</p>
       </div>
     );
   }
 
   if (error || !group) {
     return (
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center max-w-md mx-auto my-12 space-y-4">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center max-w-md mx-auto my-12 space-y-4">
         <div className="w-12 h-12 bg-[#F5EAEA] text-[#B85C5C] rounded-full flex items-center justify-center mx-auto">
           <Users className="w-6 h-6" />
         </div>
-        <h2 className="text-xl font-bold text-[#1E1E1E]">Group Not Found</h2>
-        <p className="text-sm text-[#7A7A7A]">{error}</p>
+        <h2 className="text-xl font-bold text-[#0F172A]">Group Not Found</h2>
+        <p className="text-sm text-[#667A93]">{error}</p>
         <Link
           href="/groups"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E1E1E] bg-[#F2F2F1] hover:bg-[#D6D6D6] px-4 py-2 rounded-lg"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] bg-[#F6F8FC] hover:bg-[#DCE5F1] px-4 py-2 rounded-lg"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Groups
         </Link>
@@ -103,7 +103,7 @@ export default function GroupDetailPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/groups"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#526783] hover:text-[#0F172A] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to All Groups
         </Link>
@@ -128,7 +128,7 @@ export default function GroupDetailPage() {
       />
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 border-b border-[#D6D6D6]">
+      <div className="flex items-center gap-1 border-b border-[#DCE5F1]">
         {[
           { id: 'about', label: 'About', icon: BookOpen },
           { id: 'members', label: `Members (${group.members?.length || 0})`, icon: Users },
@@ -143,8 +143,8 @@ export default function GroupDetailPage() {
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-1.5 px-4 py-3 text-xs font-semibold border-b-2 transition-colors ${
                 activeTab === tab.id
-                  ? 'border-[#1E1E1E] text-[#1E1E1E]'
-                  : 'border-transparent text-[#7A7A7A] hover:text-[#1E1E1E]'
+                  ? 'border-[#0F172A] text-[#0F172A]'
+                  : 'border-transparent text-[#667A93] hover:text-[#0F172A]'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -159,17 +159,17 @@ export default function GroupDetailPage() {
         {activeTab === 'about' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white rounded-2xl border border-[#D6D6D6] p-6 sm:p-8 space-y-4">
-                <h3 className="text-lg font-bold text-[#1E1E1E]">About the Group</h3>
-                <p className="text-sm text-[#1E1E1E] leading-relaxed whitespace-pre-line">
+              <div className="bg-white rounded-2xl border border-[#DCE5F1] p-6 sm:p-8 space-y-4">
+                <h3 className="text-lg font-bold text-[#0F172A]">About the Group</h3>
+                <p className="text-sm text-[#0F172A] leading-relaxed whitespace-pre-line">
                   {group.description || group.tagline || 'No extended description provided.'}
                 </p>
 
                 {group.tags && group.tags.length > 0 && (
-                  <div className="pt-4 border-t border-[#D6D6D6] flex flex-wrap items-center gap-1.5">
-                    <span className="text-xs font-semibold text-[#7A7A7A]">Focus Areas:</span>
+                  <div className="pt-4 border-t border-[#DCE5F1] flex flex-wrap items-center gap-1.5">
+                    <span className="text-xs font-semibold text-[#667A93]">Focus Areas:</span>
                     {group.tags.map((tag: string, i: number) => (
-                      <span key={i} className="text-xs bg-[#F2F2F1] text-[#1E1E1E] px-2 py-0.5 rounded">
+                      <span key={i} className="text-xs bg-[#F6F8FC] text-[#0F172A] px-2 py-0.5 rounded">
                         #{tag}
                       </span>
                     ))}
@@ -180,14 +180,14 @@ export default function GroupDetailPage() {
 
             {/* Sidebar info */}
             <div className="space-y-4">
-              <div className="bg-white rounded-2xl border border-[#D6D6D6] p-6 space-y-4 text-xs">
-                <h4 className="font-bold text-sm text-[#1E1E1E] border-b border-[#D6D6D6] pb-2">
+              <div className="bg-white rounded-2xl border border-[#DCE5F1] p-6 space-y-4 text-xs">
+                <h4 className="font-bold text-sm text-[#0F172A] border-b border-[#DCE5F1] pb-2">
                   Contact & Schedule
                 </h4>
 
                 {group.contact_email && (
-                  <div className="flex items-center gap-2 text-[#5C5C5C]">
-                    <Mail className="w-3.5 h-3.5 text-[#7A7A7A]" />
+                  <div className="flex items-center gap-2 text-[#526783]">
+                    <Mail className="w-3.5 h-3.5 text-[#667A93]" />
                     <a href={`mailto:${group.contact_email}`} className="hover:underline truncate">
                       {group.contact_email}
                     </a>
@@ -195,23 +195,23 @@ export default function GroupDetailPage() {
                 )}
 
                 {group.contact_phone && (
-                  <div className="flex items-center gap-2 text-[#5C5C5C]">
-                    <Phone className="w-3.5 h-3.5 text-[#7A7A7A]" />
+                  <div className="flex items-center gap-2 text-[#526783]">
+                    <Phone className="w-3.5 h-3.5 text-[#667A93]" />
                     <span>{group.contact_phone}</span>
                   </div>
                 )}
 
                 {group.meeting_venue && (
-                  <div className="pt-2 border-t border-[#D6D6D6]">
-                    <span className="text-[#7A7A7A] block mb-0.5">Meeting Venue</span>
-                    <span className="font-semibold text-[#1E1E1E]">{group.meeting_venue}</span>
+                  <div className="pt-2 border-t border-[#DCE5F1]">
+                    <span className="text-[#667A93] block mb-0.5">Meeting Venue</span>
+                    <span className="font-semibold text-[#0F172A]">{group.meeting_venue}</span>
                   </div>
                 )}
 
                 {group.founded_on && (
                   <div>
-                    <span className="text-[#7A7A7A] block mb-0.5">Founded On</span>
-                    <span className="font-semibold text-[#1E1E1E]">
+                    <span className="text-[#667A93] block mb-0.5">Founded On</span>
+                    <span className="font-semibold text-[#0F172A]">
                       {new Date(group.founded_on).toLocaleDateString()}
                     </span>
                   </div>
@@ -230,7 +230,7 @@ export default function GroupDetailPage() {
         {activeTab === 'events' && (
           <div className="space-y-4">
             {(!group.events || group.events.length === 0) ? (
-              <div className="bg-white border border-[#D6D6D6] rounded-2xl p-10 text-center text-sm text-[#7A7A7A]">
+              <div className="bg-white border border-[#DCE5F1] rounded-2xl p-10 text-center text-sm text-[#667A93]">
                 No upcoming events linked to this club yet.
               </div>
             ) : (
@@ -238,16 +238,16 @@ export default function GroupDetailPage() {
                 {group.events.map((e: any) => (
                   <div
                     key={e.id}
-                    className="bg-white border border-[#D6D6D6] rounded-xl p-5 flex items-center justify-between hover:shadow-sm transition-all"
+                    className="bg-white border border-[#DCE5F1] rounded-xl p-5 flex items-center justify-between hover:shadow-sm transition-all"
                   >
                     <div>
-                      <h4 className="font-bold text-sm text-[#1E1E1E]">
+                      <h4 className="font-bold text-sm text-[#0F172A]">
                         <Link href={`/events/${e.event_slug}`} className="hover:text-[#EEBE1E]">
                           {e.event_title}
                         </Link>
                       </h4>
                       {e.start_datetime && (
-                        <div className="text-xs text-[#7A7A7A] mt-1 flex items-center gap-1">
+                        <div className="text-xs text-[#667A93] mt-1 flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {new Date(e.start_datetime).toLocaleDateString()}
                         </div>
@@ -255,7 +255,7 @@ export default function GroupDetailPage() {
                     </div>
                     <Link
                       href={`/events/${e.event_slug}`}
-                      className="p-1.5 text-[#5C5C5C] hover:text-[#1E1E1E] rounded hover:bg-[#F2F2F1]"
+                      className="p-1.5 text-[#526783] hover:text-[#0F172A] rounded hover:bg-[#F6F8FC]"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </Link>
@@ -267,7 +267,7 @@ export default function GroupDetailPage() {
         )}
 
         {activeTab === 'achievements' && (
-          <div className="bg-white border border-[#D6D6D6] rounded-2xl p-10 text-center text-sm text-[#7A7A7A]">
+          <div className="bg-white border border-[#DCE5F1] rounded-2xl p-10 text-center text-sm text-[#667A93]">
             Competitions won and awards received by this student group will appear here.
           </div>
         )}

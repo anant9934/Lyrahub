@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { WorkspaceHero } from "@/components/layout/WorkspaceHero";
 
 export default function TestDetailPage() {
   const params = useParams();
@@ -81,8 +82,16 @@ export default function TestDetailPage() {
         </Link>
       </div>
 
+      <WorkspaceHero
+        eyebrow="Assessment overview"
+        title={test.title}
+        description={test.description || "Review the assessment details before you begin."}
+        tone="orange"
+        icon={BrainCircuit}
+      />
+
       {/* Main Card */}
-      <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8 space-y-6 shadow-card">
+      <div className="rounded-[26px] border border-[#dce5f1] bg-white p-6 shadow-[0_14px_38px_rgba(8,26,57,0.07)] sm:p-8 space-y-6">
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold text-primary px-3 py-1 rounded-full bg-primary/10">
@@ -93,13 +102,7 @@ export default function TestDetailPage() {
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">
-            {test.title}
-          </h1>
-
-          <p className="text-sm text-ink-600 leading-relaxed">
-            {test.description || "Official benchmark knowledge assessment designed to test domain proficiency in modern AI/ML systems and mathematical reasoning."}
-          </p>
+          <h2 className="text-xl font-black tracking-tight text-[#081a39]">At a glance</h2>
         </div>
 
         {/* Quick Spec Metrics */}

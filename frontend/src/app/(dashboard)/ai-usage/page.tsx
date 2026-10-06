@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import api from '@/lib/api';
-import { DashboardShell } from '@/components/layout/DashboardShell';
+import { WorkspaceHero } from '@/components/layout/WorkspaceHero';
+import { Cpu } from 'lucide-react';
 
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -69,10 +70,10 @@ function ProgressBar({ value, max, color = '#2563EB' }: { value: number; max: nu
 
 function StatBox({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div style={{ border: '1px solid #E5E5E5', borderRadius: 8, padding: '20px 24px', background: '#fff', flex: 1, minWidth: 160 }}>
-      <p style={{ fontSize: 13, color: '#666', margin: 0, marginBottom: 4 }}>{label}</p>
-      <p style={{ fontSize: 28, fontWeight: 700, color: '#111', margin: 0 }}>{value}</p>
-      {sub && <p style={{ fontSize: 12, color: '#999', margin: 0, marginTop: 4 }}>{sub}</p>}
+    <div className="min-w-[160px] flex-1 rounded-[22px] border border-[#dce5f1] bg-white px-6 py-5 shadow-[0_10px_25px_rgba(8,26,57,0.05)]">
+      <p className="text-xs font-bold text-[#526783]">{label}</p>
+      <p className="mt-1 text-3xl font-black tracking-tight text-[#081a39]">{value}</p>
+      {sub && <p className="mt-1 text-xs text-[#71849b]">{sub}</p>}
     </div>
   );
 }
@@ -144,30 +145,22 @@ export default function AIUsageDashboardPage() {
   const monthlyPct = summary ? Math.min(100, (summary.monthly_calls_used / summary.global_monthly_limit) * 100) : 0;
 
   return (
-    <DashboardShell>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
+      <div className="mx-auto max-w-7xl space-y-7 pb-8">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32, flexWrap: 'wrap', gap: 12 }}>
-          <div>
-            <h1 style={{ fontSize: 28, fontWeight: 700, color: '#111', margin: 0 }}>AI Usage Dashboard</h1>
-            <p style={{ fontSize: 14, color: '#666', margin: 0, marginTop: 4 }}>
-              Cloud AI consumption monitoring and policy overview
-            </p>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <WorkspaceHero eyebrow="Department intelligence" title={<>AIDA usage <span className="text-[#5dd9ff]">overview.</span></>} description="Monitor cloud AI consumption, model availability, and knowledge indexing." tone="navy" icon={Cpu} visual="aida" />
+        <div className="flex flex-wrap items-center justify-end gap-3">
             <input
               type="date"
               value={selectedDate}
               onChange={e => setSelectedDate(e.target.value)}
-              style={{ border: '1px solid #E5E5E5', borderRadius: 6, padding: '8px 12px', fontSize: 14, color: '#111', background: '#fff' }}
+              className="rounded-xl border border-[#dce5f1] bg-white px-4 py-2.5 text-sm text-[#081a39]"
             />
             <button
               onClick={fetchData}
-              style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 16px', fontSize: 14, cursor: 'pointer', fontWeight: 500 }}
+              className="rounded-full bg-[#1478ef] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#075fc9]"
             >
               Refresh
             </button>
-          </div>
         </div>
 
         {/* Kill switch banner */}
@@ -431,6 +424,5 @@ export default function AIUsageDashboardPage() {
           </>
         )}
       </div>
-    </DashboardShell>
   );
 }

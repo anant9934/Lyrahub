@@ -37,14 +37,14 @@ export default function AlumniProfilePage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-center text-[#5C5C5C]">Loading alumni profile...</div>;
+    return <div className="p-8 text-center text-[#526783]">Loading alumni profile...</div>;
   }
 
   if (!alumni) {
     return (
       <div className="p-8 text-center">
-        <h2 className="text-xl font-bold text-[#1E1E1E]">Profile not found</h2>
-        <Link href="/alumni" className="mt-4 inline-block text-sm font-semibold text-[#1E1E1E] underline">
+        <h2 className="text-xl font-bold text-[#0F172A]">Profile not found</h2>
+        <Link href="/alumni" className="mt-4 inline-block text-sm font-semibold text-[#0F172A] underline">
           Back to Directory
         </Link>
       </div>
@@ -52,15 +52,15 @@ export default function AlumniProfilePage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8 bg-[#F2F2F1] min-h-screen">
-      <Link href="/alumni" className="text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E]">
+    <div className="p-8 max-w-4xl mx-auto space-y-8 bg-[#F6F8FC] min-h-screen">
+      <Link href="/alumni" className="text-xs font-semibold text-[#526783] hover:text-[#0F172A]">
         ← Back to Alumni Directory
       </Link>
 
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center font-bold text-xl tracking-wider shadow-sm">
+            <div className="w-16 h-16 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold text-xl tracking-wider shadow-sm">
               {alumni.full_name
                 ?.split(" ")
                 .map((n: string) => n[0])
@@ -70,18 +70,18 @@ export default function AlumniProfilePage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-extrabold text-[#1E1E1E]">{alumni.full_name}</h1>
+                <h1 className="text-2xl font-extrabold text-[#0F172A]">{alumni.full_name}</h1>
                 {alumni.is_verified && (
                   <span className="text-xs text-[#7A9A7E] bg-[#EEF3EE] px-2 py-0.5 rounded-full font-bold">
                     ✓ Verified
                   </span>
                 )}
               </div>
-              <p className="text-sm font-semibold text-[#1E1E1E] mt-0.5">
+              <p className="text-sm font-semibold text-[#0F172A] mt-0.5">
                 {alumni.current_role ? `${alumni.current_role}` : "Alumnus"}
                 {alumni.current_company ? ` at ${alumni.current_company}` : ""}
               </p>
-              <p className="text-xs text-[#5C5C5C] mt-0.5">
+              <p className="text-xs text-[#526783] mt-0.5">
                 {alumni.program} • Class of {alumni.graduation_year}
                 {alumni.location ? ` • ${alumni.location}` : ""}
               </p>
@@ -99,21 +99,21 @@ export default function AlumniProfilePage() {
         </div>
 
         {alumni.bio && (
-          <div className="pt-4 border-t border-[#D6D6D6]">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1E1E1E] mb-2">About</h3>
-            <p className="text-sm text-[#5C5C5C] leading-relaxed whitespace-pre-wrap">{alumni.bio}</p>
+          <div className="pt-4 border-t border-[#DCE5F1]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A] mb-2">About</h3>
+            <p className="text-sm text-[#526783] leading-relaxed whitespace-pre-wrap">{alumni.bio}</p>
           </div>
         )}
 
         {/* Contact links if public */}
         {alumni.privacy_level === "public" && (
-          <div className="pt-4 border-t border-[#D6D6D6] flex flex-wrap gap-4">
+          <div className="pt-4 border-t border-[#DCE5F1] flex flex-wrap gap-4">
             {alumni.linkedin_url && (
               <a
                 href={alumni.linkedin_url}
                 target="_blank"
                 rel="noreferrer"
-                className="px-3.5 py-1.5 bg-[#F2F2F1] rounded-lg text-xs font-semibold text-[#1E1E1E] hover:bg-gray-200 transition"
+                className="px-3.5 py-1.5 bg-[#F6F8FC] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-gray-200 transition"
               >
                 LinkedIn ↗
               </a>
@@ -123,7 +123,7 @@ export default function AlumniProfilePage() {
                 href={alumni.github_url}
                 target="_blank"
                 rel="noreferrer"
-                className="px-3.5 py-1.5 bg-[#F2F2F1] rounded-lg text-xs font-semibold text-[#1E1E1E] hover:bg-gray-200 transition"
+                className="px-3.5 py-1.5 bg-[#F6F8FC] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-gray-200 transition"
               >
                 GitHub ↗
               </a>
@@ -133,7 +133,7 @@ export default function AlumniProfilePage() {
                 href={alumni.portfolio_url}
                 target="_blank"
                 rel="noreferrer"
-                className="px-3.5 py-1.5 bg-[#F2F2F1] rounded-lg text-xs font-semibold text-[#1E1E1E] hover:bg-gray-200 transition"
+                className="px-3.5 py-1.5 bg-[#F6F8FC] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-gray-200 transition"
               >
                 Portfolio ↗
               </a>
@@ -141,7 +141,7 @@ export default function AlumniProfilePage() {
             {alumni.email && (
               <a
                 href={`mailto:${alumni.email}`}
-                className="px-3.5 py-1.5 bg-[#1E1E1E] text-white rounded-lg text-xs font-semibold hover:bg-gray-800 transition"
+                className="px-3.5 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-gray-800 transition"
               >
                 Contact via Email
               </a>
@@ -151,7 +151,7 @@ export default function AlumniProfilePage() {
       </div>
 
       {/* Experience Section */}
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-6 md:p-8 shadow-sm">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-6 md:p-8 shadow-sm">
         <ExperienceTimeline experiences={alumni.experiences || []} isOwner={false} />
       </div>
     </div>

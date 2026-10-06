@@ -7,15 +7,15 @@ import { BookOpen, ChevronDown, ChevronRight, CheckCircle2, ArrowUpRight } from 
 export const getCourseTypeBadge = (type?: string) => {
   switch ((type || '').toLowerCase()) {
     case 'core':
-      return 'bg-[#1E1E1E] text-white';
+      return 'bg-[#0F172A] text-white';
     case 'elective':
       return 'bg-[#EEF3EE] text-[#7A9A7E] border border-[#7A9A7E]/30';
     case 'lab':
       return 'bg-[#EAF0F3] text-[#6B8FA3] border border-[#6B8FA3]/30';
     case 'project':
-      return 'bg-[#FAF3E2] text-[#B8860B] border border-[#EEBE1E]/40';
+      return 'bg-[#FAF3E2] text-[#B8860B] border border-[#FACC15]/40';
     default:
-      return 'bg-[#F2F2F1] text-[#5C5C5C] border border-[#D6D6D6]';
+      return 'bg-[#F6F8FC] text-[#526783] border border-[#DCE5F1]';
   }
 };
 
@@ -58,9 +58,9 @@ export const CurriculumTable: React.FC<CurriculumTableProps> = ({ coursesBySemes
 
   if (semesters.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-[#D6D6D6] p-12 text-center text-[#7A7A7A]">
-        <BookOpen className="w-12 h-12 mx-auto text-[#9A9A9A] mb-3 opacity-60" />
-        <h4 className="text-base font-bold text-[#1E1E1E] mb-1">Curriculum Pending Publication</h4>
+      <div className="bg-white rounded-2xl border border-[#DCE5F1] p-12 text-center text-[#667A93]">
+        <BookOpen className="w-12 h-12 mx-auto text-[#71849B] mb-3 opacity-60" />
+        <h4 className="text-base font-bold text-[#0F172A] mb-1">Curriculum Pending Publication</h4>
         <p className="text-sm">Course mappings for this academic program are being finalized by the department board.</p>
       </div>
     );
@@ -76,33 +76,33 @@ export const CurriculumTable: React.FC<CurriculumTableProps> = ({ coursesBySemes
         return (
           <div
             key={semester}
-            className="bg-white rounded-2xl border border-[#D6D6D6] overflow-hidden transition-all shadow-sm"
+            className="bg-white rounded-2xl border border-[#DCE5F1] overflow-hidden transition-all shadow-sm"
           >
             {/* Header */}
             <button
               onClick={() => toggleSemester(semester)}
-              className="w-full px-6 py-4 flex items-center justify-between bg-[#F2F2F1]/50 hover:bg-[#F2F2F1] transition-colors border-b border-[#E5E5E4] text-left"
+              className="w-full px-6 py-4 flex items-center justify-between bg-[#F6F8FC]/50 hover:bg-[#F6F8FC] transition-colors border-b border-[#E5E5E4] text-left"
             >
               <div className="flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-[#1E1E1E] text-white flex items-center justify-center font-bold text-sm">
+                <span className="w-8 h-8 rounded-lg bg-[#0F172A] text-white flex items-center justify-center font-bold text-sm">
                   {semester}
                 </span>
                 <div>
-                  <h3 className="font-bold text-[#1E1E1E] text-base">Semester {semester}</h3>
-                  <p className="text-xs text-[#7A7A7A]">
+                  <h3 className="font-bold text-[#0F172A] text-base">Semester {semester}</h3>
+                  <p className="text-xs text-[#667A93]">
                     {list.length} {list.length === 1 ? 'Course' : 'Courses'} &bull; {semCredits} Total Credits
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-white border border-[#D6D6D6] text-[#5C5C5C]">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-white border border-[#DCE5F1] text-[#526783]">
                   {semCredits} Credits
                 </span>
                 {isOpen ? (
-                  <ChevronDown className="w-5 h-5 text-[#7A7A7A]" />
+                  <ChevronDown className="w-5 h-5 text-[#667A93]" />
                 ) : (
-                  <ChevronRight className="w-5 h-5 text-[#7A7A7A]" />
+                  <ChevronRight className="w-5 h-5 text-[#667A93]" />
                 )}
               </div>
             </button>
@@ -112,7 +112,7 @@ export const CurriculumTable: React.FC<CurriculumTableProps> = ({ coursesBySemes
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="bg-[#EAEAE8]/60 text-[#3A3A3A] font-semibold text-xs border-b border-[#E5E5E4]">
+                    <tr className="bg-[#EAEAE8]/60 text-[#34465E] font-semibold text-xs border-b border-[#E5E5E4]">
                       <th className="py-3 px-6">Code</th>
                       <th className="py-3 px-6">Course Name</th>
                       <th className="py-3 px-6">Type</th>
@@ -124,11 +124,11 @@ export const CurriculumTable: React.FC<CurriculumTableProps> = ({ coursesBySemes
                   </thead>
                   <tbody className="divide-y divide-[#E5E5E4]">
                     {list.map(c => (
-                      <tr key={c.id} className="hover:bg-[#F2F2F1]/60 transition-colors">
-                        <td className="py-3.5 px-6 font-mono font-bold text-xs text-[#1E1E1E]">
+                      <tr key={c.id} className="hover:bg-[#F6F8FC]/60 transition-colors">
+                        <td className="py-3.5 px-6 font-mono font-bold text-xs text-[#0F172A]">
                           {c.code}
                         </td>
-                        <td className="py-3.5 px-6 font-medium text-[#1E1E1E]">
+                        <td className="py-3.5 px-6 font-medium text-[#0F172A]">
                           <Link
                             href={`/courses/${c.slug}`}
                             className="hover:text-[#6B8FA3] transition-colors inline-flex items-center gap-1.5"
@@ -136,7 +136,7 @@ export const CurriculumTable: React.FC<CurriculumTableProps> = ({ coursesBySemes
                             <span>{c.name}</span>
                           </Link>
                           {c.short_name && c.short_name !== c.name && (
-                            <span className="block text-xs text-[#7A7A7A] mt-0.5">{c.short_name}</span>
+                            <span className="block text-xs text-[#667A93] mt-0.5">{c.short_name}</span>
                           )}
                         </td>
                         <td className="py-3.5 px-6">
@@ -144,10 +144,10 @@ export const CurriculumTable: React.FC<CurriculumTableProps> = ({ coursesBySemes
                             {c.course_type || 'Core'}
                           </span>
                         </td>
-                        <td className="py-3.5 px-6 text-xs text-[#5C5C5C] capitalize">
+                        <td className="py-3.5 px-6 text-xs text-[#526783] capitalize">
                           {c.category || 'Theory'}
                         </td>
-                        <td className="py-3.5 px-6 text-center font-bold text-[#1E1E1E]">
+                        <td className="py-3.5 px-6 text-center font-bold text-[#0F172A]">
                           {c.credits}
                         </td>
                         <td className="py-3.5 px-6 text-center">
@@ -157,13 +157,13 @@ export const CurriculumTable: React.FC<CurriculumTableProps> = ({ coursesBySemes
                               Mandatory
                             </span>
                           ) : (
-                            <span className="text-xs text-[#7A7A7A]">Elective</span>
+                            <span className="text-xs text-[#667A93]">Elective</span>
                           )}
                         </td>
                         <td className="py-3.5 px-6 text-right">
                           <Link
                             href={`/courses/${c.slug}`}
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E1E1E] hover:text-[#7A9A7E] transition-colors"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#0F172A] hover:text-[#7A9A7E] transition-colors"
                           >
                             <span>Syllabus</span>
                             <ArrowUpRight className="w-3.5 h-3.5" />

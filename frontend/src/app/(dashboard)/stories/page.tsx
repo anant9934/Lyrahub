@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth-context';
 import { StoryCardFeatured } from '@/components/features/stories/StoryCardFeatured';
 import { StoryCard } from '@/components/features/stories/StoryCard';
 import { StoryFilters } from '@/components/features/stories/StoryFilters';
+import { WorkspaceHero } from '@/components/layout/WorkspaceHero';
 import { Plus, BookOpen, Sparkles, FolderOpen } from 'lucide-react';
 
 export default function StoriesPage() {
@@ -73,39 +74,25 @@ export default function StoriesPage() {
   return (
     <div className="space-y-8">
       {/* Header banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#D6D6D6] pb-6">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs bg-[#FAF3E2] text-[#1E1E1E] border border-[#EEBE1E] px-2.5 py-0.5 rounded-full font-semibold">
-              Inspiring Journeys
-            </span>
-          </div>
-          <h1 className="text-3xl font-bold text-[#1E1E1E]">Success Stories</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
-            Discover milestone achievements and career trajectories of AI/ML department students and alumni.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5">
+      <WorkspaceHero eyebrow="Inspiring journeys" title={<>Real people. <span className="text-[#b97800]">Real stories.</span></>} description="Discover the achievements, projects, and paths of AIMETRA students and alumni." tone="yellow" icon={BookOpen} actions={<>
           {isFacultyOrAdmin && (
             <Link
               href="/stories/me"
-              className="inline-flex items-center gap-1.5 px-4 py-2 border border-[#D6D6D6] rounded-lg text-xs font-semibold text-[#1E1E1E] hover:bg-[#F2F2F1] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#eed999] bg-white px-4 py-2.5 text-xs font-bold text-[#081a39] transition hover:bg-[#fffdf4]"
             >
-              <FolderOpen className="w-4 h-4 text-[#5C5C5C]" /> My Stories
+              <FolderOpen className="w-4 h-4 text-[#526783]" /> My Stories
             </Link>
           )}
 
           {isFacultyOrAdmin && (
             <Link
               href="/stories/create"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors shadow-sm"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#081a39] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#1478ef]"
             >
               <Plus className="w-4 h-4" /> Write Story
             </Link>
           )}
-        </div>
-      </div>
+      </>}/>
 
       {/* Filter component */}
       <StoryFilters
@@ -123,16 +110,16 @@ export default function StoriesPage() {
       {/* Content area */}
       {loading ? (
         <div className="py-20 text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-[#1E1E1E] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-[#7A7A7A]">Loading stories...</p>
+          <div className="w-8 h-8 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-[#667A93]">Loading stories...</p>
         </div>
       ) : totalCount === 0 ? (
-        <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
-          <div className="w-12 h-12 bg-[#F2F2F1] rounded-full flex items-center justify-center mx-auto text-[#7A7A7A]">
+        <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
+          <div className="w-12 h-12 bg-[#F6F8FC] rounded-full flex items-center justify-center mx-auto text-[#667A93]">
             <BookOpen className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[#1E1E1E]">No stories found</h3>
-          <p className="text-xs text-[#7A7A7A] leading-relaxed">
+          <h3 className="text-lg font-bold text-[#0F172A]">No stories found</h3>
+          <p className="text-xs text-[#667A93] leading-relaxed">
             There are no published stories matching your current filter criteria. Check back soon or clear filters.
           </p>
         </div>
@@ -148,7 +135,7 @@ export default function StoriesPage() {
           {/* Magazine Grid */}
           {stories.length > 0 && (
             <section className="space-y-4">
-              <h2 className="text-xl font-bold text-[#1E1E1E]">All Stories</h2>
+              <h2 className="text-xl font-bold text-[#0F172A]">All Stories</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {stories.map((story) => (
                   <StoryCard key={story.id} story={story} />
@@ -164,18 +151,18 @@ export default function StoriesPage() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="px-3 py-1.5 border border-[#D6D6D6] rounded-md text-xs font-medium text-[#1E1E1E] disabled:opacity-40 hover:bg-[#F2F2F1]"
+                className="px-3 py-1.5 border border-[#DCE5F1] rounded-md text-xs font-medium text-[#0F172A] disabled:opacity-40 hover:bg-[#F6F8FC]"
               >
                 Previous
               </button>
-              <span className="text-xs text-[#5C5C5C] px-2">
+              <span className="text-xs text-[#526783] px-2">
                 Page {page} of {totalPages}
               </span>
               <button
                 type="button"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="px-3 py-1.5 border border-[#D6D6D6] rounded-md text-xs font-medium text-[#1E1E1E] disabled:opacity-40 hover:bg-[#F2F2F1]"
+                className="px-3 py-1.5 border border-[#DCE5F1] rounded-md text-xs font-medium text-[#0F172A] disabled:opacity-40 hover:bg-[#F6F8FC]"
               >
                 Next
               </button>

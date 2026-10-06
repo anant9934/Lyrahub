@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { PublicNav } from "./PublicNav";
 import { 
   GraduationCap, 
   Briefcase, 
@@ -33,6 +34,8 @@ export default function Navbar() {
   const isAdminOrHOD = rolesList.includes("admin") || rolesList.includes("hod") || user?.email === "admin@aiml.hub";
   const isStudent = rolesList.includes("student") || (!isAdminOrHOD && user);
 
+  if (!user) return <PublicNav />;
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,11 +43,11 @@ export default function Navbar() {
           {/* Brand */}
           <div className="flex items-center space-x-3">
             <Link href="/dashboard" className="flex items-center space-x-2 group">
-              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                <Sparkles className="w-5 h-5 text-primary" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-blue text-brand-yellow transition-transform group-hover:scale-105">
+                <Sparkles className="h-5 w-5" />
               </div>
               <div>
-                <span className="text-sm font-bold text-ink tracking-[0.1em] uppercase">AIMETRA</span>
+                <span className="text-sm font-black tracking-[-0.04em] text-ink uppercase">AIMETRA</span>
                 <span className="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary uppercase">
                   AI &amp; ML
                 </span>

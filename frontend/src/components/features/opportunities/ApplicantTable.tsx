@@ -49,20 +49,20 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
 
   if (applicants.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-[#D6D6D6] p-12 text-center text-[#7A7A7A]">
-        <UserCheck className="w-12 h-12 mx-auto text-[#9A9A9A] mb-3 opacity-50" />
-        <h4 className="text-base font-bold text-[#1E1E1E] mb-1">No Applications Yet</h4>
+      <div className="bg-white rounded-2xl border border-[#DCE5F1] p-12 text-center text-[#667A93]">
+        <UserCheck className="w-12 h-12 mx-auto text-[#71849B] mb-3 opacity-50" />
+        <h4 className="text-base font-bold text-[#0F172A] mb-1">No Applications Yet</h4>
         <p className="text-sm">Student interest and applications will appear here in real-time.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#D6D6D6] overflow-hidden shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#DCE5F1] overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="bg-[#EAEAE8]/60 text-[#3A3A3A] font-semibold text-xs border-b border-[#E5E5E4]">
+            <tr className="bg-[#EAEAE8]/60 text-[#34465E] font-semibold text-xs border-b border-[#E5E5E4]">
               <th className="py-3 px-6">Student</th>
               <th className="py-3 px-6">Reg No</th>
               <th className="py-3 px-6">Status</th>
@@ -72,21 +72,21 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
           </thead>
           <tbody className="divide-y divide-[#E5E5E4]">
             {applicants.map(app => (
-              <tr key={app.id} className="hover:bg-[#F2F2F1]/50 transition-colors">
+              <tr key={app.id} className="hover:bg-[#F6F8FC]/50 transition-colors">
                 <td className="py-3.5 px-6">
-                  <div className="font-semibold text-[#1E1E1E]">{app.student_name || 'Student'}</div>
-                  <div className="text-xs text-[#7A7A7A] flex items-center gap-1 mt-0.5">
+                  <div className="font-semibold text-[#0F172A]">{app.student_name || 'Student'}</div>
+                  <div className="text-xs text-[#667A93] flex items-center gap-1 mt-0.5">
                     <Mail className="w-3 h-3" />
                     <span>{app.student_email}</span>
                   </div>
                 </td>
-                <td className="py-3.5 px-6 font-mono text-xs font-bold text-[#1E1E1E]">
+                <td className="py-3.5 px-6 font-mono text-xs font-bold text-[#0F172A]">
                   {app.student_reg_no || '-'}
                 </td>
                 <td className="py-3.5 px-6">
                   <ApplicationStatusBadge status={app.status} />
                 </td>
-                <td className="py-3.5 px-6 text-xs text-[#7A7A7A]">
+                <td className="py-3.5 px-6 text-xs text-[#667A93]">
                   {app.applied_at ? new Date(app.applied_at).toLocaleDateString() : '-'}
                 </td>
                 {canManageStatus && (
@@ -95,7 +95,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                       value={app.status}
                       disabled={updatingId === app.student_id}
                       onChange={(e) => handleStatusChange(app.student_id, e.target.value)}
-                      className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[#D6D6D6] bg-white text-[#1E1E1E] focus:outline-none focus:border-[#1E1E1E]"
+                      className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[#DCE5F1] bg-white text-[#0F172A] focus:outline-none focus:border-[#0F172A]"
                     >
                       <option value="interested">Interested</option>
                       <option value="applied">Applied</option>

@@ -44,23 +44,23 @@ export default function MyTestimonialsPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D6D6D6] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#DCE5F1] pb-6">
         <div>
           <Link
             href="/testimonials"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E] mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#526783] hover:text-[#0F172A] mb-2"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Testimonials
           </Link>
-          <h1 className="text-3xl font-bold text-[#1E1E1E]">My Testimonials</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
+          <h1 className="text-3xl font-bold text-[#0F172A]">My Testimonials</h1>
+          <p className="text-sm text-[#526783] mt-1">
             Track status and visibility of your reflections and department reviews.
           </p>
         </div>
 
         <Link
           href="/testimonials/create"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors shadow-sm self-start"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] rounded-lg text-xs font-semibold transition-colors shadow-sm self-start"
         >
           <Plus className="w-4 h-4" /> Submit Another
         </Link>
@@ -68,21 +68,21 @@ export default function MyTestimonialsPage() {
 
       {loading ? (
         <div className="py-20 text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-[#1E1E1E] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-[#7A7A7A]">Loading your testimonials...</p>
+          <div className="w-8 h-8 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-[#667A93]">Loading your testimonials...</p>
         </div>
       ) : items.length === 0 ? (
-        <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center space-y-4">
-          <div className="w-12 h-12 bg-[#F2F2F1] rounded-full flex items-center justify-center mx-auto text-[#7A7A7A]">
+        <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center space-y-4">
+          <div className="w-12 h-12 bg-[#F6F8FC] rounded-full flex items-center justify-center mx-auto text-[#667A93]">
             <MessageSquare className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[#1E1E1E]">No submissions found</h3>
-          <p className="text-xs text-[#7A7A7A]">
+          <h3 className="text-lg font-bold text-[#0F172A]">No submissions found</h3>
+          <p className="text-xs text-[#667A93]">
             You have not submitted any testimonials yet. Share your experience today!
           </p>
           <Link
             href="/testimonials/create"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] rounded-lg text-xs font-semibold transition-colors"
           >
             <Plus className="w-4 h-4" /> Submit Testimonial
           </Link>
@@ -92,7 +92,7 @@ export default function MyTestimonialsPage() {
           {items.map((t) => (
             <div
               key={t.id}
-              className="bg-white border border-[#D6D6D6] rounded-2xl p-6 space-y-3 shadow-sm"
+              className="bg-white border border-[#DCE5F1] rounded-2xl p-6 space-y-3 shadow-sm"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -106,7 +106,7 @@ export default function MyTestimonialsPage() {
                     {t.is_published ? 'Approved & Public' : 'Pending Moderation'}
                   </span>
 
-                  <span className="text-[11px] bg-[#F2F2F1] text-[#5C5C5C] px-2 py-0.5 rounded-md font-medium capitalize">
+                  <span className="text-[11px] bg-[#F6F8FC] text-[#526783] px-2 py-0.5 rounded-md font-medium capitalize">
                     {t.context?.replace('_', ' ')}
                   </span>
                 </div>
@@ -123,15 +123,15 @@ export default function MyTestimonialsPage() {
                 )}
               </div>
 
-              <p className="text-sm text-[#1E1E1E] leading-relaxed italic bg-[#F2F2F1]/40 p-4 rounded-xl">
+              <p className="text-sm text-[#0F172A] leading-relaxed italic bg-[#F6F8FC]/40 p-4 rounded-xl">
                 "{t.text}"
               </p>
 
-              <div className="flex items-center justify-between text-xs text-[#7A7A7A] pt-1">
+              <div className="flex items-center justify-between text-xs text-[#667A93] pt-1">
                 {t.rating && (
                   <div className="flex items-center gap-1 text-[#EEBE1E]">
                     <Star className="w-3.5 h-3.5 fill-current" />
-                    <span className="font-semibold text-[#1E1E1E]">{t.rating}/5</span>
+                    <span className="font-semibold text-[#0F172A]">{t.rating}/5</span>
                   </div>
                 )}
                 <span>

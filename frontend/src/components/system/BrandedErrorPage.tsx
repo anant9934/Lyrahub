@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
@@ -218,35 +219,37 @@ export function BrandedErrorPage({
     <div
       role="region"
       aria-label="Application Error"
-      className={`min-h-[60vh] flex flex-col items-center justify-center bg-white text-[#111111] px-6 ${
-        compact ? "py-10" : "py-20"
+      className={`flex w-full min-h-[70vh] flex-col items-center justify-center bg-[#eaf4ff] px-4 text-[#0F172A] sm:px-6 ${
+        compact ? "py-8" : "py-14"
       }`}
     >
-      <div className="w-full max-w-xl mx-auto text-center space-y-6">
+      <div className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-[30px] border border-[#dce5f1] bg-white p-7 shadow-[0_18px_50px_rgba(8,26,57,0.12)] sm:p-10 lg:pr-[38%]">
+        <div className="absolute inset-y-0 right-0 hidden w-[36%] overflow-hidden bg-[#071b3d] lg:block"><div className="absolute -right-24 -top-20 h-72 w-72 rounded-full bg-[#1478ef] blur-3xl" /><Image src="/images/aida-mascot.png" alt="" fill sizes="36vw" className="object-contain object-bottom" /><span className="absolute right-8 top-8 text-4xl text-[#ffcf36]">✦</span></div>
+        <div className="relative mx-auto max-w-xl space-y-6 text-center">
         {/* Brand Header */}
         <div className="space-y-1">
-          <span className="text-xs font-bold tracking-[0.16em] uppercase text-[#111111] block">
+          <span className="text-xs font-bold tracking-[0.16em] uppercase text-[#0F172A] block">
             AIMETRA
           </span>
-          <span className="text-[11px] text-[#777777] block font-medium">
+          <span className="text-[11px] text-[#667A93] block font-medium">
             AI &amp; ML Education, Talent, Research &amp; Analytics
           </span>
         </div>
 
         {/* Status Badge & Code */}
         <div className="pt-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#FAFAFA] text-[#444444] border border-[#E5E5E5]">
-            <IconComponent className="w-3.5 h-3.5 text-[#111111]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#F6F8FC] text-[#444444] border border-[#DCE5F1]">
+            <IconComponent className="w-3.5 h-3.5 text-[#0F172A]" />
             <span className="font-mono tracking-tight">{config.codeDisplay}</span>
           </div>
         </div>
 
         {/* Main Error Copy */}
         <div className="space-y-2.5 max-w-md mx-auto">
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#111111]">
+          <h1 className="text-3xl font-black tracking-[-0.05em] text-[#081a39] sm:text-4xl">
             {displayTitle}
           </h1>
-          <p className="text-sm text-[#555555] leading-relaxed">
+          <p className="text-sm text-[#526783] leading-relaxed">
             {displayDesc}
           </p>
         </div>
@@ -256,7 +259,7 @@ export function BrandedErrorPage({
           <button
             type="button"
             onClick={() => handleAction(config.primaryAction.type)}
-            className="inline-flex items-center justify-center h-10 px-5 rounded-md bg-[#111111] text-white hover:bg-neutral-800 text-xs font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 w-full sm:w-auto"
+            className="inline-flex h-11 w-full items-center justify-center rounded-full bg-[#1478ef] px-6 text-xs font-bold text-white shadow-sm transition-colors hover:bg-[#075fc9] focus:outline-none focus:ring-2 focus:ring-[#1478ef] focus:ring-offset-2 sm:w-auto"
           >
             {config.primaryAction.type === "reset" && (
               <RotateCcw className="w-3.5 h-3.5 mr-2" />
@@ -277,13 +280,13 @@ export function BrandedErrorPage({
             <button
               type="button"
               onClick={() => handleAction(config.secondaryAction!.type)}
-              className="inline-flex items-center justify-center h-10 px-5 rounded-md border border-[#E5E5E5] bg-white text-[#333333] hover:bg-[#F9F9F9] text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-200 w-full sm:w-auto"
+              className="inline-flex h-11 w-full items-center justify-center rounded-full border border-[#DCE5F1] bg-white px-6 text-xs font-bold text-[#34465E] transition-colors hover:bg-[#F6F8FC] focus:outline-none focus:ring-2 focus:ring-[#b9d9ff] sm:w-auto"
             >
               {config.secondaryAction.type === "home" && (
-                <Home className="w-3.5 h-3.5 mr-2 text-[#777777]" />
+                <Home className="w-3.5 h-3.5 mr-2 text-[#667A93]" />
               )}
               {config.secondaryAction.type === "back" && (
-                <ArrowLeft className="w-3.5 h-3.5 mr-2 text-[#777777]" />
+                <ArrowLeft className="w-3.5 h-3.5 mr-2 text-[#667A93]" />
               )}
               {config.secondaryAction.label}
             </button>
@@ -293,7 +296,7 @@ export function BrandedErrorPage({
         {/* Optional Safe Request ID Correlation */}
         {cleanRequestId && (
           <div className="pt-3">
-            <span className="text-[11px] font-mono text-[#888888] bg-[#F7F7F7] px-2.5 py-1 rounded border border-[#EBEBEB] inline-block">
+            <span className="text-[11px] font-mono text-[#71849B] bg-[#F7F7F7] px-2.5 py-1 rounded border border-[#EBEBEB] inline-block">
               Request ID: {cleanRequestId}
             </span>
           </div>
@@ -302,37 +305,37 @@ export function BrandedErrorPage({
         {/* Suggested Institutional Navigation for 404s */}
         {showSuggestedLinks && (
           <div className="pt-6 border-t border-[#F0F0F0] max-w-md mx-auto">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888888] mb-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#71849B] mb-3">
               Institutional Navigation
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
               <Link
                 href="/programs"
-                className="p-3 rounded-lg border border-[#E5E5E5] hover:border-[#111111] transition-colors bg-[#FAFAFA]"
+                className="p-3 rounded-lg border border-[#DCE5F1] hover:border-[#0F172A] transition-colors bg-[#F6F8FC]"
               >
-                <div className="text-xs font-semibold text-[#111111]">Programs</div>
-                <div className="text-[11px] text-[#777777]">Degree curricula &amp; specializations</div>
+                <div className="text-xs font-semibold text-[#0F172A]">Programs</div>
+                <div className="text-[11px] text-[#667A93]">Degree curricula &amp; specializations</div>
               </Link>
               <Link
                 href="/people"
-                className="p-3 rounded-lg border border-[#E5E5E5] hover:border-[#111111] transition-colors bg-[#FAFAFA]"
+                className="p-3 rounded-lg border border-[#DCE5F1] hover:border-[#0F172A] transition-colors bg-[#F6F8FC]"
               >
-                <div className="text-xs font-semibold text-[#111111]">Faculty &amp; Staff</div>
-                <div className="text-[11px] text-[#777777]">Scholars &amp; leadership directory</div>
+                <div className="text-xs font-semibold text-[#0F172A]">Faculty &amp; Staff</div>
+                <div className="text-[11px] text-[#667A93]">Scholars &amp; leadership directory</div>
               </Link>
               <Link
                 href="/research"
-                className="p-3 rounded-lg border border-[#E5E5E5] hover:border-[#111111] transition-colors bg-[#FAFAFA]"
+                className="p-3 rounded-lg border border-[#DCE5F1] hover:border-[#0F172A] transition-colors bg-[#F6F8FC]"
               >
-                <div className="text-xs font-semibold text-[#111111]">Research Labs</div>
-                <div className="text-[11px] text-[#777777]">Publications &amp; compute clusters</div>
+                <div className="text-xs font-semibold text-[#0F172A]">Research Labs</div>
+                <div className="text-[11px] text-[#667A93]">Publications &amp; compute clusters</div>
               </Link>
               <Link
                 href="/events"
-                className="p-3 rounded-lg border border-[#E5E5E5] hover:border-[#111111] transition-colors bg-[#FAFAFA]"
+                className="p-3 rounded-lg border border-[#DCE5F1] hover:border-[#0F172A] transition-colors bg-[#F6F8FC]"
               >
-                <div className="text-xs font-semibold text-[#111111]">Events</div>
-                <div className="text-[11px] text-[#777777]">Department schedule &amp; talks</div>
+                <div className="text-xs font-semibold text-[#0F172A]">Events</div>
+                <div className="text-[11px] text-[#667A93]">Department schedule &amp; talks</div>
               </Link>
             </div>
           </div>
@@ -340,9 +343,10 @@ export function BrandedErrorPage({
 
         {/* Institutional Positioning Footer */}
         <div className="pt-8 border-t border-[#F0F0F0] text-center">
-          <p className="text-[11px] text-[#AAAAAA]">
+          <p className="text-[11px] text-[#71849B]">
             AIMETRA · The intelligence layer for the AI &amp; ML department.
           </p>
+        </div>
         </div>
       </div>
     </div>

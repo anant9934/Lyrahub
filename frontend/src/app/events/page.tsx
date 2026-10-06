@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import Link from "next/link"
 import { PublicNav } from "@/components/layout/PublicNav"
 import { PublicFooter } from "@/components/layout/PublicFooter"
+import { PublicShowcaseHero } from "@/components/layout/PublicShowcaseHero"
 import { Button } from "@/components/ui/button"
 import {
   Calendar,
@@ -132,30 +133,24 @@ export default function EventsPublicPage() {
   })
 
   return (
-    <div className="min-h-screen bg-white text-[#111111] flex flex-col">
+    <div className="aimetra-public theme-events min-h-screen bg-white text-[#0F172A] flex flex-col">
       <PublicNav />
 
       <main className="flex-1">
         {/* Header */}
-        <section className="border-b border-[#E5E5E5] bg-[#FAFAFA] py-16 lg:py-20">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="max-w-3xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#888888] mb-3">
-                Department Calendar &amp; Programs
-              </p>
-              <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[#111111] mb-4">
-                Events, Seminars &amp; Hackathons
-              </h1>
-              <p className="text-sm sm:text-base text-[#555555] leading-relaxed">
-                Connect with researchers, industry practitioners, and peers through competitive
-                hackathons, technical workshops, research symposia, and distinguished lectures.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PublicShowcaseHero
+          eyebrow="Events & experiences"
+          title={<>What&apos;s happening <span className="text-[#7c3aed]">next?</span></>}
+          description="Workshops, talks, hackathons, and research gatherings make room for every idea and every curious mind."
+          tone="lilac"
+          visual="aida"
+          visualLabel="Find your next moment"
+        >
+          <a href="#event-list" className="inline-flex h-11 items-center rounded-full bg-[#7c3aed] px-6 text-xs font-bold text-white transition hover:bg-[#5b21b6]">Browse events <ArrowRight className="ml-2 h-4 w-4" /></a>
+        </PublicShowcaseHero>
 
         {/* Filter bar */}
-        <section className="border-b border-[#E5E5E5] bg-white sticky top-16 z-30 shadow-sm">
+        <section className="border-b border-[#DCE5F1] bg-white sticky top-[68px] z-30 shadow-sm">
           <div className="mx-auto max-w-7xl px-6 lg:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
               {[
@@ -170,8 +165,8 @@ export default function EventsPublicPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                     activeTab === tab.id
-                      ? "bg-[#111111] text-white"
-                      : "bg-[#F5F5F5] text-[#555555] hover:bg-[#EAEAEA] hover:text-[#111111]"
+                      ? "bg-[#0F172A] text-white"
+                      : "bg-[#EDF4FC] text-[#526783] hover:bg-[#EAEAEA] hover:text-[#0F172A]"
                   }`}
                 >
                   {tab.label}
@@ -180,21 +175,21 @@ export default function EventsPublicPage() {
             </div>
 
             <div className="relative w-full md:w-72">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71849B]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search events, topics, venues..."
-                className="w-full h-9 pl-9 pr-4 rounded-lg bg-[#FAFAFA] border border-[#E5E5E5] text-xs text-[#111111] placeholder:text-[#999999] focus:outline-none focus:border-[#111111]"
+                className="w-full h-9 pl-9 pr-4 rounded-lg bg-[#F6F8FC] border border-[#DCE5F1] text-xs text-[#0F172A] placeholder:text-[#999999] focus:outline-none focus:border-[#0F172A]"
               />
             </div>
           </div>
         </section>
 
         {/* Events Grid */}
-        <section className="mx-auto max-w-7xl px-6 lg:px-8 py-12">
-          <div className="flex items-center justify-between mb-8 text-xs text-[#777777]">
+        <section id="event-list" className="mx-auto max-w-7xl px-6 lg:px-8 py-12">
+          <div className="flex items-center justify-between mb-8 text-xs text-[#667A93]">
             <span>Showing {filteredEvents.length} scheduled events</span>
             <span>Department of Artificial Intelligence &amp; Machine Learning</span>
           </div>
@@ -203,11 +198,12 @@ export default function EventsPublicPage() {
             {filteredEvents.map((ev) => (
               <div
                 key={ev.id}
-                className="rounded-xl border border-[#E5E5E5] bg-white p-6 flex flex-col justify-between hover:border-[#111111] hover:shadow-subtle transition-all group"
+                className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] border border-[#DCE5F1] bg-white p-6 shadow-[0_9px_25px_rgba(8,26,57,0.05)] transition-all hover:-translate-y-1 hover:border-[#d7bdff] hover:shadow-[0_15px_35px_rgba(8,26,57,0.1)]"
               >
+                <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#7c3aed] via-[#1478ef] to-[#ffcf36]" />
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-0.5 rounded bg-[#F5F5F5] text-[10px] font-semibold tracking-wide text-[#333333] border border-[#E5E5E5]">
+                    <span className="px-2.5 py-0.5 rounded bg-[#EDF4FC] text-[10px] font-semibold tracking-wide text-[#34465E] border border-[#DCE5F1]">
                       {ev.categoryLabel}
                     </span>
                     {ev.status === "closing-soon" && (
@@ -227,36 +223,36 @@ export default function EventsPublicPage() {
                     )}
                   </div>
 
-                  <h3 className="text-lg font-semibold text-[#111111] mb-2 group-hover:text-black">
+                  <h3 className="mb-2 text-xl font-black leading-tight tracking-[-0.04em] text-[#081a39] group-hover:text-[#7c3aed]">
                     {ev.title}
                   </h3>
 
-                  <p className="text-xs text-[#555555] leading-relaxed mb-6">
+                  <p className="text-xs text-[#526783] leading-relaxed mb-6">
                     {ev.description}
                   </p>
 
                   <div className="space-y-2 border-t border-b border-[#F0F0F0] py-3.5 mb-6 text-xs text-[#666666]">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-[#888888] shrink-0" />
-                      <span className="font-medium text-[#111111]">{ev.date}</span>
+                      <Calendar className="w-3.5 h-3.5 text-[#71849B] shrink-0" />
+                      <span className="font-medium text-[#0F172A]">{ev.date}</span>
                       <span className="text-[#CCCCCC]">•</span>
                       <span>{ev.time}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-3.5 h-3.5 text-[#888888] shrink-0" />
+                      <MapPin className="w-3.5 h-3.5 text-[#71849B] shrink-0" />
                       <span>{ev.venue}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-[#888888] shrink-0" />
+                      <Users className="w-3.5 h-3.5 text-[#71849B] shrink-0" />
                       <span>{ev.speakerOrLead}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-2">
-                  <span className="text-[11px] font-mono text-[#888888]">{ev.seats}</span>
+                  <span className="text-[11px] font-mono text-[#71849B]">{ev.seats}</span>
                   <Link href="/login">
-                    <Button className="h-8 px-4 rounded-md bg-[#111111] text-white hover:bg-neutral-800 text-xs font-medium">
+                    <Button className="h-9 rounded-full bg-[#1478ef] px-4 text-xs font-bold text-white hover:bg-[#075fc9]">
                       Register / Details <ArrowRight className="w-3 h-3 ml-1" />
                     </Button>
                   </Link>
@@ -267,9 +263,9 @@ export default function EventsPublicPage() {
 
           {filteredEvents.length === 0 && (
             <div className="text-center py-20 border border-dashed border-[#E0E0E0] rounded-xl my-8">
-              <Calendar className="w-10 h-10 text-[#AAAAAA] mx-auto mb-3" />
-              <p className="text-sm font-semibold text-[#111111]">No matching events found</p>
-              <p className="text-xs text-[#777777] mt-1">Please try modifying your search filter.</p>
+              <Calendar className="w-10 h-10 text-[#71849B] mx-auto mb-3" />
+              <p className="text-sm font-semibold text-[#0F172A]">No matching events found</p>
+              <p className="text-xs text-[#667A93] mt-1">Please try modifying your search filter.</p>
             </div>
           )}
         </section>

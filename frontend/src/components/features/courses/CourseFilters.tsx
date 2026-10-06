@@ -29,17 +29,17 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
   const hasActiveFilters = search || semester !== 'all' || courseType !== 'all' || category !== 'all';
 
   return (
-    <div className="bg-white rounded-2xl border border-[#D6D6D6] p-4 md:p-5 mb-8 shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#DCE5F1] p-4 md:p-5 mb-8 shadow-sm">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Search */}
         <div className="relative">
-          <Search className="w-4 h-4 text-[#7A7A7A] absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-[#667A93] absolute left-3.5 top-3" />
           <input
             type="text"
             placeholder="Search by code, title, topic..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs md:text-sm rounded-xl border border-[#D6D6D6] focus:outline-none focus:border-[#1E1E1E] bg-[#F2F2F1]/40"
+            className="w-full pl-9 pr-4 py-2 text-xs md:text-sm rounded-xl border border-[#DCE5F1] focus:outline-none focus:border-[#0F172A] bg-[#F6F8FC]/40"
           />
         </div>
 
@@ -48,7 +48,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
           <select
             value={semester}
             onChange={(e) => onSemesterChange(e.target.value)}
-            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#D6D6D6] focus:outline-none focus:border-[#1E1E1E] bg-white text-[#1E1E1E]"
+            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#DCE5F1] focus:outline-none focus:border-[#0F172A] bg-white text-[#0F172A]"
           >
             <option value="all">All Semesters</option>
             {[1, 2, 3, 4, 5, 6, 7, 8].map(s => (
@@ -62,7 +62,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
           <select
             value={courseType}
             onChange={(e) => onCourseTypeChange(e.target.value)}
-            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#D6D6D6] focus:outline-none focus:border-[#1E1E1E] bg-white text-[#1E1E1E]"
+            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#DCE5F1] focus:outline-none focus:border-[#0F172A] bg-white text-[#0F172A]"
           >
             <option value="all">All Course Types</option>
             <option value="core">Core</option>
@@ -78,7 +78,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
           <select
             value={category}
             onChange={(e) => onCategoryChange(e.target.value)}
-            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#D6D6D6] focus:outline-none focus:border-[#1E1E1E] bg-white text-[#1E1E1E]"
+            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#DCE5F1] focus:outline-none focus:border-[#0F172A] bg-white text-[#0F172A]"
           >
             <option value="all">All Categories</option>
             <option value="theory">Theory</option>
@@ -91,7 +91,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
             <button
               onClick={onReset}
               title="Reset Filters"
-              className="p-2 rounded-xl text-[#7A7A7A] hover:bg-[#F2F2F1] hover:text-[#1E1E1E] transition-colors shrink-0"
+              className="p-2 rounded-xl text-[#667A93] hover:bg-[#F6F8FC] hover:text-[#0F172A] transition-colors shrink-0"
             >
               <X className="w-4 h-4" />
             </button>

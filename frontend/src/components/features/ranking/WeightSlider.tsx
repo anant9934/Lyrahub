@@ -4,7 +4,7 @@ export function WeightSlider({ label, value, onChange }: { label: string, value:
   return (
     <div className="flex flex-col mb-4">
       <div className="flex justify-between items-center mb-1">
-        <label className="text-sm font-medium text-[#1E1E1E]">{label}</label>
+        <label className="text-sm font-medium text-[#0F172A]">{label}</label>
         <span className="text-sm text-gray-500">{(value * 100).toFixed(1)}%</span>
       </div>
       <input

@@ -39,8 +39,8 @@ export default function CreateAchievementPage() {
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-[#1E1E1E] mb-8">Add Achievement</h1>
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg border border-[#D6D6D6] space-y-6">
+      <h1 className="text-3xl font-bold text-[#0F172A] mb-8">Add Achievement</h1>
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg border border-[#DCE5F1] space-y-6">
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">Title</label>
           <input 
@@ -115,7 +115,7 @@ export default function CreateAchievementPage() {
           </div>
         </div>
 
-        <button type="submit" className="w-full py-3 bg-[#1E1E1E] text-white font-bold rounded hover:bg-gray-800 transition">
+        <button type="submit" className="w-full py-3 bg-[#0F172A] text-white font-bold rounded hover:bg-gray-800 transition">
           Submit Achievement
         </button>
       </form>

@@ -198,7 +198,7 @@ async def get_leadership_by_role(
         LeadershipProfile.deleted_at.is_(None)
     ).order_by(LeadershipProfile.display_order.asc())
     res = await db.execute(stmt)
-    profile = res.scalar_one_or_none()
+    profile = res.scalars().first()
     if not profile:
         raise HTTPException(
             status_code=404,

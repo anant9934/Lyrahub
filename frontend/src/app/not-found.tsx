@@ -4,7 +4,7 @@ import { BrandedErrorPage } from "@/components/system/BrandedErrorPage"
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-white text-[#111111] flex flex-col">
+    <div className="aimetra-public theme-system min-h-screen bg-white text-[#0F172A] flex flex-col">
       <PublicNav />
       <main id="main-content" className="flex-1 flex items-center justify-center">
         <BrandedErrorPage

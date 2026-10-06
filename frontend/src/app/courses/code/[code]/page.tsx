@@ -32,14 +32,14 @@ export default function CourseCodeRedirectPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#F2F2F1] py-16 px-4 flex items-center justify-center">
-        <div className="bg-white rounded-2xl border border-[#D6D6D6] p-8 text-center max-w-md shadow-sm">
-          <BookOpen className="w-12 h-12 text-[#9A9A9A] mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-[#1E1E1E] mb-2">Course Not Found</h2>
-          <p className="text-sm text-[#5C5C5C] mb-6">{error}</p>
+      <div className="min-h-screen bg-[#F6F8FC] py-16 px-4 flex items-center justify-center">
+        <div className="bg-white rounded-2xl border border-[#DCE5F1] p-8 text-center max-w-md shadow-sm">
+          <BookOpen className="w-12 h-12 text-[#71849B] mx-auto mb-3" />
+          <h2 className="text-xl font-bold text-[#0F172A] mb-2">Course Not Found</h2>
+          <p className="text-sm text-[#526783] mb-6">{error}</p>
           <Link
             href="/courses"
-            className="px-4 py-2 rounded-xl bg-[#1E1E1E] text-white text-sm font-semibold"
+            className="px-4 py-2 rounded-xl bg-[#0F172A] text-white text-sm font-semibold"
           >
             Browse All Courses
           </Link>
@@ -49,9 +49,9 @@ export default function CourseCodeRedirectPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F2F1] flex flex-col items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-[#1E1E1E] mb-3" />
-      <p className="text-xs font-semibold text-[#7A7A7A]">Redirecting to course details for {code}...</p>
+    <div className="min-h-screen bg-[#F6F8FC] flex flex-col items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-[#0F172A] mb-3" />
+      <p className="text-xs font-semibold text-[#667A93]">Redirecting to course details for {code}...</p>
     </div>
   );
 }

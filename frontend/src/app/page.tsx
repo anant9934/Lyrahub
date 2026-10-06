@@ -1,629 +1,474 @@
-import Link from "next/link"
 import Image from "next/image"
+import Link from "next/link"
+import type { ReactNode } from "react"
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BrainCircuit,
+  ChartNoAxesCombined,
+  GraduationCap,
+  Handshake,
+  Lightbulb,
+  Rocket,
+  Search,
+  Sparkles,
+  Trophy,
+  Users,
+  Compass,
+  FolderGit2,
+  Calendar,
+  CheckCircle2,
+  Bot,
+} from "lucide-react"
 import { PublicNav } from "@/components/layout/PublicNav"
 import { PublicFooter } from "@/components/layout/PublicFooter"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles } from "lucide-react"
+import { InteractiveAidaMascot } from "@/components/features/ai/InteractiveAidaMascot"
+
+const STATS = [
+  { label: "Student Builders", value: "1,240+", icon: Users, color: "#1478ef", bg: "#EDF5FF" },
+  { label: "Dedicated Mentors", value: "52+", icon: GraduationCap, color: "#7C3AED", bg: "#F3EEFF" },
+  { label: "Live AI Projects", value: "320+", icon: Lightbulb, color: "#D97706", bg: "#FFF8E8" },
+  { label: "Verified Career Placement", value: "78%", icon: Trophy, color: "#16A34A", bg: "#EAF9F0" },
+]
+
+const PROGRAMS = [
+  {
+    title: "AI & Machine Learning",
+    description: "Learn how modern AI thinks. Train neural networks, build intelligent agents, and turn code into applications people love.",
+    icon: BrainCircuit,
+    tag: "Flagship Program",
+    color: "#1478ef",
+    bg: "#EDF5FF",
+  },
+  {
+    title: "Data Science & Analytics",
+    description: "Turn messy numbers into clear answers. Master big data pipelines, visual insights, and predictive machine learning models.",
+    icon: ChartNoAxesCombined,
+    tag: "Applied Track",
+    color: "#0D9488",
+    bg: "#E6FAFA",
+  },
+  {
+    title: "Research & Innovation",
+    description: "Don't just study AI — invent it. Work inside faculty research labs, publish in top IEEE/ACM journals, and patent novel ideas.",
+    icon: Lightbulb,
+    tag: "Lab Track",
+    color: "#D97706",
+    bg: "#FFF8E8",
+  },
+  {
+    title: "Industry & Careers",
+    description: "Bridge college and your dream job. Connect directly with hiring managers, land paid internships, and launch your career.",
+    icon: Handshake,
+    tag: "Career Track",
+    color: "#7C3AED",
+    bg: "#F3EEFF",
+  },
+]
+
+const STEPS = [
+  {
+    number: "01",
+    title: "Claim your profile",
+    detail: "Bring your code, course achievements, and verified skills into one clean portfolio. Say goodbye to messy paper resumes.",
+    icon: GraduationCap,
+  },
+  {
+    number: "02",
+    title: "Find your tribe & mentor",
+    detail: "Discover active research labs, match with professors who care about your focus, and team up with passionate classmates.",
+    icon: Search,
+  },
+  {
+    number: "03",
+    title: "Build projects that matter",
+    detail: "Work on real capstones and hackathons. Get continuous feedback from professors and test your code against industry standards.",
+    icon: Rocket,
+  },
+  {
+    number: "04",
+    title: "Get noticed & hired",
+    detail: "Earn official department verification, see your ranking rise, and let top companies and research institutes reach out to you.",
+    icon: Trophy,
+  },
+]
+
+function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-[#1478ef] dark:text-[#79b6ff]">
+      <Sparkles className="h-3.5 w-3.5 text-[#ffcf36]" />
+      {children}
+    </p>
+  )
+}
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white text-[#111111] flex flex-col">
+    <div className="min-h-screen bg-[#F6F8FC] text-[#091936] dark:bg-[#0F172A] dark:text-white">
       <PublicNav />
 
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-14">
+        {/* ── 01. HERO SECTION (Full-Width Card Matching Panel 01) ────────── */}
+        <section className="relative overflow-hidden rounded-[36px] border border-[#DCE5F1] bg-gradient-to-br from-[#EBF5FF] via-[#F7FAFD] to-[#E8F3FD] p-8 shadow-[0_16px_50px_rgba(9,25,54,0.06)] sm:p-12 lg:p-16 dark:border-[#1E3456] dark:bg-[#112239]">
+          {/* Subtle Ambient Glows */}
+          <div className="pointer-events-none absolute -right-20 -top-24 h-96 w-96 rounded-full bg-[#1478ef]/15 blur-[80px]" />
+          <div className="pointer-events-none absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-[#ffcf36]/15 blur-[90px]" />
+          <span aria-hidden className="pointer-events-none absolute right-1/2 top-10 text-3xl text-[#ffcf36]/40 select-none">✦</span>
+          <span aria-hidden className="pointer-events-none absolute right-16 top-16 text-4xl text-[#1478ef]/25 select-none">✦</span>
 
-        {/* ══ HERO — Full-bleed campus image with text overlay ══ */}
-        <section className="relative w-full overflow-hidden min-h-[min(560px,calc(100dvh-64px))] md:h-[calc(100dvh-64px)] md:max-h-[820px] flex items-center">
-          {/* Campus image — fills entire hero */}
-          <Image
-            src="/images/hero-campus.webp"
-            alt="AI & Machine Learning Department Campus"
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 1200px"
-            className="object-cover object-center"
-          />
+          <div className="relative z-10 grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+            {/* Left Content */}
+            <div className="space-y-6">
+              {/* Category Pill */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#C4DCF7] bg-white/90 px-3.5 py-1.5 text-[11px] font-black uppercase tracking-[0.16em] text-[#1478ef] shadow-sm backdrop-blur-sm dark:border-[#2A4468] dark:bg-[#162D4A] dark:text-[#88BEF8]">
+                <Sparkles className="h-3.5 w-3.5 text-[#ffcf36]" />
+                Your AI & ML Learning Hub
+              </div>
 
-          {/* Left-side dark gradient scrim — text sits here */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/30 md:to-transparent" />
-          {/* Bottom fade for smooth section transition */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
-
-          {/* Hero text — left-aligned, white, over the scrim */}
-          <div className="relative z-10 w-full py-16 sm:py-20 md:py-0">
-            <div className="mx-auto max-w-7xl w-full px-5 sm:px-6 lg:px-8">
-              <div className="max-w-2xl">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/70 mb-4 sm:mb-6">
-                  AI &amp; ML Education, Talent, Research &amp; Analytics
-                </p>
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-[1.1] sm:leading-[1.08] mb-5 sm:mb-6">
-                  The intelligence layer
-                  <br />
-                  for the AI &amp; ML
-                  <br />
-                  department.
+              {/* Main Headline (Panel 01 Typography) */}
+              <div className="space-y-1">
+                <h1 className="text-[clamp(2.75rem,5.6vw,5rem)] font-black uppercase leading-[0.93] tracking-[-0.055em] text-[#071b3d] dark:text-white">
+                  LEARN AI.<br />
+                  <span className="text-[#1478ef]">BUiLD REAL.</span><br />
+                  GET NOTiCED.
                 </h1>
-                <p className="text-sm sm:text-base md:text-lg text-white/85 max-w-lg leading-relaxed mb-8 sm:mb-10">
-                  AIMETRA connects students, faculty, projects, research, opportunities, alumni and institutional data into one intelligent academic environment.
-                </p>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3.5 sm:gap-4">
-                  <Link href="/login" className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto h-12 px-8 rounded-lg bg-white text-[#111111] hover:bg-neutral-100 font-semibold text-sm shadow-lg">
-                      Explore AIMETRA
-                    </Button>
-                  </Link>
-                  <Link
-                    href="#system"
-                    className="inline-flex items-center justify-center gap-1.5 text-sm font-medium text-white/80 hover:text-white transition-colors py-2 sm:py-0"
-                  >
-                    See how it works <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Bottom-right: institution label */}
-          <div className="hidden sm:block absolute bottom-8 right-6 lg:right-10 text-right z-10">
-            <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-white/50">
-              Department of Artificial Intelligence &amp; Machine Learning
-            </p>
-          </div>
-        </section>
-
-        {/* ══ SIGNAL CHAIN STRIP ══ */}
-        <section className="border-b border-[#E5E5E5] bg-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-6">
-            <div className="flex flex-wrap gap-x-0 gap-y-3">
-              {["Students","Faculty","Projects","Research","Skills","Achievements","Opportunities","Alumni","Analytics"].map((label, i, arr) => (
-                <div key={label} className="flex items-center">
-                  <span className="text-xs font-medium text-[#333333]">{label}</span>
-                  {i < arr.length - 1 && (
-                    <span className="mx-3 text-[#CCCCCC] text-xs select-none">→</span>
-                  )}
-                </div>
-              ))}
-              <div className="flex items-center">
-                <span className="mx-3 text-[#CCCCCC] text-xs select-none">→</span>
-                <span className="text-xs font-semibold text-[#111111] tracking-[0.1em] uppercase">AIMETRA</span>
-              </div>
-            </div>
-            <p className="mt-2 text-xs text-[#AAAAAA]">Connected — not scattered.</p>
-          </div>
-        </section>
-
-
-
-        {/* ══ THE PROBLEM ══ */}
-        <section className="border-t border-[#E5E5E5] bg-[#FAFAFA]">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-start">
-              <div className="lg:col-span-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-6">
-                  The problem
-                </p>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-[#111111] leading-[1.2]">
-                  Your department has the data.
-                  <br />
-                  <span className="text-[#888888]">It just does not connect.</span>
-                </h2>
-              </div>
-              <div className="lg:col-span-7">
-                <div className="space-y-0 divide-y divide-[#E8E8E8]">
-                  {[
-                    { place: "Student records", location: "one system" },
-                    { place: "Projects", location: "another" },
-                    { place: "Research", location: "somewhere else" },
-                    { place: "Achievements", location: "a spreadsheet" },
-                    { place: "Opportunities", location: "a message thread" },
-                    { place: "Faculty expertise", location: "difficult to find" },
-                    { place: "Alumni knowledge", location: "disconnected" },
-                  ].map((row) => (
-                    <div key={row.place} className="flex items-baseline justify-between py-4 gap-4">
-                      <span className="text-sm font-medium text-[#111111]">{row.place}</span>
-                      <span className="text-sm text-[#AAAAAA] shrink-0">{row.location}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-10 pt-8 border-t border-[#E5E5E5]">
-                  <p className="text-base text-[#333333] leading-relaxed max-w-lg">
-                    The information exists. The connection does not.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ THE QUESTION ══ */}
-        <section className="border-t border-[#E5E5E5] bg-white" id="system">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-28 lg:py-36">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-10">
-              The question
-            </p>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-[#111111] leading-[1.1] max-w-4xl">
-              What happens when an academic department
-              can finally see itself as one system?
-            </h2>
-            <div className="mt-12 max-w-2xl space-y-3 text-sm text-[#666666] leading-relaxed">
-              <p>Skills connect with projects.</p>
-              <p>Projects connect with opportunities.</p>
-              <p>Research connects with people.</p>
-              <p>Faculty expertise connects with students.</p>
-              <p>Alumni experience connects with the next cohort.</p>
-              <p>Decisions connect with actual evidence.</p>
-            </div>
-            <p className="mt-10 text-sm font-medium text-[#111111]">
-              That is the problem AIMETRA is designed around.
-            </p>
-          </div>
-        </section>
-
-        {/* ══ MEET AIMETRA + FROM → TO ══ */}
-        <section className="border-t border-[#E5E5E5] bg-[#F5F5F4]">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-              <div className="lg:col-span-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-6">The answer</p>
-                <h2 className="text-4xl sm:text-5xl font-semibold text-[#111111] leading-[1.1] mb-4">Meet AIMETRA.</h2>
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#999999] mb-8">
-                  AI &amp; ML Education, Talent, Research &amp; Analytics
-                </p>
-                <p className="text-base text-[#444444] leading-relaxed mb-4 max-w-sm">
-                  A connected intelligence layer for the modern AI &amp; ML department.
-                </p>
-                <p className="text-sm text-[#666666] leading-relaxed max-w-sm">
-                  AIMETRA brings the department&rsquo;s people, knowledge,
-                  evidence, opportunities and outcomes into one structured institutional system.
-                </p>
-              </div>
-              <div className="lg:col-span-7">
-                <div className="bg-white rounded-2xl border border-[#E8E8E8] overflow-hidden">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E8E8E8]">
-                    <div className="p-5 sm:p-8">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#BBBBBB] mb-4 sm:mb-6">Before</p>
-                      <ul className="space-y-3 sm:space-y-4">
-                        {["Scattered records","Disconnected platforms","Hidden expertise","Manual searches","Fragmented evidence","Decisions without context"].map((item) => (
-                          <li key={item} className="text-sm text-[#888888] leading-snug">{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="p-5 sm:p-8">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#111111] mb-4 sm:mb-6">With AIMETRA</p>
-                      <ul className="space-y-3 sm:space-y-4">
-                        {["Connected student profiles","Institutional intelligence","Discoverable expertise","Structured evidence","Faster, informed analysis","Context-aware AI assistance"].map((item) => (
-                          <li key={item} className="text-sm text-[#111111] font-medium leading-snug">{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ STUDENT ══ */}
-        <section className="border-t border-[#E5E5E5] bg-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-              <div className="lg:col-span-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-6">Student</p>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-[#111111] mb-8 leading-[1.2]">
-                  Your academic journey should leave a trail of evidence.
-                </h2>
-                <p className="text-xl font-semibold text-[#111111] leading-tight mb-8">
-                  &ldquo;A resume is a snapshot.
-                  <br />
-                  A student&rsquo;s journey is a dataset.&rdquo;
-                </p>
-                <p className="text-sm text-[#666666] leading-relaxed">
-                  AIMETRA is designed to turn fragmented achievements into a
-                  connected academic profile — organized around evidence,
-                  not empty self-reporting.
-                </p>
-              </div>
-              <div className="lg:col-span-7">
-                <div className="bg-[#FAFAFA] rounded-2xl border border-[#E5E5E5] overflow-hidden">
-                  <div className="px-6 py-5 border-b border-[#E5E5E5] flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center text-white text-sm font-bold shrink-0">
-                      RS
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-[#111111]">Rahul Sharma</div>
-                      <div className="text-xs text-[#888888]">B.Tech CSE (AI &amp; ML) · Semester 6</div>
-                    </div>
-                    <div className="ml-auto text-right">
-                      <div className="text-xs font-semibold text-[#111111]">Rank #4</div>
-                      <div className="text-[11px] text-[#888888]">Dept. · 2024</div>
-                    </div>
-                  </div>
-                  <div className="divide-y divide-[#EEEEEE]">
-                    {[
-                      { label: "CGPA", value: "8.7 / 10.0", sub: "6 semesters" },
-                      { label: "Skills verified", value: "12", sub: "Python, PyTorch, SQL, Docker +8" },
-                      { label: "Projects", value: "4 active", sub: "LLM fine-tuning · NLP pipeline · CV model" },
-                      { label: "Research", value: "1 paper", sub: "Conference submission · under review" },
-                      { label: "Certifications", value: "6", sub: "Coursera, NPTEL, AWS ML" },
-                      { label: "Internship", value: "1 completed", sub: "AI Startup · 3 months" },
-                    ].map((row) => (
-                      <div key={row.label} className="flex flex-col sm:flex-row sm:items-center justify-between px-5 sm:px-6 py-3 sm:py-3.5 gap-1 sm:gap-2">
-                        <div className="flex items-center justify-between sm:justify-start gap-4">
-                          <span className="text-xs text-[#888888] sm:w-28 shrink-0">{row.label}</span>
-                          <span className="text-xs font-semibold text-[#111111] sm:w-24 shrink-0">{row.value}</span>
-                        </div>
-                        <span className="text-[11px] text-[#AAAAAA] sm:text-right truncate">{row.sub}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="px-6 py-4 border-t border-[#E5E5E5] bg-white">
-                    <p className="text-[11px] text-[#AAAAAA]">Each signal part of a connected profile — not a scattered list.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ FACULTY ══ */}
-        <section className="border-t border-[#E5E5E5] bg-[#FAFAFA]">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-              <div className="lg:col-span-5 order-last lg:order-first">
-                <div className="bg-white rounded-2xl border border-[#E5E5E5] overflow-hidden">
-                  <div className="px-6 py-5 border-b border-[#E5E5E5]">
-                    <div className="text-xs font-semibold text-[#111111]">Dr. Priya Menon</div>
-                    <div className="text-[11px] text-[#888888]">Associate Professor · AI &amp; ML</div>
-                  </div>
-                  <div className="divide-y divide-[#EEEEEE]">
-                    {[
-                      { label: "Expertise", items: "NLP, Transformers, Generative AI" },
-                      { label: "Courses", items: "Deep Learning · NLP Engineering" },
-                      { label: "Projects supervised", items: "7 active capstones" },
-                      { label: "Research", items: "4 publications · 2 under review" },
-                      { label: "Mentees", items: "12 students" },
-                    ].map((row) => (
-                      <div key={row.label} className="px-5 sm:px-6 py-3 sm:py-3.5 flex flex-col sm:flex-row items-start gap-1 sm:gap-4">
-                        <span className="text-[11px] text-[#AAAAAA] sm:w-32 shrink-0 pt-0.5">{row.label}</span>
-                        <span className="text-xs text-[#333333] leading-relaxed">{row.items}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="px-6 py-4 border-t border-[#E5E5E5] bg-[#FAFAFA]">
-                    <p className="text-[11px] text-[#AAAAAA]">Expertise structured and visible — not locked in a CV.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="lg:col-span-7">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-6">Faculty</p>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-[#111111] mb-6 leading-[1.2]">
-                  Expertise should be discoverable.
-                </h2>
-                <p className="text-base text-[#444444] leading-relaxed mb-4 max-w-lg">
-                  A department becomes stronger when expertise is visible, connected and easier to find.
-                </p>
-                <p className="text-sm text-[#666666] leading-relaxed max-w-lg">
-                  AIMETRA gives faculty a structured presence within the institutional system —
-                  linking expertise to courses, projects, research and students rather than
-                  leaving it in isolated profiles.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ LEADERSHIP ══ */}
-        <section className="border-t border-[#E5E5E5] bg-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-              <div className="lg:col-span-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-6">
-                  Department leadership
-                </p>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-[#111111] mb-6 leading-[1.2]">
-                  Better decisions begin with better visibility.
-                </h2>
-                <p className="text-sm text-[#666666] leading-relaxed max-w-sm mb-6">
-                  AIMETRA provides authorized leadership with a connected view
-                  across the department — grounded in evidence.
-                </p>
-                <p className="text-xs text-[#AAAAAA] font-medium uppercase tracking-wider">
-                  Evidence-backed visibility — not surveillance.
-                </p>
-              </div>
-              <div className="lg:col-span-7">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-8 border-t border-[#E5E5E5] pt-8">
-                  {[
-                    {
-                      group: "Academic",
-                      items: ["Student performance","Attendance patterns","Skills landscape","Curriculum coverage"],
-                    },
-                    {
-                      group: "Research & Output",
-                      items: ["Research activity","Faculty contribution","Placement outcomes","Achievement data"],
-                    },
-                    {
-                      group: "Operations",
-                      items: ["Opportunity pipeline","Department trends","Approval workflows","Institutional records"],
-                    },
-                  ].map((col) => (
-                    <div key={col.group}>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#AAAAAA] mb-4">{col.group}</p>
-                      <ul className="space-y-3 mb-8">
-                        {col.items.map((item) => (
-                          <li key={item} className="text-sm text-[#444444]">{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ AIDA ══ */}
-        <section className="border-t border-[#E5E5E5] bg-[#FAFAFA]">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-              <div className="lg:col-span-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-6">AIDA</p>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-[#111111] mb-2 leading-[1.1]">
-                  Ask AIMETRA.
-                </h2>
-                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#AAAAAA] mb-8">
-                  AIMETRA Intelligence &amp; Data Assistant
-                </p>
-                <p className="text-base text-[#444444] leading-relaxed mb-4 max-w-sm">
-                  AIDA is the conversational intelligence layer of AIMETRA —
-                  connected to the department&rsquo;s actual institutional data.
-                </p>
-                <p className="text-sm text-[#666666] leading-relaxed max-w-sm">
-                  The differentiator is not that AIDA uses AI.
-                  The differentiator is that AIDA understands institutional context.
-                </p>
-              </div>
-              <div className="lg:col-span-8">
-                {/* Visual Sequence Pipeline Indicator */}
-                <div className="hidden sm:flex items-center gap-2 mb-4 px-4 py-2 rounded-lg bg-white border border-[#E5E5E5] text-[11px] font-medium text-[#777777]">
-                  <span className="text-[#111111] font-semibold">Question</span>
-                  <span className="text-[#CCCCCC]">→</span>
-                  <span className="text-[#111111] font-semibold">AIDA</span>
-                  <span className="text-[#CCCCCC]">→</span>
-                  <span className="text-[#555555]">Department Data &amp; Institutional Knowledge</span>
-                  <span className="text-[#CCCCCC]">→</span>
-                  <span className="text-[#16A34A] font-semibold">Structured Answer</span>
-                </div>
-
-                <div className="bg-white rounded-2xl border border-[#E5E5E5] overflow-hidden shadow-sm">
-                  <div className="px-5 py-3.5 border-b border-[#E5E5E5] flex items-center justify-between bg-[#FAFAFA]">
-                    <div className="flex items-center gap-2.5">
-                      <Sparkles className="w-3.5 h-3.5 text-[#111111]" />
-                      <span className="text-xs font-semibold text-[#111111]">AIDA</span>
-                      <span className="text-xs text-[#AAAAAA]">—</span>
-                      <span className="text-xs text-[#AAAAAA]">AIMETRA Intelligence &amp; Data Assistant</span>
-                    </div>
-                    <span className="text-[10px] font-mono text-[#888888] bg-white px-2 py-0.5 rounded border border-[#E5E5E5]">
-                      Context: Dept. Verified Records
+                {/* Highlight Badge */}
+                <div className="pt-2">
+                  <div className="inline-block rounded-2xl bg-[#FFCF36] px-4 py-1.5 shadow-[0_4px_16px_rgba(255,207,54,0.35)]">
+                    <span className="text-sm font-black italic tracking-tight text-[#071b3d] sm:text-base">
+                      Where curiosity becomes real-world impact.
                     </span>
                   </div>
-
-                  {/* Sample Query Presets */}
-                  <div className="px-5 py-2.5 bg-[#FCFCFC] border-b border-[#F0F0F0] flex flex-wrap gap-1.5 text-[10px]">
-                    <span className="text-[#888888] py-0.5 mr-1 font-medium">Try:</span>
-                    {[
-                      "Show students working on LLM projects.",
-                      "How many students have an 8+ CGPA?",
-                      "Which certifications are most common?",
-                      "Which students have computer vision research experience?",
-                    ].map((sampleQuery, idx) => (
-                      <span
-                        key={idx}
-                        className={`px-2.5 py-1 rounded-md border ${
-                          idx === 0
-                            ? "bg-[#111111] text-white border-[#111111]"
-                            : "bg-white text-[#555555] border-[#E5E5E5]"
-                        }`}
-                      >
-                        {sampleQuery}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="px-5 py-4 border-b border-[#F0F0F0] bg-white">
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-[#111111] flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5">
-                        U
-                      </div>
-                      <p className="text-sm text-[#333333] pt-0.5 font-medium">
-                        Show students working on LLM projects with a CGPA above 8.0.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="px-5 py-4">
-                    <div className="flex items-start gap-3 mb-4">
-                      <div className="w-6 h-6 rounded-full bg-[#F5F5F5] border border-[#E5E5E5] flex items-center justify-center shrink-0 mt-0.5">
-                        <Sparkles className="w-3 h-3 text-[#555555]" />
-                      </div>
-                      <p className="text-xs text-[#555555] pt-1">
-                        Found <span className="font-semibold text-[#111111]">7 students</span> matching this criteria across active project records.
-                      </p>
-                    </div>
-                    <div className="rounded-lg border border-[#EEEEEE] overflow-hidden sm:ml-9">
-                      <div className="overflow-x-auto">
-                        <div className="min-w-[360px]">
-                          <div className="grid grid-cols-12 text-[10px] font-semibold uppercase tracking-wider text-[#AAAAAA] bg-[#FAFAFA] px-4 py-2.5 border-b border-[#EEEEEE]">
-                            <span className="col-span-5">Name</span>
-                            <span className="col-span-2">CGPA</span>
-                            <span className="col-span-5">Project</span>
-                          </div>
-                          {[
-                            { name: "Rahul Sharma", cgpa: "8.7", project: "LLM fine-tuning", sem: "Sem 6" },
-                            { name: "Divya Nair", cgpa: "8.9", project: "RAG pipeline", sem: "Sem 6" },
-                            { name: "Arjun Menon", cgpa: "8.4", project: "Prompt engineering", sem: "Sem 7" },
-                            { name: "Shreya Iyer", cgpa: "8.2", project: "LLM evaluation", sem: "Sem 5" },
-                          ].map((row, i) => (
-                            <div key={row.name} className={`grid grid-cols-12 px-4 py-2.5 text-xs ${i < 3 ? "border-b border-[#F5F5F5]" : ""}`}>
-                              <span className="col-span-5 font-medium text-[#111111] truncate pr-2">{row.name}</span>
-                              <span className="col-span-2 text-[#333333] font-mono">{row.cgpa}</span>
-                              <span className="col-span-5 text-[#666666] truncate">{row.project}</span>
-                            </div>
-                          ))}
-                          <div className="px-4 py-2 bg-[#FAFAFA] border-t border-[#EEEEEE] flex items-center justify-between">
-                            <span className="text-[10px] text-[#AAAAAA]">+3 more · sorted by CGPA</span>
-                            <span className="text-[10px] text-[#888888] font-mono">Source: AIMETRA Projects DB + Academic Records</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="sm:ml-9 mt-4 flex flex-wrap gap-2">
-                      {["Export as CSV","Show their certifications","Filter by semester"].map((q) => (
-                        <span key={q} className="text-[11px] text-[#555555] bg-[#F5F5F5] border border-[#E5E5E5] rounded-md px-3 py-1 cursor-default">
-                          {q}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="px-5 py-3 border-t border-[#F0F0F0] bg-[#FAFAFA] flex items-center justify-between text-[10px] text-[#888888]">
-                    <span>AIDA finds, analyzes and presents. Decisions remain with authorized people.</span>
-                    <span className="font-medium text-[#111111]">Evidence-backed visibility</span>
-                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* ══ ECOSYSTEM — One system. Multiple perspectives. ══ */}
-        <section className="border-t border-[#E5E5E5] bg-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-              <div className="lg:col-span-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-6">
-                  System architecture
-                </p>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-[#111111] mb-6 leading-[1.2]">
-                  One system.
-                  <br />
-                  Multiple perspectives.
-                </h2>
-                <p className="text-sm text-[#666666] leading-relaxed">
-                  Each role accesses AIMETRA from a different perspective —
-                  connected to the same institutional source of truth.
-                </p>
-              </div>
-              <div className="lg:col-span-8">
-                <div className="divide-y divide-[#E8E8E8] border-t border-[#E8E8E8]">
-                  {[
-                    { role: "Student", view: "My journey", desc: "Performance, skills, projects, achievements and career readiness — in one place." },
-                    { role: "Faculty", view: "My students & expertise", desc: "Student oversight, mentorship, courses, research and academic engagement." },
-                    { role: "Leadership", view: "My department", desc: "Department-wide visibility: performance, research, rankings and institutional trends." },
-                    { role: "Alumni", view: "My network", desc: "Mentorship, community and knowledge exchange with the current department." },
-                    { role: "Opportunity", view: "Find relevant talent", desc: "Evidence-based access to student capability — structured by skills and performance." },
-                    { role: "AIDA", view: "Ask the system", desc: "Conversational intelligence — find, analyze and present institutional information." },
-                  ].map((item) => (
-                    <div key={item.role} className="flex flex-col sm:flex-row items-start gap-2 sm:gap-6 py-5">
-                      <div className="w-auto sm:w-28 shrink-0">
-                        <span className="text-xs font-semibold text-[#111111]">{item.role}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-xs text-[#888888] italic block mb-1">&ldquo;{item.view}&rdquo;</span>
-                        <span className="text-xs text-[#555555] leading-relaxed">{item.desc}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ MANIFESTO ══ */}
-        <section className="border-t border-[#E5E5E5] bg-[#F5F5F4]">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-28 lg:py-36">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#111111] leading-[1.15] mb-14 max-w-3xl">
-              We believe academic information should not live in silos.
-            </h2>
-            <div className="space-y-5 max-w-xl">
-              {[
-                "A student is more than a CGPA.",
-                "A project is more than a title.",
-                "A faculty profile is more than a designation.",
-                "Research is more than a publication list.",
-                "An opportunity is more than a notice.",
-                "A department is more than a dashboard.",
-              ].map((line) => (
-                <p key={line} className="text-base text-[#555555] leading-relaxed">{line}</p>
-              ))}
-            </div>
-            <div className="mt-16 pt-10 border-t border-[#DDDDDD] max-w-xl">
-              <p className="text-2xl font-semibold text-[#111111] mb-2">There is a system underneath it all.</p>
-              <p className="text-base text-[#777777]">AIMETRA is built to connect it.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ CAPABILITIES — table format ══ */}
-        <section className="border-t border-[#E5E5E5] bg-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="mb-12">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#AAAAAA] mb-3">
-                Platform capabilities
+              {/* Subtitle Paragraph */}
+              <p className="max-w-xl text-sm leading-relaxed text-[#526783] sm:text-base dark:text-[#C4D8F1]">
+                No more scattered notices, lost emails, or confusing requirements. AIMETRA brings your courses, faculty mentors, research labs, and dream career opportunities together in one clear, intelligent place.
               </p>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-[#111111]">Built around evidence.</h2>
+
+              {/* Motto Ribbon */}
+              <p className="font-serif text-xs font-bold italic tracking-wide text-[#071b3d]/70 dark:text-[#88BEF8]">
+                Explore Courses · Find Mentors · Build Capstones · Land Internships
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link
+                  href="/signup"
+                  className="inline-flex h-12 items-center gap-2.5 rounded-full bg-[#071b3d] px-6 text-sm font-black text-white shadow-[0_8px_20px_rgba(7,27,61,0.20)] transition hover:-translate-y-0.5 hover:bg-[#1478ef]"
+                >
+                  <span>Start Your Journey</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+
+                <Link
+                  href="/aida"
+                  className="inline-flex h-12 items-center gap-2 rounded-full border border-[#C4DCF7] bg-white px-5 text-sm font-bold text-[#1478ef] shadow-sm transition hover:bg-[#EDF5FF] hover:border-[#1478ef] dark:bg-[#162D4A] dark:border-[#2A4468] dark:text-[#88BEF8]"
+                >
+                  <Bot className="h-4 w-4" />
+                  <span>Ask AIDA Anything ✦</span>
+                </Link>
+              </div>
             </div>
-            <div className="divide-y divide-[#EEEEEE] border-t border-[#EEEEEE]">
-              {[
-                { title: "AHP + TOPSIS Rankings", desc: "Multi-criteria student evaluation indexing CGPA, hackathons, peer-reviewed work and verified skills — not opinions.", tag: "Talent intelligence" },
-                { title: "Opportunity Pipeline", desc: "Internships and placements connected directly to student profiles — evidence-based, not keyword-matched.", tag: "Career readiness" },
-                { title: "QR Attendance & Events", desc: "Encrypted QR codes for contactless attendance, event registration and digital credential verification.", tag: "Operations" },
-                { title: "Faculty → HOD Approvals", desc: "Multi-role governance with audit logging and diff inspections before any data is published to the system.", tag: "Governance" },
-              ].map((cap) => (
-                <div key={cap.title} className="flex flex-col sm:flex-row items-start gap-2 sm:gap-12 py-6">
-                  <div className="w-auto sm:w-40 shrink-0">
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#CCCCCC]">{cap.tag}</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-[#111111] mb-1">{cap.title}</h3>
-                    <p className="text-sm text-[#666666] leading-relaxed">{cap.desc}</p>
-                  </div>
-                </div>
-              ))}
+
+            {/* Right Visual (Interactive Mascot with Live Glowing Energy Ball) */}
+            <div className="relative flex items-center justify-center">
+              <InteractiveAidaMascot
+                priority
+                className="w-full max-w-[360px] sm:max-w-[420px] mx-auto"
+              />
             </div>
           </div>
         </section>
 
-        {/* ══ FINAL CTA ══ */}
-        <section className="border-t border-[#E5E5E5] bg-[#111111]">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24">
-            <div className="max-w-2xl">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white leading-[1.1] mb-6">
-                See your department as a system.
+        {/* ── 02. STAT METRICS STRIP (Directly Below Hero) ────────────────── */}
+        <section aria-label="Department Statistics" className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {STATS.map(({ label, value, icon: Icon, color, bg }) => (
+            <div
+              key={label}
+              className="flex items-center gap-4 rounded-3xl border border-[#DCE5F1] bg-white p-5 shadow-[0_4px_16px_rgba(9,25,54,0.04)] transition hover:-translate-y-0.5 hover:shadow-md dark:border-[#1E3456] dark:bg-[#112239]"
+            >
+              <div
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+                style={{ background: bg, color }}
+              >
+                <Icon className="h-6 w-6" />
+              </div>
+              <div>
+                <div className="text-2xl font-black tracking-tight text-[#071b3d] dark:text-white">
+                  {value}
+                </div>
+                <div className="text-xs font-semibold text-[#526783] dark:text-[#94A3B8]">
+                  {label}
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        {/* ── 03. ACADEMIC PROGRAM PILLARS ─────────────────────────────────── */}
+        <section className="space-y-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <Eyebrow>Choose Your Direction</Eyebrow>
+              <h2 className="mt-1 text-3xl font-black tracking-tight text-[#071b3d] sm:text-4xl dark:text-white">
+                Four paths to take you from <span className="text-[#1478ef]">curious student to industry leader.</span>
               </h2>
-              <p className="text-base text-[#888888] leading-relaxed mb-10 max-w-lg">
-                Explore how AIMETRA connects education, talent, research and analytics
-                in one institutional intelligence layer.
-              </p>
-              <div className="flex flex-wrap items-center gap-4">
-                <Link href="/login">
-                  <Button className="h-12 px-8 rounded-lg bg-white text-[#111111] hover:bg-neutral-100 font-medium text-sm">
-                    Explore AIMETRA
-                  </Button>
+            </div>
+            <Link
+              href="/programs"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1478ef] hover:underline"
+            >
+              <span>Explore all degree programs</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {PROGRAMS.map((p) => {
+              const Icon = p.icon
+              return (
+                <Link
+                  key={p.title}
+                  href="/programs"
+                  className="group flex flex-col justify-between rounded-3xl border border-[#DCE5F1] bg-white p-6 shadow-[0_4px_16px_rgba(9,25,54,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-[#A8C8FF] hover:shadow-[0_12px_28px_rgba(9,25,54,0.09)] dark:border-[#1E3456] dark:bg-[#112239]"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div
+                        className="flex h-12 w-12 items-center justify-center rounded-2xl transition group-hover:scale-105"
+                        style={{ background: p.bg, color: p.color }}
+                      >
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <span className="rounded-full bg-[#F0F4FA] px-2.5 py-0.5 text-[10px] font-bold text-[#526783] dark:bg-[#1E3456] dark:text-[#94A3B8]">
+                        {p.tag}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-black text-[#071b3d] group-hover:text-[#1478ef] transition-colors dark:text-white">
+                      {p.title}
+                    </h3>
+                    <p className="text-xs leading-relaxed text-[#526783] dark:text-[#94A3B8]">
+                      {p.description}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 flex items-center gap-1 text-xs font-bold text-[#1478ef]">
+                    <span>Learn what you&apos;ll build</span>
+                    <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-1" />
+                  </div>
                 </Link>
-                <Link href="/programs">
-                  <Button
-                    variant="outline"
-                    className="h-12 px-8 rounded-lg border-[#333333] text-[#888888] bg-transparent hover:bg-[#1A1A1A] hover:text-white font-medium text-sm"
+              )
+            })}
+          </div>
+        </section>
+
+        {/* ── 04. HOW IT WORKS: THE 4-STEP JOURNEY ─────────────────────────── */}
+        <section className="rounded-[36px] border border-[#DCE5F1] bg-white p-8 sm:p-12 shadow-[0_4px_20px_rgba(9,25,54,0.04)] dark:border-[#1E3456] dark:bg-[#112239]">
+          <div className="max-w-2xl space-y-2">
+            <Eyebrow>Your Roadmap</Eyebrow>
+            <h2 className="text-3xl font-black tracking-tight text-[#071b3d] sm:text-4xl dark:text-white">
+              How you grow from <span className="text-[#1478ef]">day one</span> to career ready.
+            </h2>
+            <p className="text-xs text-[#526783] sm:text-sm dark:text-[#94A3B8]">
+              A stress-free, step-by-step path designed to turn your curiosity into verified skills and dream offers.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {STEPS.map((s) => {
+              const Icon = s.icon
+              return (
+                <div
+                  key={s.number}
+                  className="flex flex-col justify-between rounded-2xl bg-[#F8FBFE] p-5 border border-[#E8F0FA] transition hover:border-[#1478ef]/30 dark:bg-[#162D4A] dark:border-[#1E3456]"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#1478ef] shadow-sm dark:bg-[#112239]">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className="font-mono text-sm font-black text-[#9AB5D0]">
+                        {s.number}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-4 text-sm font-black text-[#071b3d] dark:text-white">
+                      {s.title}
+                    </h3>
+                    <p className="mt-1 text-xs leading-relaxed text-[#526783] dark:text-[#94A3B8]">
+                      {s.detail}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/signup"
+              className="inline-flex items-center gap-2 rounded-full bg-[#1478ef] px-6 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#0f64cc] hover:scale-105"
+            >
+              <span>Create your free student profile</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+
+        {/* ── 05. MEET AIDA SPOTLIGHT BANNER ───────────────────────────────── */}
+        <section className="relative overflow-hidden rounded-[36px] bg-[#071b3d] p-8 sm:p-12 text-white shadow-[0_16px_40px_rgba(7,27,61,0.25)]">
+          {/* Ambient Glows */}
+          <div className="pointer-events-none absolute -right-16 -top-20 h-80 w-80 rounded-full bg-[#1478ef]/35 blur-[80px]" />
+          <div className="pointer-events-none absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-[#ffcf36]/20 blur-[80px]" />
+          <span aria-hidden className="pointer-events-none absolute left-8 top-6 text-3xl text-[#ffcf36]/30">✦</span>
+          <span aria-hidden className="pointer-events-none absolute right-1/3 top-10 text-2xl text-[#60a5fa]/40">✦</span>
+
+          <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="space-y-4">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[#8ec9ff] backdrop-blur-sm">
+                <Sparkles className="h-3.5 w-3.5 text-[#ffcf36]" />
+                Your 24/7 Campus AI Guide
+              </span>
+
+              <h2 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl">
+                Meet AIDA. <br />
+                <span className="text-[#ffcf36]">Instant answers, anytime you need them.</span>
+              </h2>
+
+              <p className="max-w-lg text-xs leading-relaxed text-[#C4D8F1] sm:text-sm">
+                Stuck on a question at midnight? Wondering which elective matches your dream job, or how to join a research lab? AIDA has read every course syllabus, exam guide, faculty directory, and placement record to give you friendly, accurate answers in seconds.
+              </p>
+
+              {/* Quick Prompt Chips */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                {[
+                  "Which electives help me get into AI? ↗",
+                  "How do I join an AI research lab? ↗",
+                  "When are faculty office hours? ↗",
+                  "What hackathons can I join this month? ↗",
+                ].map((chip) => (
+                  <Link
+                    key={chip}
+                    href="/aida"
+                    className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold text-white transition hover:border-[#ffcf36] hover:bg-[#ffcf36] hover:text-[#071b3d]"
                   >
-                    View the platform
-                  </Button>
+                    {chip}
+                  </Link>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/aida"
+                  className="inline-flex items-center gap-2.5 rounded-full bg-[#ffcf36] px-6 py-3 text-xs font-black text-[#071b3d] shadow-lg transition hover:bg-[#ffe06e] hover:scale-105"
+                >
+                  <Bot className="h-4 w-4" />
+                  <span>Ask AIDA a Question</span>
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
+            </div>
+
+            {/* Mascot with Live Energy Ball */}
+            <div className="relative flex items-center justify-center">
+              <InteractiveAidaMascot
+                showBadge={false}
+                className="w-full max-w-[260px] sm:max-w-[300px] mx-auto"
+              />
             </div>
           </div>
         </section>
 
+        {/* ── 06. QUICK NAVIGATION CARDS ───────────────────────────────────── */}
+        <section className="grid gap-5 md:grid-cols-3">
+          <Link
+            href="/people"
+            className="group rounded-3xl border border-[#DCE5F1] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#1478ef] hover:shadow-md dark:border-[#1E3456] dark:bg-[#112239]"
+          >
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EDF5FF] text-[#1478ef]">
+              <Users className="h-6 w-6" />
+            </div>
+            <h3 className="mt-4 text-base font-black text-[#071b3d] group-hover:text-[#1478ef] transition-colors dark:text-white">
+              Faculty &amp; Mentors
+            </h3>
+            <p className="mt-1 text-xs text-[#526783] dark:text-[#94A3B8]">
+              Connect with professors, research advisors, and alumni leaders who are passionate about guiding your growth.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#1478ef]">
+              Meet your mentors <ArrowUpRight className="h-3.5 w-3.5" />
+            </span>
+          </Link>
+
+          <Link
+            href="/projects"
+            className="group rounded-3xl border border-[#DCE5F1] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#1478ef] hover:shadow-md dark:border-[#1E3456] dark:bg-[#112239]"
+          >
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FFF8E8] text-[#D97706]">
+              <FolderGit2 className="h-6 w-6" />
+            </div>
+            <h3 className="mt-4 text-base font-black text-[#071b3d] group-hover:text-[#D97706] transition-colors dark:text-white">
+              Student Project Showcase
+            </h3>
+            <p className="mt-1 text-xs text-[#526783] dark:text-[#94A3B8]">
+              Explore real code, autonomous robotics, vision models, and LLMs engineered by students right here.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#D97706]">
+              Browse student builds <ArrowUpRight className="h-3.5 w-3.5" />
+            </span>
+          </Link>
+
+          <Link
+            href="/opportunities"
+            className="group rounded-3xl border border-[#DCE5F1] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#1478ef] hover:shadow-md dark:border-[#1E3456] dark:bg-[#112239]"
+          >
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F3EEFF] text-[#7C3AED]">
+              <Compass className="h-6 w-6" />
+            </div>
+            <h3 className="mt-4 text-base font-black text-[#071b3d] group-hover:text-[#7C3AED] transition-colors dark:text-white">
+              Internships &amp; Careers
+            </h3>
+            <p className="mt-1 text-xs text-[#526783] dark:text-[#94A3B8]">
+              Apply for verified department fellowships, sponsored industry internships, and competitive hackathons.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#7C3AED]">
+              Explore opportunities <ArrowUpRight className="h-3.5 w-3.5" />
+            </span>
+          </Link>
+        </section>
+
+        {/* ── 07. FINAL CALL TO ACTION ─────────────────────────────────────── */}
+        <section className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#EBF5FF] via-[#F4F9FF] to-[#DCEBFC] p-8 sm:p-12 text-center border border-[#DCE5F1] shadow-sm dark:bg-[#112239] dark:border-[#1E3456]">
+          <div className="mx-auto max-w-2xl space-y-3">
+            <Eyebrow>Take The First Step</Eyebrow>
+            <h2 className="text-3xl font-black tracking-tight text-[#071b3d] sm:text-4xl dark:text-white">
+              Your future in AI starts <span className="text-[#1478ef]">right now.</span>
+            </h2>
+            <p className="text-xs text-[#526783] sm:text-sm dark:text-[#94A3B8]">
+              Join over 1,200 students building, researching, and launching careers in the Department of AI &amp; Machine Learning.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-2 rounded-full bg-[#071b3d] px-6 py-3 text-xs font-black text-white shadow-md transition hover:bg-[#1478ef]"
+              >
+                <span>Get Started for Free</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-2 rounded-full border border-[#DCE5F1] bg-white px-6 py-3 text-xs font-bold text-[#071b3d] transition hover:bg-[#F0F4FA]"
+              >
+                <span>Sign In to Your Account</span>
+              </Link>
+            </div>
+          </div>
+        </section>
       </main>
+
       <PublicFooter />
     </div>
   )

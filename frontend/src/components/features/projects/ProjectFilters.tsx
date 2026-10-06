@@ -20,21 +20,21 @@ export function ProjectFilters({
   onStatusChange,
 }: ProjectFiltersProps) {
   return (
-    <div className="bg-white border border-[#D6D6D6] rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row gap-3 items-center">
+    <div className="bg-white border border-[#DCE5F1] rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row gap-3 items-center">
       <div className="relative flex-1 w-full">
         <input
           type="text"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search projects by title, keywords or summary..."
-          className="w-full px-3.5 py-2 text-sm text-[#1E1E1E] bg-[#F2F2F1] border border-[#D6D6D6] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1E1E1E]"
+          className="w-full px-3.5 py-2 text-sm text-[#0F172A] bg-[#F6F8FC] border border-[#DCE5F1] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#0F172A]"
         />
       </div>
       <div className="flex gap-2 w-full md:w-auto">
         <select
           value={domain}
           onChange={(e) => onDomainChange(e.target.value)}
-          className="px-3 py-2 text-sm text-[#1E1E1E] bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+          className="px-3 py-2 text-sm text-[#0F172A] bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
         >
           <option value="">All Domains</option>
           <option value="cv">Computer Vision (CV)</option>
@@ -46,7 +46,7 @@ export function ProjectFilters({
         <select
           value={status}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="px-3 py-2 text-sm text-[#1E1E1E] bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+          className="px-3 py-2 text-sm text-[#0F172A] bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
         >
           <option value="">All Statuses</option>
           <option value="ongoing">Ongoing</option>

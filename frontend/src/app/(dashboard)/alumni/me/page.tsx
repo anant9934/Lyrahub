@@ -122,17 +122,17 @@ export default function MyAlumniProfilePage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-center text-[#5C5C5C]">Loading your alumni profile...</div>;
+    return <div className="p-8 text-center text-[#526783]">Loading your alumni profile...</div>;
   }
 
   if (!alumni) {
     return (
       <div className="p-8 text-center">
-        <h2 className="text-xl font-bold text-[#1E1E1E]">No Alumni Profile Found</h2>
-        <p className="text-xs text-[#5C5C5C] mt-2 mb-4">You have not registered an alumni profile yet.</p>
+        <h2 className="text-xl font-bold text-[#0F172A]">No Alumni Profile Found</h2>
+        <p className="text-xs text-[#526783] mt-2 mb-4">You have not registered an alumni profile yet.</p>
         <Link
           href="/alumni/register"
-          className="px-4 py-2 bg-[#1E1E1E] text-white text-xs font-semibold rounded-lg hover:bg-gray-800"
+          className="px-4 py-2 bg-[#0F172A] text-white text-xs font-semibold rounded-lg hover:bg-gray-800"
         >
           Register as Alumni
         </Link>
@@ -141,17 +141,17 @@ export default function MyAlumniProfilePage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8 bg-[#F2F2F1] min-h-screen">
+    <div className="p-8 max-w-4xl mx-auto space-y-8 bg-[#F6F8FC] min-h-screen">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1E1E1E]">Alumni Profile Editor</h1>
-          <p className="text-xs text-[#5C5C5C] mt-0.5">
+          <h1 className="text-2xl font-extrabold text-[#0F172A]">Alumni Profile Editor</h1>
+          <p className="text-xs text-[#526783] mt-0.5">
             Manage your career progression, mentoring preferences, and contact visibility.
           </p>
         </div>
         <Link
           href={`/alumni/${alumni.id}`}
-          className="px-3.5 py-1.5 text-xs font-semibold bg-white border border-[#D6D6D6] rounded-xl hover:bg-gray-100 transition shadow-sm"
+          className="px-3.5 py-1.5 text-xs font-semibold bg-white border border-[#DCE5F1] rounded-xl hover:bg-gray-100 transition shadow-sm"
         >
           View Public Profile ↗
         </Link>
@@ -164,71 +164,71 @@ export default function MyAlumniProfilePage() {
       )}
 
       {/* Editor Form */}
-      <form onSubmit={handleSave} className="bg-white border border-[#D6D6D6] rounded-2xl p-6 md:p-8 shadow-sm space-y-5">
-        <div className="flex justify-between items-center border-b border-[#D6D6D6] pb-4">
+      <form onSubmit={handleSave} className="bg-white border border-[#DCE5F1] rounded-2xl p-6 md:p-8 shadow-sm space-y-5">
+        <div className="flex justify-between items-center border-b border-[#DCE5F1] pb-4">
           <div>
-            <h3 className="text-sm font-bold text-[#1E1E1E]">{alumni.full_name}</h3>
-            <span className="text-xs text-[#5C5C5C]">
+            <h3 className="text-sm font-bold text-[#0F172A]">{alumni.full_name}</h3>
+            <span className="text-xs text-[#526783]">
               {alumni.program} • Class of {alumni.graduation_year}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#5C5C5C]">Visibility:</span>
+            <span className="text-xs text-[#526783]">Visibility:</span>
             <PrivacyBadge level={formData.privacy_level} />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Company</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Company</label>
             <input
               type="text"
               name="current_company"
               value={formData.current_company}
               onChange={handleChange}
-              className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+              className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Role / Title</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Role / Title</label>
             <input
               type="text"
               name="current_role"
               value={formData.current_role}
               onChange={handleChange}
-              className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+              className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Location</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Location</label>
             <input
               type="text"
               name="location"
               value={formData.location}
               onChange={handleChange}
-              className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+              className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Phone</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Phone</label>
             <input
               type="text"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+              className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Bio</label>
+          <label className="block text-xs font-semibold text-[#0F172A] mb-1">Bio</label>
           <textarea
             name="bio"
             value={formData.bio}
             onChange={handleChange}
             rows={3}
-            className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+            className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
           />
         </div>
 
@@ -239,7 +239,7 @@ export default function MyAlumniProfilePage() {
             value={formData.linkedin_url}
             onChange={handleChange}
             placeholder="LinkedIn URL"
-            className="px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+            className="px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
           />
           <input
             type="url"
@@ -247,7 +247,7 @@ export default function MyAlumniProfilePage() {
             value={formData.github_url}
             onChange={handleChange}
             placeholder="GitHub URL"
-            className="px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+            className="px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
           />
           <input
             type="url"
@@ -255,12 +255,12 @@ export default function MyAlumniProfilePage() {
             value={formData.portfolio_url}
             onChange={handleChange}
             placeholder="Portfolio URL"
-            className="px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+            className="px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
           />
         </div>
 
-        <div className="pt-4 border-t border-[#D6D6D6] flex flex-wrap gap-6">
-          <label className="flex items-center gap-2 text-xs font-semibold text-[#1E1E1E] cursor-pointer">
+        <div className="pt-4 border-t border-[#DCE5F1] flex flex-wrap gap-6">
+          <label className="flex items-center gap-2 text-xs font-semibold text-[#0F172A] cursor-pointer">
             <input
               type="checkbox"
               name="open_to_mentorship"
@@ -269,7 +269,7 @@ export default function MyAlumniProfilePage() {
             />
             Open to Mentorship
           </label>
-          <label className="flex items-center gap-2 text-xs font-semibold text-[#1E1E1E] cursor-pointer">
+          <label className="flex items-center gap-2 text-xs font-semibold text-[#0F172A] cursor-pointer">
             <input
               type="checkbox"
               name="open_to_hiring"
@@ -279,12 +279,12 @@ export default function MyAlumniProfilePage() {
             Open to Hiring
           </label>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#1E1E1E]">Privacy:</span>
+            <span className="text-xs font-semibold text-[#0F172A]">Privacy:</span>
             <select
               name="privacy_level"
               value={formData.privacy_level}
               onChange={handleChange}
-              className="px-2.5 py-1 text-xs bg-[#F2F2F1] border border-[#D6D6D6] rounded-lg focus:outline-none"
+              className="px-2.5 py-1 text-xs bg-[#F6F8FC] border border-[#DCE5F1] rounded-lg focus:outline-none"
             >
               <option value="public">Public</option>
               <option value="alumni_only">Alumni Only</option>
@@ -297,7 +297,7 @@ export default function MyAlumniProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className="px-5 py-2 bg-[#1E1E1E] text-white text-xs font-bold rounded-xl hover:bg-gray-800 disabled:opacity-50"
+            className="px-5 py-2 bg-[#0F172A] text-white text-xs font-bold rounded-xl hover:bg-gray-800 disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>
@@ -305,7 +305,7 @@ export default function MyAlumniProfilePage() {
       </form>
 
       {/* Experience Timeline */}
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-6 md:p-8 shadow-sm">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-6 md:p-8 shadow-sm">
         <ExperienceTimeline
           experiences={alumni.experiences || []}
           isOwner={true}

@@ -86,24 +86,24 @@ export function ResponsiveModal({
         }}
       >
         {/* Mobile drag handle hint */}
-        <div className="w-12 h-1 bg-[#E5E5E5] rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
+        <div className="w-12 h-1 bg-[#DCE5F1] rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
         {/* Header */}
-        <div className="flex items-start justify-between px-6 pt-3 pb-4 border-b border-[#E5E5E5] shrink-0">
+        <div className="flex items-start justify-between px-6 pt-3 pb-4 border-b border-[#DCE5F1] shrink-0">
           <div>
             <h3
               id="modal-headline"
-              className="text-base font-semibold text-[#111111] tracking-tight"
+              className="text-base font-semibold text-[#0F172A] tracking-tight"
             >
               {title}
             </h3>
             {description && (
-              <p className="text-xs text-[#777777] mt-0.5">{description}</p>
+              <p className="text-xs text-[#667A93] mt-0.5">{description}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 -mr-1.5 text-[#888888] hover:text-[#111111] hover:bg-[#F5F5F5] rounded-md transition-colors"
+            className="p-1.5 -mr-1.5 text-[#71849B] hover:text-[#0F172A] hover:bg-[#EDF4FC] rounded-md transition-colors"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />

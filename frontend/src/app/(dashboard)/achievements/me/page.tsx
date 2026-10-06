@@ -30,7 +30,7 @@ export default function MyAchievementsPage() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-[#1E1E1E] mb-8">My Achievements</h1>
+      <h1 className="text-3xl font-bold text-[#0F172A] mb-8">My Achievements</h1>
 
       {isLoading ? (
         <div className="text-center py-10">Loading achievements...</div>
@@ -39,7 +39,7 @@ export default function MyAchievementsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {achievements.map((ach: any) => (
-            <div key={ach.id} className="bg-white border border-[#D6D6D6] rounded-lg p-5 shadow-sm hover:shadow-md transition">
+            <div key={ach.id} className="bg-white border border-[#DCE5F1] rounded-lg p-5 shadow-sm hover:shadow-md transition">
               <div className="flex justify-between items-start mb-3">
                 <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase bg-gray-200 text-gray-800`}>
                   {ach.level || "Award"}
@@ -48,7 +48,7 @@ export default function MyAchievementsPage() {
                   {ach.is_verified ? "Verified" : "Pending"}
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-[#1E1E1E] mb-1">{ach.title}</h3>
+              <h3 className="text-lg font-bold text-[#0F172A] mb-1">{ach.title}</h3>
               <p className="text-sm text-gray-700">{ach.category}</p>
             </div>
           ))}

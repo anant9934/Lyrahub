@@ -59,12 +59,12 @@ export default function VerifyOpportunitiesPage() {
 
   if (!isHodOrAdmin && !loading) {
     return (
-      <div className="min-h-screen bg-[#F2F2F1] p-8 flex items-center justify-center">
-        <div className="bg-white rounded-2xl border border-[#D6D6D6] p-8 text-center max-w-md">
+      <div className="min-h-screen bg-[#F6F8FC] p-8 flex items-center justify-center">
+        <div className="bg-white rounded-2xl border border-[#DCE5F1] p-8 text-center max-w-md">
           <AlertCircle className="w-12 h-12 text-[#B85C5C] mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-[#1E1E1E] mb-2">Access Restricted</h2>
-          <p className="text-sm text-[#5C5C5C] mb-6">Only HOD or Administrators can verify and approve official opportunities.</p>
-          <Link href="/opportunities" className="px-4 py-2 rounded-xl bg-[#1E1E1E] text-white text-sm font-semibold">
+          <h2 className="text-xl font-bold text-[#0F172A] mb-2">Access Restricted</h2>
+          <p className="text-sm text-[#526783] mb-6">Only HOD or Administrators can verify and approve official opportunities.</p>
+          <Link href="/opportunities" className="px-4 py-2 rounded-xl bg-[#0F172A] text-white text-sm font-semibold">
             Browse Opportunities
           </Link>
         </div>
@@ -73,31 +73,31 @@ export default function VerifyOpportunitiesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F2F1] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F6F8FC] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Link
             href="/opportunities"
-            className="inline-flex items-center gap-1.5 text-xs text-[#7A7A7A] hover:text-[#1E1E1E] transition-colors mb-3 font-medium"
+            className="inline-flex items-center gap-1.5 text-xs text-[#667A93] hover:text-[#0F172A] transition-colors mb-3 font-medium"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Opportunities</span>
           </Link>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#1E1E1E]">Opportunities Verification Queue</h1>
-          <p className="text-xs md:text-sm text-[#7A7A7A]">Review pending internship and training submissions from faculty and alumni</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-[#0F172A]">Opportunities Verification Queue</h1>
+          <p className="text-xs md:text-sm text-[#667A93]">Review pending internship and training submissions from faculty and alumni</p>
         </div>
 
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-32 bg-white rounded-2xl border border-[#D6D6D6] animate-pulse" />
+              <div key={i} className="h-32 bg-white rounded-2xl border border-[#DCE5F1] animate-pulse" />
             ))}
           </div>
         ) : unverified.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-[#D6D6D6] p-12 text-center text-[#7A7A7A]">
+          <div className="bg-white rounded-2xl border border-[#DCE5F1] p-12 text-center text-[#667A93]">
             <CheckCircle2 className="w-12 h-12 mx-auto text-[#7A9A7E] mb-3 opacity-60" />
-            <h4 className="text-base font-bold text-[#1E1E1E] mb-1">Queue is Empty</h4>
+            <h4 className="text-base font-bold text-[#0F172A] mb-1">Queue is Empty</h4>
             <p className="text-sm">All posted opportunities have been reviewed and verified.</p>
           </div>
         ) : (
@@ -105,31 +105,31 @@ export default function VerifyOpportunitiesPage() {
             {unverified.map(opp => (
               <div
                 key={opp.id}
-                className="bg-white rounded-2xl border border-[#D6D6D6] p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-[#94B0B8] transition-all shadow-sm"
+                className="bg-white rounded-2xl border border-[#DCE5F1] p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-[#94B0B8] transition-all shadow-sm"
               >
                 <div className="max-w-2xl">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize bg-[#FAF3E2] text-[#B8860B] border border-[#EEBE1E]/40">
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize bg-[#FAF3E2] text-[#B8860B] border border-[#FACC15]/40">
                       {opp.opportunity_type}
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full text-xs bg-[#F2F2F1] text-[#5C5C5C] capitalize">
+                    <span className="px-2.5 py-0.5 rounded-full text-xs bg-[#F6F8FC] text-[#526783] capitalize">
                       {opp.mode}
                     </span>
-                    <span className="text-xs text-[#7A7A7A]">
+                    <span className="text-xs text-[#667A93]">
                       Posted by <strong>{opp.posted_by_name || 'Member'}</strong>
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-[#1E1E1E] mb-1">
+                  <h3 className="text-lg font-bold text-[#0F172A] mb-1">
                     {opp.title}
                   </h3>
-                  <p className="text-xs font-semibold text-[#5C5C5C] mb-2 flex items-center gap-2">
-                    <Building2 className="w-3.5 h-3.5 text-[#7A7A7A]" />
+                  <p className="text-xs font-semibold text-[#526783] mb-2 flex items-center gap-2">
+                    <Building2 className="w-3.5 h-3.5 text-[#667A93]" />
                     <span>{opp.organization}</span>
                     {opp.location && <span>&bull; {opp.location}</span>}
                   </p>
 
-                  <p className="text-xs text-[#5C5C5C] line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#526783] line-clamp-2 leading-relaxed">
                     {opp.description}
                   </p>
                 </div>
@@ -138,7 +138,7 @@ export default function VerifyOpportunitiesPage() {
                   <button
                     onClick={() => handleReject(opp.id)}
                     disabled={actionId === opp.id}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#D6D6D6] hover:bg-[#F5EAEA] text-[#B85C5C] font-semibold text-xs transition-all"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#DCE5F1] hover:bg-[#F5EAEA] text-[#B85C5C] font-semibold text-xs transition-all"
                   >
                     <XCircle className="w-4 h-4" />
                     <span>Reject</span>

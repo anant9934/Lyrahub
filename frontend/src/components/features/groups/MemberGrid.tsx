@@ -19,7 +19,7 @@ export const MemberGrid: React.FC<{ members: Member[] }> = ({ members }) => {
     switch (role.toLowerCase()) {
       case 'lead':
         return (
-          <span className="bg-[#FAF3E2] text-[#1E1E1E] border border-[#EEBE1E] px-2.5 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1">
+          <span className="bg-[#FAF3E2] text-[#0F172A] border border-[#FACC15] px-2.5 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1">
             <Crown className="w-3 h-3 text-[#EEBE1E] fill-current" /> Lead
           </span>
         );
@@ -37,7 +37,7 @@ export const MemberGrid: React.FC<{ members: Member[] }> = ({ members }) => {
         );
       default:
         return (
-          <span className="bg-[#F2F2F1] text-[#5C5C5C] px-2 py-0.5 rounded-full text-[11px] font-medium">
+          <span className="bg-[#F6F8FC] text-[#526783] px-2 py-0.5 rounded-full text-[11px] font-medium">
             Member
           </span>
         );
@@ -46,7 +46,7 @@ export const MemberGrid: React.FC<{ members: Member[] }> = ({ members }) => {
 
   if (!members || members.length === 0) {
     return (
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-8 text-center text-sm text-[#7A7A7A]">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-8 text-center text-sm text-[#667A93]">
         No active members listed yet.
       </div>
     );
@@ -57,24 +57,24 @@ export const MemberGrid: React.FC<{ members: Member[] }> = ({ members }) => {
       {members.map((m) => (
         <div
           key={m.id}
-          className="bg-white rounded-xl border border-[#D6D6D6] p-4 flex flex-col justify-between hover:shadow-sm transition-all"
+          className="bg-white rounded-xl border border-[#DCE5F1] p-4 flex flex-col justify-between hover:shadow-sm transition-all"
         >
           <div className="flex items-start justify-between gap-2 mb-3">
-            <div className="w-10 h-10 rounded-full bg-[#F2F2F1] border border-[#D6D6D6] flex items-center justify-center font-bold text-sm text-[#1E1E1E]">
+            <div className="w-10 h-10 rounded-full bg-[#F6F8FC] border border-[#DCE5F1] flex items-center justify-center font-bold text-sm text-[#0F172A]">
               {m.student_name ? m.student_name.charAt(0) : 'S'}
             </div>
             {getRoleBadge(m.role)}
           </div>
 
           <div className="space-y-0.5">
-            <div className="font-bold text-sm text-[#1E1E1E] truncate">
+            <div className="font-bold text-sm text-[#0F172A] truncate">
               {m.student_name || 'Student Member'}
             </div>
             {m.student_reg_no && (
-              <div className="text-xs text-[#7A7A7A]">{m.student_reg_no}</div>
+              <div className="text-xs text-[#667A93]">{m.student_reg_no}</div>
             )}
             {m.joined_at && (
-              <div className="text-[11px] text-[#9A9A9A] pt-1">
+              <div className="text-[11px] text-[#71849B] pt-1">
                 Joined {new Date(m.joined_at).toLocaleDateString()}
               </div>
             )}

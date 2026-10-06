@@ -23,26 +23,26 @@ export interface Course {
 export const getCourseTypeBadge = (type?: string) => {
   switch ((type || '').toLowerCase()) {
     case 'core':
-      return 'bg-[#1E1E1E] text-white';
+      return 'bg-[#0F172A] text-white';
     case 'elective':
       return 'bg-[#EEF3EE] text-[#7A9A7E] border border-[#7A9A7E]/40';
     case 'lab':
       return 'bg-[#EAF0F3] text-[#6B8FA3] border border-[#6B8FA3]/40';
     case 'project':
-      return 'bg-[#FAF3E2] text-[#B8860B] border border-[#EEBE1E]/50';
+      return 'bg-[#FAF3E2] text-[#B8860B] border border-[#FACC15]/50';
     default:
-      return 'bg-[#F2F2F1] text-[#5C5C5C] border border-[#D6D6D6]';
+      return 'bg-[#F6F8FC] text-[#526783] border border-[#DCE5F1]';
   }
 };
 
 export const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
   return (
-    <div className="responsive-card bg-white rounded-2xl border border-[#D6D6D6] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between p-5">
+    <div className="responsive-card bg-white rounded-2xl border border-[#DCE5F1] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between p-5">
       <div>
         {/* Top Badges */}
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-[#1E1E1E] text-white">
+            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-[#0F172A] text-white">
               {course.code}
             </span>
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider ${getCourseTypeBadge(course.course_type)}`}>
@@ -52,27 +52,27 @@ export const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
 
           <div className="flex items-center gap-1.5">
             {course.semester && (
-              <span className="text-xs font-medium text-[#7A7A7A] px-2 py-0.5 rounded bg-[#F2F2F1]">
+              <span className="text-xs font-medium text-[#667A93] px-2 py-0.5 rounded bg-[#F6F8FC]">
                 Sem {course.semester}
               </span>
             )}
-            <span className="text-xs font-bold text-[#1E1E1E] px-2 py-0.5 rounded-full bg-[#FAF3E2] text-[#B8860B] border border-[#EEBE1E]/30">
+            <span className="text-xs font-bold text-[#0F172A] px-2 py-0.5 rounded-full bg-[#FAF3E2] text-[#B8860B] border border-[#FACC15]/30">
               {course.credits} Credits
             </span>
           </div>
         </div>
 
         {/* Course Title */}
-        <h3 className="text-base sm:text-lg font-bold text-[#1E1E1E] leading-snug mb-1.5">
+        <h3 className="text-base sm:text-lg font-bold text-[#0F172A] leading-snug mb-1.5">
           {course.name}
         </h3>
         {course.short_name && course.short_name !== course.name && (
-          <p className="text-xs font-medium text-[#7A7A7A] mb-2">
+          <p className="text-xs font-medium text-[#667A93] mb-2">
             {course.short_name}
           </p>
         )}
 
-        <p className="text-xs text-[#5C5C5C] line-clamp-2 leading-relaxed mb-4">
+        <p className="text-xs text-[#526783] line-clamp-2 leading-relaxed mb-4">
           {course.description || 'Core syllabus covering foundational algorithmic and deep architectural patterns.'}
         </p>
 
@@ -92,14 +92,14 @@ export const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
         )}
       </div>
 
-      <div className="pt-3 border-t border-[#F2F2F1] flex items-center justify-between">
-        <span className="text-xs text-[#7A7A7A] capitalize">
+      <div className="pt-3 border-t border-[#F6F8FC] flex items-center justify-between">
+        <span className="text-xs text-[#667A93] capitalize">
           {course.category || 'Theory'}
         </span>
 
         <Link
           href={`/courses/${course.slug}`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E1E1E] hover:text-[#6B8FA3] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] hover:text-[#6B8FA3] transition-colors"
         >
           <span>View Syllabus</span>
           <ArrowRight className="w-3.5 h-3.5" />

@@ -6,6 +6,7 @@ import { apiGet } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { GroupCard } from '@/components/features/groups/GroupCard';
 import { GroupFilters } from '@/components/features/groups/GroupFilters';
+import { WorkspaceHero } from '@/components/layout/WorkspaceHero';
 import { Plus, Users, UserCheck } from 'lucide-react';
 
 export default function GroupsPage() {
@@ -56,39 +57,25 @@ export default function GroupsPage() {
   return (
     <div className="space-y-8">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#D6D6D6] pb-6">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs bg-[#EEF3EE] text-[#7A9A7E] border border-[#7A9A7E]/30 px-2.5 py-0.5 rounded-full font-semibold">
-              Student Life & Clubs
-            </span>
-          </div>
-          <h1 className="text-3xl font-bold text-[#1E1E1E]">Student Groups & Societies</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
-            Explore technical clubs, research interest groups, professional chapters, and cultural teams.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5">
+      <WorkspaceHero eyebrow="Student life & clubs" title={<>Find your <span className="text-[#0f8f85]">community.</span></>} description="Explore technical clubs, research groups, professional chapters, and student societies." tone="mint" icon={Users} actions={<>
           {user && (
             <Link
               href="/groups/me"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 border border-[#D6D6D6] rounded-lg text-xs font-semibold text-[#1E1E1E] hover:bg-[#F2F2F1] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#b9ddd7] bg-white px-4 py-2.5 text-xs font-bold text-[#081a39] transition hover:bg-[#f4fffc]"
             >
-              <UserCheck className="w-4 h-4 text-[#5C5C5C]" /> My Memberships
+              <UserCheck className="w-4 h-4 text-[#526783]" /> My Memberships
             </Link>
           )}
 
           {isHODorAdmin && (
             <Link
               href="/groups/create"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors shadow-sm"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#081a39] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#1478ef]"
             >
               <Plus className="w-4 h-4" /> Create Group
             </Link>
           )}
-        </div>
-      </div>
+      </>}/>
 
       {/* Filter Component */}
       <GroupFilters
@@ -106,16 +93,16 @@ export default function GroupsPage() {
       {/* Grid */}
       {loading ? (
         <div className="py-20 text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-[#1E1E1E] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-[#7A7A7A]">Loading groups and clubs...</p>
+          <div className="w-8 h-8 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-[#667A93]">Loading groups and clubs...</p>
         </div>
       ) : totalCount === 0 ? (
-        <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
-          <div className="w-12 h-12 bg-[#F2F2F1] rounded-full flex items-center justify-center mx-auto text-[#7A7A7A]">
+        <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
+          <div className="w-12 h-12 bg-[#F6F8FC] rounded-full flex items-center justify-center mx-auto text-[#667A93]">
             <Users className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[#1E1E1E]">No groups found</h3>
-          <p className="text-xs text-[#7A7A7A] leading-relaxed">
+          <h3 className="text-lg font-bold text-[#0F172A]">No groups found</h3>
+          <p className="text-xs text-[#667A93] leading-relaxed">
             Try adjusting your search query or removing filters to explore other student clubs.
           </p>
         </div>
@@ -134,18 +121,18 @@ export default function GroupsPage() {
             type="button"
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="px-3 py-1.5 border border-[#D6D6D6] rounded-md text-xs font-medium text-[#1E1E1E] disabled:opacity-40 hover:bg-[#F2F2F1]"
+            className="px-3 py-1.5 border border-[#DCE5F1] rounded-md text-xs font-medium text-[#0F172A] disabled:opacity-40 hover:bg-[#F6F8FC]"
           >
             Previous
           </button>
-          <span className="text-xs text-[#5C5C5C] px-2">
+          <span className="text-xs text-[#526783] px-2">
             Page {page} of {totalPages}
           </span>
           <button
             type="button"
             disabled={page >= totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            className="px-3 py-1.5 border border-[#D6D6D6] rounded-md text-xs font-medium text-[#1E1E1E] disabled:opacity-40 hover:bg-[#F2F2F1]"
+            className="px-3 py-1.5 border border-[#DCE5F1] rounded-md text-xs font-medium text-[#0F172A] disabled:opacity-40 hover:bg-[#F6F8FC]"
           >
             Next
           </button>

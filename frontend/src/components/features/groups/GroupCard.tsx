@@ -23,21 +23,21 @@ export const getCategoryBadge = (category: string) => {
     case 'technical':
       return 'bg-[#94B0B8]/20 text-[#4A6870] border border-[#94B0B8]/50';
     case 'cultural':
-      return 'bg-[#FAF3E2] text-[#B8860B] border border-[#EEBE1E]/50';
+      return 'bg-[#FAF3E2] text-[#B8860B] border border-[#FACC15]/50';
     case 'sports':
       return 'bg-[#EEF3EE] text-[#7A9A7E] border border-[#7A9A7E]/40';
     case 'social':
       return 'bg-[#EAF0F3] text-[#6B8FA3] border border-[#6B8FA3]/40';
     case 'professional':
-      return 'bg-[#F2F2F1] text-[#1E1E1E] border border-[#D6D6D6]';
+      return 'bg-[#F6F8FC] text-[#0F172A] border border-[#DCE5F1]';
     default:
-      return 'bg-[#F2F2F1] text-[#5C5C5C] border border-[#D6D6D6]';
+      return 'bg-[#F6F8FC] text-[#526783] border border-[#DCE5F1]';
   }
 };
 
 export const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
   return (
-    <div className="bg-white rounded-2xl border border-[#D6D6D6] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between overflow-hidden">
+    <div className="bg-white rounded-2xl border border-[#DCE5F1] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between overflow-hidden">
       <div>
         {/* Cover / Header Banner */}
         <div className="h-28 w-full bg-gradient-to-r from-[#94B0B8]/20 via-[#F2F2F1] to-[#FAF3E2] relative p-4 flex items-end">
@@ -51,7 +51,7 @@ export const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
 
           {/* Logo overlapping banner */}
           <div className="relative z-10 -mb-8 flex items-center justify-between w-full">
-            <div className="w-16 h-16 rounded-xl bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center font-bold text-xl text-[#1E1E1E]">
+            <div className="w-16 h-16 rounded-xl bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center font-bold text-xl text-[#0F172A]">
               {group.logo_url ? (
                 <img src={group.logo_url} alt={group.name} className="w-full h-full object-cover" />
               ) : (
@@ -78,31 +78,31 @@ export const GroupCard: React.FC<{ group: Group }> = ({ group }) => {
             >
               {group.category}
             </span>
-            <span className="text-[11px] text-[#7A7A7A] uppercase tracking-wide font-medium">
+            <span className="text-[11px] text-[#667A93] uppercase tracking-wide font-medium">
               {group.group_type.replace('_', ' ')}
             </span>
           </div>
 
-          <h3 className="text-lg font-bold text-[#1E1E1E] leading-snug hover:text-[#EEBE1E] transition-colors">
+          <h3 className="text-lg font-bold text-[#0F172A] leading-snug hover:text-[#EEBE1E] transition-colors">
             <Link href={`/groups/${group.slug}`}>{group.name}</Link>
           </h3>
 
-          <p className="text-xs text-[#5C5C5C] line-clamp-2 leading-relaxed">
+          <p className="text-xs text-[#526783] line-clamp-2 leading-relaxed">
             {group.tagline || 'Student technical and community group within the AI/ML department.'}
           </p>
         </div>
       </div>
 
       {/* Card Footer */}
-      <div className="p-5 pt-3 border-t border-[#D6D6D6] bg-[#F2F2F1]/30 flex items-center justify-between text-xs">
-        <div className="flex items-center gap-1.5 text-[#5C5C5C] font-medium">
-          <Users className="w-3.5 h-3.5 text-[#7A7A7A]" />
+      <div className="p-5 pt-3 border-t border-[#DCE5F1] bg-[#F6F8FC]/30 flex items-center justify-between text-xs">
+        <div className="flex items-center gap-1.5 text-[#526783] font-medium">
+          <Users className="w-3.5 h-3.5 text-[#667A93]" />
           <span>{group.member_count || 0} members</span>
         </div>
 
         <Link
           href={`/groups/${group.slug}`}
-          className="inline-flex items-center gap-1 text-[#1E1E1E] font-semibold hover:text-[#EEBE1E] transition-colors"
+          className="inline-flex items-center gap-1 text-[#0F172A] font-semibold hover:text-[#EEBE1E] transition-colors"
         >
           View Hub <ArrowRight className="w-3.5 h-3.5" />
         </Link>

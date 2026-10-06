@@ -60,11 +60,11 @@ export function ExperienceTimeline({
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-base font-bold text-[#1E1E1E]">Career & Experience Timeline</h3>
+        <h3 className="text-base font-bold text-[#0F172A]">Career & Experience Timeline</h3>
         {isOwner && !showAdd && (
           <button
             onClick={() => setShowAdd(true)}
-            className="px-3 py-1.5 text-xs font-semibold bg-[#1E1E1E] text-white rounded-lg hover:bg-gray-800"
+            className="px-3 py-1.5 text-xs font-semibold bg-[#0F172A] text-white rounded-lg hover:bg-gray-800"
           >
             + Add Position
           </button>
@@ -72,15 +72,15 @@ export function ExperienceTimeline({
       </div>
 
       {showAdd && isOwner && (
-        <form onSubmit={handleSubmit} className="p-5 bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl space-y-4">
-          <h4 className="text-xs font-bold uppercase text-[#1E1E1E]">New Career Entry</h4>
+        <form onSubmit={handleSubmit} className="p-5 bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl space-y-4">
+          <h4 className="text-xs font-bold uppercase text-[#0F172A]">New Career Entry</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input
               type="text"
               placeholder="Company name"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              className="px-3 py-2 text-sm bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+              className="px-3 py-2 text-sm bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
               required
             />
             <input
@@ -88,26 +88,26 @@ export function ExperienceTimeline({
               placeholder="Role / Title"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="px-3 py-2 text-sm bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+              className="px-3 py-2 text-sm bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
               required
             />
             <div>
-              <label className="block text-[11px] text-[#5C5C5C] mb-1">Start Date</label>
+              <label className="block text-[11px] text-[#526783] mb-1">Start Date</label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+                className="w-full px-3 py-2 text-sm bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
                 required
               />
             </div>
             <div>
-              <label className="block text-[11px] text-[#5C5C5C] mb-1">End Date (leave blank if current)</label>
+              <label className="block text-[11px] text-[#526783] mb-1">End Date (leave blank if current)</label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+                className="w-full px-3 py-2 text-sm bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
               />
             </div>
           </div>
@@ -116,20 +116,20 @@ export function ExperienceTimeline({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
-            className="w-full px-3 py-2 text-sm bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+            className="w-full px-3 py-2 text-sm bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
           />
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setShowAdd(false)}
-              className="px-3 py-1.5 text-xs text-[#5C5C5C] hover:bg-gray-200 rounded-lg"
+              className="px-3 py-1.5 text-xs text-[#526783] hover:bg-gray-200 rounded-lg"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-1.5 text-xs font-semibold bg-[#1E1E1E] text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+              className="px-4 py-1.5 text-xs font-semibold bg-[#0F172A] text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
             >
               {isSubmitting ? "Saving..." : "Save Entry"}
             </button>
@@ -138,20 +138,20 @@ export function ExperienceTimeline({
       )}
 
       {experiences.length === 0 ? (
-        <div className="p-6 text-center text-xs text-[#5C5C5C] bg-[#F2F2F1] rounded-xl border border-[#D6D6D6]">
+        <div className="p-6 text-center text-xs text-[#526783] bg-[#F6F8FC] rounded-xl border border-[#DCE5F1]">
           No professional experiences recorded yet.
         </div>
       ) : (
-        <div className="relative pl-6 border-l-2 border-[#D6D6D6] space-y-6">
+        <div className="relative pl-6 border-l-2 border-[#DCE5F1] space-y-6">
           {experiences.map((exp) => (
             <div key={exp.id} className="relative group">
-              <div className="absolute -left-[31px] top-1.5 w-3.5 h-3.5 rounded-full bg-[#1E1E1E] border-2 border-white"></div>
-              <div className="bg-white border border-[#D6D6D6] rounded-xl p-4 shadow-sm">
+              <div className="absolute -left-[31px] top-1.5 w-3.5 h-3.5 rounded-full bg-[#0F172A] border-2 border-white"></div>
+              <div className="bg-white border border-[#DCE5F1] rounded-xl p-4 shadow-sm">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="text-sm font-bold text-[#1E1E1E]">{exp.role}</h4>
-                    <p className="text-xs font-semibold text-[#5C5C5C]">{exp.company}</p>
-                    <span className="text-[11px] text-[#9A9A9A]">
+                    <h4 className="text-sm font-bold text-[#0F172A]">{exp.role}</h4>
+                    <p className="text-xs font-semibold text-[#526783]">{exp.company}</p>
+                    <span className="text-[11px] text-[#71849B]">
                       {exp.start_date} — {exp.end_date || "Present"}
                     </span>
                   </div>
@@ -165,7 +165,7 @@ export function ExperienceTimeline({
                   )}
                 </div>
                 {exp.description && (
-                  <p className="text-xs text-[#5C5C5C] mt-2 whitespace-pre-wrap">{exp.description}</p>
+                  <p className="text-xs text-[#526783] mt-2 whitespace-pre-wrap">{exp.description}</p>
                 )}
               </div>
             </div>

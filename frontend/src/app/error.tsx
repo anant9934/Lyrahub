@@ -20,7 +20,7 @@ export default function RootError({
   }, [error])
 
   return (
-    <div className="min-h-screen bg-white text-[#111111] flex flex-col">
+    <div className="min-h-screen bg-white text-[#0F172A] flex flex-col">
       <PublicNav />
       <main id="main-content" className="flex-1 flex items-center justify-center">
         <BrandedErrorPage

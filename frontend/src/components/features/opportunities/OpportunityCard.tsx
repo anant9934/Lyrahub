@@ -10,7 +10,8 @@ import {
   ArrowRight,
   CheckCircle,
   Banknote,
-  Sparkles
+  Sparkles,
+  ArrowUpRight
 } from 'lucide-react';
 import { DeadlineCountdown } from './DeadlineCountdown';
 
@@ -35,17 +36,17 @@ export interface Opportunity {
 export const getOpportunityTypeBadge = (type?: string) => {
   switch ((type || '').toLowerCase()) {
     case 'internship':
-      return 'bg-[#EEF3EE] text-[#7A9A7E] border border-[#7A9A7E]/40';
-    case 'training':
-      return 'bg-[#EAF0F3] text-[#6B8FA3] border border-[#6B8FA3]/40';
-    case 'workshop':
-      return 'bg-[#FAF3E2] text-[#B8860B] border border-[#EEBE1E]/50';
+      return 'bg-[#EDF5FF] text-[#1478ef] border border-[#1478ef]/20';
     case 'fellowship':
-      return 'bg-[#1E1E1E] text-white';
-    case 'scholarship':
-      return 'bg-[#EEF3EE] text-[#7A9A7E] border border-[#7A9A7E]/50';
+      return 'bg-[#071b3d] text-white border border-[#071b3d]';
+    case 'competition':
+      return 'bg-[#FFF8E8] text-[#D97706] border border-[#D97706]/20';
+    case 'research':
+      return 'bg-[#F3EEFF] text-[#7C3AED] border border-[#7C3AED]/20';
+    case 'workshop':
+      return 'bg-[#E6FAFA] text-[#0D9488] border border-[#0D9488]/20';
     default:
-      return 'bg-[#F2F2F1] text-[#5C5C5C] border border-[#D6D6D6]';
+      return 'bg-[#F0F4FA] text-[#526783] border border-[#D4E0F0]';
   }
 };
 
@@ -53,69 +54,69 @@ export const OpportunityCard: React.FC<{ opportunity: Opportunity }> = ({ opport
   const formattedStipend =
     opportunity.stipend_amount && opportunity.stipend_amount > 0
       ? `${opportunity.stipend_currency || 'INR'} ${opportunity.stipend_amount.toLocaleString()}/mo`
-      : 'Unpaid / Experience';
+      : 'Academic Credit / Fellowship';
 
   return (
-    <div className="bg-white rounded-2xl border border-[#D6D6D6] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between p-5 overflow-hidden">
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] border border-[#D4E0F0] bg-white p-5 shadow-[0_2px_8px_rgba(9,25,54,0.05)] transition-all duration-200 hover:-translate-y-1 hover:border-[#A8C8FF] hover:shadow-[0_12px_28px_rgba(9,25,54,0.10)]">
       <div>
         {/* Header: Org + Verified */}
         <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#F2F2F1] border border-[#E5E5E4] flex items-center justify-center font-bold text-xs text-[#1E1E1E]">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#EDF5FF] text-xs font-black text-[#1478ef] shadow-inner">
               {opportunity.organization.charAt(0)}
             </div>
             <div>
-              <span className="text-xs font-bold text-[#1E1E1E] line-clamp-1">
+              <span className="block text-xs font-black text-[#091936] line-clamp-1">
                 {opportunity.organization}
               </span>
-              <span className="text-[11px] text-[#7A7A7A] capitalize block">
-                {opportunity.mode || 'Remote'} {opportunity.location ? `• ${opportunity.location}` : ''}
+              <span className="block text-[11px] text-[#9ab5d0] capitalize">
+                {opportunity.mode || 'On-Campus'} {opportunity.location ? `· ${opportunity.location}` : ''}
               </span>
             </div>
           </div>
 
           {opportunity.is_verified && (
             <span
-              title="Verified by HOD / Department"
-              className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#EEF3EE] text-[#7A9A7E] border border-[#7A9A7E]/30"
+              title="Verified by AIMETRA Department"
+              className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200"
             >
-              <CheckCircle className="w-3 h-3" />
-              <span>Verified</span>
+              <CheckCircle className="h-3 w-3" />
+              Verified
             </span>
           )}
         </div>
 
         {/* Opportunity Title */}
-        <h3 className="text-base md:text-lg font-bold text-[#1E1E1E] line-clamp-1 mb-2">
+        <h3 className="mb-2.5 text-base font-black leading-snug text-[#091936] group-hover:text-[#1478ef] transition-colors line-clamp-2">
           {opportunity.title}
         </h3>
 
         {/* Badges: Type & Mode */}
-        <div className="flex flex-wrap items-center gap-1.5 mb-4">
-          <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize ${getOpportunityTypeBadge(opportunity.opportunity_type)}`}>
+        <div className="flex flex-wrap items-center gap-1.5 mb-3.5">
+          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold capitalize ${getOpportunityTypeBadge(opportunity.opportunity_type)}`}>
             {opportunity.opportunity_type}
           </span>
           {opportunity.duration_weeks && (
-            <span className="px-2 py-0.5 rounded-full text-xs bg-[#F2F2F1] text-[#5C5C5C]">
+            <span className="rounded-full bg-[#F0F4FA] px-2.5 py-0.5 text-[11px] font-semibold text-[#526783]">
               {opportunity.duration_weeks} Weeks
             </span>
           )}
         </div>
 
         {/* Metrics: Stipend & Deadline */}
-        <div className="space-y-1.5 py-3 border-t border-[#F2F2F1] text-xs">
+        <div className="space-y-1.5 rounded-xl bg-[#FAFBFD] p-3 text-xs border border-[#F0F4FA]">
           <div className="flex items-center justify-between">
-            <span className="text-[#7A7A7A] flex items-center gap-1">
-              <Banknote className="w-3.5 h-3.5" />
-              <span>Stipend:</span>
+            <span className="text-[#9ab5d0] flex items-center gap-1 text-[11px] font-medium">
+              <Banknote className="w-3.5 h-3.5 text-[#1478ef]" />
+              Grant/Stipend:
             </span>
-            <span className="font-semibold text-[#1E1E1E]">{formattedStipend}</span>
+            <span className="font-bold text-[#091936] text-[11px]">{formattedStipend}</span>
           </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-[#7A7A7A] flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
-              <span>Deadline:</span>
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-[#9ab5d0] flex items-center gap-1 text-[11px] font-medium">
+              <Clock className="w-3.5 h-3.5 text-[#EA6E22]" />
+              Deadline:
             </span>
             <DeadlineCountdown deadline={opportunity.application_deadline} />
           </div>
@@ -123,16 +124,16 @@ export const OpportunityCard: React.FC<{ opportunity: Opportunity }> = ({ opport
       </div>
 
       {/* Action CTA */}
-      <div className="pt-3 border-t border-[#F2F2F1] flex items-center justify-between">
-        <span className="text-[11px] text-[#9A9A9A]">
-          Posted by {opportunity.posted_by_name || 'Member'}
+      <div className="mt-4 flex items-center justify-between border-t border-[#F0F4FA] pt-3">
+        <span className="text-[11px] text-[#9ab5d0]">
+          By {opportunity.posted_by_name || 'Faculty Member'}
         </span>
 
         <Link
           href={`/opportunities/${opportunity.slug}`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E1E1E] hover:text-[#7A9A7E] transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-full bg-[#1478ef] px-4 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#0f64cc] group-hover:scale-105"
         >
-          <span>View Listing</span>
+          <span>Apply Now</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Clock, Award, BookOpen, Download, ChevronRight } from 'lucide-react';
 import { getDegreeBadge } from './ProgramCard';
 
@@ -31,19 +32,19 @@ export const ProgramHero: React.FC<ProgramHeroProps> = ({
   description
 }) => {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E1E1E] to-[#2D3748] text-white p-8 md:p-12 mb-8 shadow-sm">
-      {cover_image_url && (
-        <div className="absolute inset-0 opacity-20 mix-blend-overlay">
-          <img src={cover_image_url} alt={name} className="w-full h-full object-cover" />
-        </div>
-      )}
+    <div className="relative mb-8 overflow-hidden rounded-[30px] bg-[#071b3d] p-8 text-white shadow-[0_20px_50px_rgba(7,27,61,0.18)] md:p-12 lg:pr-[37%]">
+      <div className="absolute inset-y-0 right-0 hidden w-[43%] overflow-hidden [clip-path:polygon(20%_0,100%_0,100%_100%,0_100%)] lg:block">
+        {cover_image_url ? <img src={cover_image_url} alt="" className="h-full w-full object-cover" /> : <Image src="/images/hero-campus.webp" alt="" fill sizes="43vw" className="object-cover" />}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#071b3d]/60 to-transparent" />
+      </div>
+      <span className="absolute bottom-8 right-8 hidden rotate-[-7deg] rounded-xl bg-[#ffcf36] px-4 py-2 font-serif text-lg font-black italic text-[#071b3d] shadow-lg lg:block">Learn · Build · Lead</span>
 
-      <div className="relative z-10 max-w-4xl">
+      <div className="relative z-10 max-w-3xl">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-[#9A9A9A] mb-4">
+        <div className="mb-4 flex items-center gap-2 text-xs text-[#b9cce7]">
           <Link href="/programs" className="hover:text-white transition-colors">Programs</Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-[#EEBE1E] font-medium">{code}</span>
+          <span className="font-medium text-[#ffcf36]">{code}</span>
         </div>
 
         {/* Badges */}
@@ -60,7 +61,7 @@ export const ProgramHero: React.FC<ProgramHeroProps> = ({
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-3">
+        <h1 className="mb-3 text-3xl font-black leading-[1.04] tracking-[-0.055em] text-white md:text-5xl">
           {name}
         </h1>
         {short_name && short_name !== name && (
@@ -70,20 +71,20 @@ export const ProgramHero: React.FC<ProgramHeroProps> = ({
         )}
 
         {/* Overview */}
-        <p className="text-[#D6D6D6] text-base md:text-lg max-w-3xl leading-relaxed mb-8">
+        <p className="text-[#DCE5F1] text-base md:text-lg max-w-3xl leading-relaxed mb-8">
           {description || 'Comprehensive curriculum combining theoretical rigor with applied artificial intelligence and machine learning practices.'}
         </p>
 
         {/* Meta Pills & Actions */}
         <div className="flex flex-wrap items-center justify-between gap-6 pt-6 border-t border-white/10">
-          <div className="flex flex-wrap items-center gap-6 text-sm text-[#D6D6D6]">
+          <div className="flex flex-wrap items-center gap-6 text-sm text-[#DCE5F1]">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#EEBE1E]" />
-              <span className="font-semibold text-white">{duration_years || 4.0}</span> Years Duration
+              <span className="font-semibold text-white">{duration_years ?? '—'}</span> Years Duration
             </div>
             <div className="flex items-center gap-2">
               <Award className="w-4 h-4 text-[#EEBE1E]" />
-              <span className="font-semibold text-white">{total_credits || 160}</span> Total Credits
+              <span className="font-semibold text-white">{total_credits ?? '—'}</span> Total Credits
             </div>
             <div className="flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-[#EEBE1E]" />
@@ -96,7 +97,7 @@ export const ProgramHero: React.FC<ProgramHeroProps> = ({
               href={brochure_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-[#1E1E1E] font-medium text-sm hover:bg-[#F2F2F1] transition-all shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-[#0F172A] font-medium text-sm hover:bg-[#F6F8FC] transition-all shadow-sm"
             >
               <Download className="w-4 h-4" />
               <span>Download Syllabus / Brochure</span>

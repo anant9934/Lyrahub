@@ -82,23 +82,23 @@ export default function StoryDetailPage() {
   if (loading) {
     return (
       <div className="py-24 text-center space-y-3">
-        <div className="w-8 h-8 border-2 border-[#1E1E1E] border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-sm text-[#7A7A7A]">Loading story...</p>
+        <div className="w-8 h-8 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-sm text-[#667A93]">Loading story...</p>
       </div>
     );
   }
 
   if (error || !story) {
     return (
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4 my-12">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4 my-12">
         <div className="w-12 h-12 bg-[#F5EAEA] text-[#B85C5C] rounded-full flex items-center justify-center mx-auto">
           <BookOpen className="w-6 h-6" />
         </div>
-        <h2 className="text-xl font-bold text-[#1E1E1E]">Story Not Found</h2>
-        <p className="text-sm text-[#7A7A7A]">{error}</p>
+        <h2 className="text-xl font-bold text-[#0F172A]">Story Not Found</h2>
+        <p className="text-sm text-[#667A93]">{error}</p>
         <Link
           href="/stories"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E1E1E] bg-[#F2F2F1] hover:bg-[#D6D6D6] px-4 py-2 rounded-lg"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] bg-[#F6F8FC] hover:bg-[#DCE5F1] px-4 py-2 rounded-lg"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Stories
         </Link>
@@ -112,7 +112,7 @@ export default function StoryDetailPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/stories"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#526783] hover:text-[#0F172A] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to All Stories
         </Link>
@@ -124,8 +124,8 @@ export default function StoryDetailPage() {
               onClick={handleToggleFeature}
               className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border font-semibold transition-colors ${
                 story.featured
-                  ? 'bg-[#EEBE1E] text-[#1E1E1E] border-[#EEBE1E]'
-                  : 'bg-white text-[#1E1E1E] border-[#D6D6D6] hover:bg-[#FAF3E2]'
+                  ? 'bg-[#FACC15] text-[#0F172A] border-[#FACC15]'
+                  : 'bg-white text-[#0F172A] border-[#DCE5F1] hover:bg-[#FAF3E2]'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5 fill-current" />
@@ -136,18 +136,18 @@ export default function StoryDetailPage() {
           <button
             type="button"
             onClick={handleShare}
-            className="flex items-center gap-1.5 text-xs bg-white hover:bg-[#F2F2F1] text-[#1E1E1E] border border-[#D6D6D6] px-3 py-1.5 rounded-lg font-semibold transition-colors"
+            className="flex items-center gap-1.5 text-xs bg-white hover:bg-[#F6F8FC] text-[#0F172A] border border-[#DCE5F1] px-3 py-1.5 rounded-lg font-semibold transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-[#7A9A7E]" /> : <Share2 className="w-3.5 h-3.5 text-[#7A7A7A]" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-[#7A9A7E]" /> : <Share2 className="w-3.5 h-3.5 text-[#667A93]" />}
             {copied ? 'Link Copied!' : 'Share'}
           </button>
         </div>
       </div>
 
       {/* Hero Header Card */}
-      <div className="bg-white rounded-2xl border border-[#D6D6D6] overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-[#DCE5F1] overflow-hidden shadow-sm">
         {story.featured_image_url && (
-          <div className="w-full h-72 md:h-96 bg-[#F2F2F1] relative overflow-hidden">
+          <div className="w-full h-72 md:h-96 bg-[#F6F8FC] relative overflow-hidden">
             <img
               src={story.featured_image_url}
               alt={story.title}
@@ -171,60 +171,60 @@ export default function StoryDetailPage() {
             </span>
 
             {story.batch_year && (
-              <span className="text-xs bg-[#F2F2F1] text-[#5C5C5C] px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1">
+              <span className="text-xs bg-[#F6F8FC] text-[#526783] px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1">
                 <Calendar className="w-3 h-3" /> Class of {story.batch_year}
               </span>
             )}
 
             {story.views_count !== undefined && (
-              <span className="text-xs bg-[#F2F2F1] text-[#7A7A7A] px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1">
+              <span className="text-xs bg-[#F6F8FC] text-[#667A93] px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1">
                 <Eye className="w-3 h-3" /> {story.views_count} views
               </span>
             )}
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-extrabold text-[#1E1E1E] leading-tight">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-[#0F172A] leading-tight">
             {story.title}
           </h1>
 
           {story.subtitle && (
-            <p className="text-lg text-[#5C5C5C] font-medium leading-relaxed">
+            <p className="text-lg text-[#526783] font-medium leading-relaxed">
               {story.subtitle}
             </p>
           )}
 
           {/* Author/Person Profile Box */}
-          <div className="flex items-center gap-4 p-4 rounded-xl bg-[#F2F2F1] border border-[#D6D6D6]">
-            <div className="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center font-bold text-xl text-[#1E1E1E] border border-[#D6D6D6]">
+          <div className="flex items-center gap-4 p-4 rounded-xl bg-[#F6F8FC] border border-[#DCE5F1]">
+            <div className="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center font-bold text-xl text-[#0F172A] border border-[#DCE5F1]">
               {story.person_name ? story.person_name.charAt(0) : 'S'}
             </div>
             <div>
-              <div className="font-bold text-base text-[#1E1E1E]">{story.person_name}</div>
-              <div className="text-xs text-[#5C5C5C]">
+              <div className="font-bold text-base text-[#0F172A]">{story.person_name}</div>
+              <div className="text-xs text-[#526783]">
                 {story.current_role} {story.current_company ? `at ${story.current_company}` : ''}
               </div>
-              {story.program && <div className="text-[11px] text-[#7A7A7A] mt-0.5">{story.program}</div>}
+              {story.program && <div className="text-[11px] text-[#667A93] mt-0.5">{story.program}</div>}
             </div>
           </div>
         </div>
       </div>
 
       {/* Story Body */}
-      <div className="bg-white rounded-2xl border border-[#D6D6D6] p-6 md:p-10 space-y-6">
-        <div className="prose max-w-none text-[#1E1E1E] leading-relaxed whitespace-pre-wrap font-sans text-base">
+      <div className="bg-white rounded-2xl border border-[#DCE5F1] p-6 md:p-10 space-y-6">
+        <div className="prose max-w-none text-[#0F172A] leading-relaxed whitespace-pre-wrap font-sans text-base">
           {story.full_story ? (
             <div className="space-y-4">
               {story.full_story.split('\n\n').map((paragraph: string, idx: number) => {
                 if (paragraph.startsWith('### ')) {
                   return (
-                    <h3 key={idx} className="text-xl font-bold text-[#1E1E1E] mt-6 mb-2">
+                    <h3 key={idx} className="text-xl font-bold text-[#0F172A] mt-6 mb-2">
                       {paragraph.replace('### ', '')}
                     </h3>
                   );
                 }
                 if (paragraph.startsWith('## ')) {
                   return (
-                    <h2 key={idx} className="text-2xl font-bold text-[#1E1E1E] mt-8 mb-3">
+                    <h2 key={idx} className="text-2xl font-bold text-[#0F172A] mt-8 mb-3">
                       {paragraph.replace('## ', '')}
                     </h2>
                   );
@@ -233,7 +233,7 @@ export default function StoryDetailPage() {
                   return (
                     <blockquote
                       key={idx}
-                      className="border-l-4 border-[#EEBE1E] bg-[#FAF3E2]/50 p-4 rounded-r-lg italic text-[#1E1E1E] my-4"
+                      className="border-l-4 border-[#FACC15] bg-[#FAF3E2]/50 p-4 rounded-r-lg italic text-[#0F172A] my-4"
                     >
                       {paragraph.replace('> ', '')}
                     </blockquote>
@@ -243,18 +243,18 @@ export default function StoryDetailPage() {
               })}
             </div>
           ) : (
-            <p className="text-[#5C5C5C] italic">{story.summary}</p>
+            <p className="text-[#526783] italic">{story.summary}</p>
           )}
         </div>
 
         {/* Tags */}
         {story.tags && story.tags.length > 0 && (
-          <div className="pt-6 border-t border-[#D6D6D6] flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-[#7A7A7A]">Tags:</span>
+          <div className="pt-6 border-t border-[#DCE5F1] flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold text-[#667A93]">Tags:</span>
             {story.tags.map((tag: string, i: number) => (
               <span
                 key={i}
-                className="text-xs bg-[#F2F2F1] text-[#1E1E1E] px-2.5 py-1 rounded-md font-medium"
+                className="text-xs bg-[#F6F8FC] text-[#0F172A] px-2.5 py-1 rounded-md font-medium"
               >
                 #{tag}
               </span>
@@ -266,7 +266,7 @@ export default function StoryDetailPage() {
       {/* Related Stories */}
       {related.length > 0 && (
         <section className="space-y-4 pt-6">
-          <h2 className="text-2xl font-bold text-[#1E1E1E]">More Stories</h2>
+          <h2 className="text-2xl font-bold text-[#0F172A]">More Stories</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {related.map((relStory) => (
               <StoryCard key={relStory.id} story={relStory} />

@@ -73,30 +73,30 @@ export default function MyStoriesPage() {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#D6D6D6] pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#DCE5F1] pb-6">
         <div>
           <Link
             href="/stories"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E] mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#526783] hover:text-[#0F172A] mb-2"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Public Stories
           </Link>
-          <h1 className="text-3xl font-bold text-[#1E1E1E]">My Success Stories</h1>
-          <p className="text-sm text-[#5C5C5C] mt-1">
+          <h1 className="text-3xl font-bold text-[#0F172A]">My Success Stories</h1>
+          <p className="text-sm text-[#526783] mt-1">
             Manage your drafts, published narratives, and featured highlights.
           </p>
         </div>
 
         <Link
           href="/stories/create"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors shadow-sm self-start"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] rounded-lg text-xs font-semibold transition-colors shadow-sm self-start"
         >
           <Plus className="w-4 h-4" /> Write New Story
         </Link>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 border-b border-[#D6D6D6]">
+      <div className="flex items-center gap-1 border-b border-[#DCE5F1]">
         {(['all', 'draft', 'published', 'featured'] as const).map((tab) => (
           <button
             key={tab}
@@ -104,8 +104,8 @@ export default function MyStoriesPage() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2.5 text-xs font-semibold capitalize border-b-2 transition-colors ${
               activeTab === tab
-                ? 'border-[#1E1E1E] text-[#1E1E1E]'
-                : 'border-transparent text-[#7A7A7A] hover:text-[#1E1E1E]'
+                ? 'border-[#0F172A] text-[#0F172A]'
+                : 'border-transparent text-[#667A93] hover:text-[#0F172A]'
             }`}
           >
             {tab} (
@@ -123,23 +123,23 @@ export default function MyStoriesPage() {
       {/* Content Table / Cards */}
       {loading ? (
         <div className="py-20 text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-[#1E1E1E] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-[#7A7A7A]">Loading stories...</p>
+          <div className="w-8 h-8 border-2 border-[#0F172A] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-[#667A93]">Loading stories...</p>
         </div>
       ) : filteredStories.length === 0 ? (
-        <div className="bg-white border border-[#D6D6D6] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
-          <div className="w-12 h-12 bg-[#F2F2F1] rounded-full flex items-center justify-center mx-auto text-[#7A7A7A]">
+        <div className="bg-white border border-[#DCE5F1] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
+          <div className="w-12 h-12 bg-[#F6F8FC] rounded-full flex items-center justify-center mx-auto text-[#667A93]">
             <BookOpen className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[#1E1E1E]">No {activeTab} stories</h3>
-          <p className="text-xs text-[#7A7A7A]">You do not have any stories in this tab.</p>
+          <h3 className="text-lg font-bold text-[#0F172A]">No {activeTab} stories</h3>
+          <p className="text-xs text-[#667A93]">You do not have any stories in this tab.</p>
         </div>
       ) : (
-        <div className="bg-white border border-[#D6D6D6] rounded-2xl overflow-hidden divide-y divide-[#D6D6D6]">
+        <div className="bg-white border border-[#DCE5F1] rounded-2xl overflow-hidden divide-y divide-[#D6D6D6]">
           {filteredStories.map((story) => (
             <div
               key={story.id}
-              className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#F2F2F1]/50 transition-colors"
+              className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#F6F8FC]/50 transition-colors"
             >
               <div className="space-y-1.5 flex-1">
                 <div className="flex items-center gap-2">
@@ -154,23 +154,23 @@ export default function MyStoriesPage() {
                   </span>
 
                   {story.featured && (
-                    <span className="text-[11px] bg-[#FAF3E2] text-[#1E1E1E] border border-[#EEBE1E] px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+                    <span className="text-[11px] bg-[#FAF3E2] text-[#0F172A] border border-[#FACC15] px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
                       <Sparkles className="w-3 h-3 text-[#EEBE1E] fill-current" /> Featured
                     </span>
                   )}
 
-                  <span className="text-[11px] text-[#7A7A7A] uppercase tracking-wide">
+                  <span className="text-[11px] text-[#667A93] uppercase tracking-wide">
                     {story.story_type}
                   </span>
                 </div>
 
-                <h3 className="text-base font-bold text-[#1E1E1E]">
+                <h3 className="text-base font-bold text-[#0F172A]">
                   <Link href={`/stories/${story.slug}`} className="hover:text-[#EEBE1E]">
                     {story.title}
                   </Link>
                 </h3>
 
-                <div className="text-xs text-[#5C5C5C] flex items-center gap-3">
+                <div className="text-xs text-[#526783] flex items-center gap-3">
                   <span>Person: <strong>{story.person_name}</strong></span>
                   <span>Views: {story.views_count || 0}</span>
                   {story.published_at && (
@@ -193,7 +193,7 @@ export default function MyStoriesPage() {
 
                 <Link
                   href={`/stories/${story.slug}`}
-                  className="p-1.5 text-[#5C5C5C] hover:text-[#1E1E1E] rounded hover:bg-[#F2F2F1]"
+                  className="p-1.5 text-[#526783] hover:text-[#0F172A] rounded hover:bg-[#F6F8FC]"
                   title="View story"
                 >
                   <ExternalLink className="w-4 h-4" />

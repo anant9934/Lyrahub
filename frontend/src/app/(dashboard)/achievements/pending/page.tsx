@@ -45,7 +45,7 @@ export default function PendingAchievementsPage() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-[#1E1E1E] mb-8">Pending Verification</h1>
+      <h1 className="text-3xl font-bold text-[#0F172A] mb-8">Pending Verification</h1>
 
       {isLoading ? (
         <div className="text-center py-10">Loading pending achievements...</div>
@@ -54,9 +54,9 @@ export default function PendingAchievementsPage() {
       ) : (
         <div className="flex flex-col gap-4">
           {achievements.map((ach: any) => (
-            <div key={ach.id} className="bg-white border border-[#D6D6D6] rounded-lg p-5 flex justify-between items-center">
+            <div key={ach.id} className="bg-white border border-[#DCE5F1] rounded-lg p-5 flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-bold text-[#1E1E1E] mb-1">{ach.title}</h3>
+                <h3 className="text-lg font-bold text-[#0F172A] mb-1">{ach.title}</h3>
                 <p className="text-sm font-semibold text-[#EE8E1E] mb-1">{ach.category} | {ach.level}</p>
                 <p className="text-sm text-gray-700">{ach.description}</p>
               </div>

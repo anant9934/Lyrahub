@@ -63,21 +63,21 @@ export const TestimonialForm: React.FC = () => {
 
   if (success) {
     return (
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-10 text-center max-w-md mx-auto space-y-4">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-10 text-center max-w-md mx-auto space-y-4">
         <div className="w-14 h-14 bg-[#EEF3EE] text-[#7A9A7E] rounded-full flex items-center justify-center mx-auto">
           <CheckCircle2 className="w-8 h-8" />
         </div>
-        <h2 className="text-xl font-bold text-[#1E1E1E]">Testimonial Submitted!</h2>
-        <p className="text-sm text-[#5C5C5C] leading-relaxed">
+        <h2 className="text-xl font-bold text-[#0F172A]">Testimonial Submitted!</h2>
+        <p className="text-sm text-[#526783] leading-relaxed">
           Thank you for sharing your experience. Your submission has been sent to the department moderation queue and will be published once approved.
         </p>
-        <p className="text-xs text-[#7A7A7A]">Redirecting to testimonials...</p>
+        <p className="text-xs text-[#667A93]">Redirecting to testimonials...</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-[#D6D6D6] rounded-2xl p-6 md:p-8 space-y-6">
+    <form onSubmit={handleSubmit} className="bg-white border border-[#DCE5F1] rounded-2xl p-6 md:p-8 space-y-6">
       {error && (
         <div className="p-3.5 bg-[#F5EAEA] border border-[#B85C5C]/30 text-[#B85C5C] rounded-lg text-xs font-medium">
           {error}
@@ -85,27 +85,27 @@ export const TestimonialForm: React.FC = () => {
       )}
 
       {/* Auto-detected role banner */}
-      <div className="p-4 bg-[#F2F2F1] rounded-xl border border-[#D6D6D6] flex items-center justify-between">
+      <div className="p-4 bg-[#F6F8FC] rounded-xl border border-[#DCE5F1] flex items-center justify-between">
         <div>
-          <div className="text-xs text-[#7A7A7A]">Submitting as:</div>
-          <div className="text-sm font-bold text-[#1E1E1E]">
+          <div className="text-xs text-[#667A93]">Submitting as:</div>
+          <div className="text-sm font-bold text-[#0F172A]">
             {user?.email || 'Authenticated User'}
           </div>
         </div>
-        <span className="text-xs px-2.5 py-1 bg-white border border-[#D6D6D6] rounded-full font-semibold capitalize text-[#5C5C5C]">
+        <span className="text-xs px-2.5 py-1 bg-white border border-[#DCE5F1] rounded-full font-semibold capitalize text-[#526783]">
           Role: {user?.role || 'Student'}
         </span>
       </div>
 
       {/* Context Selection */}
       <div>
-        <label className="block text-xs font-semibold text-[#1E1E1E] mb-1.5">
+        <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
           What is your testimonial about? *
         </label>
         <select
           value={formData.context}
           onChange={(e) => setFormData({ ...formData, context: e.target.value })}
-          className="w-full px-3.5 py-2.5 border border-[#D6D6D6] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
+          className="w-full px-3.5 py-2.5 border border-[#DCE5F1] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
         >
           <option value="about_department">Overall Department Experience</option>
           <option value="about_course">Courses, Labs & Curriculum</option>
@@ -116,7 +116,7 @@ export const TestimonialForm: React.FC = () => {
 
       {/* Rating */}
       <div>
-        <label className="block text-xs font-semibold text-[#1E1E1E] mb-1.5">
+        <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
           Rating (1 to 5 Stars)
         </label>
         <div className="flex items-center gap-1.5">
@@ -133,12 +133,12 @@ export const TestimonialForm: React.FC = () => {
                 className={`w-6 h-6 transition-colors ${
                   star <= (hoverRating ?? formData.rating)
                     ? 'text-[#EEBE1E] fill-[#EEBE1E]'
-                    : 'text-[#D6D6D6]'
+                    : 'text-[#DCE5F1]'
                 }`}
               />
             </button>
           ))}
-          <span className="text-xs font-semibold text-[#5C5C5C] ml-2">
+          <span className="text-xs font-semibold text-[#526783] ml-2">
             {formData.rating} / 5
           </span>
         </div>
@@ -146,7 +146,7 @@ export const TestimonialForm: React.FC = () => {
 
       {/* Custom title / role tagline */}
       <div>
-        <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+        <label className="block text-xs font-semibold text-[#0F172A] mb-1">
           Your Designation / Tagline (Optional)
         </label>
         <input
@@ -154,19 +154,19 @@ export const TestimonialForm: React.FC = () => {
           value={formData.author_role}
           onChange={(e) => setFormData({ ...formData, author_role: e.target.value })}
           placeholder="e.g. SDE at Google, 2024 AI Graduate, ML Researcher"
-          className="w-full px-3.5 py-2.5 border border-[#D6D6D6] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
+          className="w-full px-3.5 py-2.5 border border-[#DCE5F1] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
         />
       </div>
 
       {/* Testimonial Text */}
       <div>
         <div className="flex items-center justify-between mb-1">
-          <label className="text-xs font-semibold text-[#1E1E1E]">
+          <label className="text-xs font-semibold text-[#0F172A]">
             Your Testimonial (Max 500 characters) *
           </label>
           <span
             className={`text-xs ${
-              charCount > maxChars ? 'text-[#B85C5C] font-bold' : 'text-[#7A7A7A]'
+              charCount > maxChars ? 'text-[#B85C5C] font-bold' : 'text-[#667A93]'
             }`}
           >
             {charCount} / {maxChars}
@@ -178,7 +178,7 @@ export const TestimonialForm: React.FC = () => {
           value={formData.text}
           onChange={(e) => setFormData({ ...formData, text: e.target.value })}
           placeholder="Share your experience with the AI/ML department, what you learned, mentorship received, or how it prepared you for your career..."
-          className="w-full p-3.5 border border-[#D6D6D6] rounded-xl text-sm bg-white focus:outline-none focus:border-[#94B0B8] leading-relaxed"
+          className="w-full p-3.5 border border-[#DCE5F1] rounded-xl text-sm bg-white focus:outline-none focus:border-[#94B0B8] leading-relaxed"
         />
       </div>
 
@@ -186,7 +186,7 @@ export const TestimonialForm: React.FC = () => {
         <button
           type="submit"
           disabled={loading || charCount === 0 || charCount > maxChars}
-          className="w-full inline-flex items-center justify-center gap-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] py-3 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 shadow-sm"
+          className="w-full inline-flex items-center justify-center gap-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] py-3 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 shadow-sm"
         >
           {loading ? (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

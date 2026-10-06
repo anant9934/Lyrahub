@@ -35,7 +35,7 @@ export function ResponsiveBottomNav({ onOpenAIDA }: ResponsiveBottomNavProps) {
   return (
     <nav
       aria-label="Mobile Bottom Navigation"
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-[#E5E5E5] px-2"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 px-2 backdrop-blur md:hidden"
       style={{
         paddingBottom: "max(6px, env(safe-area-inset-bottom, 0px))",
       }}
@@ -55,10 +55,10 @@ export function ResponsiveBottomNav({ onOpenAIDA }: ResponsiveBottomNavProps) {
                 type="button"
                 aria-label="Ask AIDA assistant"
                 onClick={onOpenAIDA}
-                className="flex flex-col items-center justify-center flex-1 py-1 text-center group text-[#555555] hover:text-[#111111]"
+                className="flex flex-col items-center justify-center flex-1 py-1 text-center group text-[#526783] hover:text-[#0F172A]"
               >
-                <div className="w-8 h-8 rounded-full bg-[#111111] text-white flex items-center justify-center -mt-3 shadow-md">
-                  <Icon className="w-4 h-4 text-[#2563EB]" />
+                <div className="-mt-3 flex h-9 w-9 items-center justify-center rounded-full bg-brand-navy text-white shadow-md">
+                  <Icon className="h-4 w-4 text-brand-yellow" />
                 </div>
                 <span className="text-[10px] font-medium mt-0.5">{item.label}</span>
               </button>
@@ -73,14 +73,14 @@ export function ResponsiveBottomNav({ onOpenAIDA }: ResponsiveBottomNavProps) {
               className={cn(
                 "flex flex-col items-center justify-center flex-1 py-1 text-center transition-colors min-h-[44px]",
                 isActive
-                  ? "text-[#111111] font-semibold"
-                  : "text-[#777777] hover:text-[#111111]"
+                  ? "font-bold text-brand-blue"
+                  : "text-ink-400 hover:text-brand-blue"
               )}
             >
               <Icon
                 className={cn(
                   "w-5 h-5",
-                  isActive ? "text-[#111111]" : "text-[#777777]"
+                  isActive ? "text-brand-blue" : "text-ink-400"
                 )}
               />
               <span className="text-[10px] mt-0.5">{item.label}</span>

@@ -62,23 +62,23 @@ export function ResponsiveSidebar({
   return (
     <aside
       className={cn(
-        "border-r border-[#E5E5E5] bg-white flex flex-col h-screen select-none transition-all duration-200",
+        "border-r border-[#DCE5F1] bg-white flex flex-col h-screen select-none transition-all duration-200",
         isMobileDrawer ? "relative z-50 h-full" : "sticky top-0 z-30",
         sidebarWidth
       )}
     >
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-[#E5E5E5]">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-[#DCE5F1]">
         <Link
           href="/dashboard"
           onClick={onClose}
           className="flex items-center gap-2.5 overflow-hidden"
         >
-          <div className="w-8 h-8 rounded-lg bg-[#111111] flex items-center justify-center text-white text-[10px] font-bold shrink-0 tracking-tight">
+          <div className="w-8 h-8 rounded-lg bg-[#0F172A] flex items-center justify-center text-white text-[10px] font-bold shrink-0 tracking-tight">
             AM
           </div>
           {(!collapsed || isMobileDrawer) && (
-            <span className="font-bold text-sm tracking-[0.1em] text-[#111111] uppercase truncate">
+            <span className="font-bold text-sm tracking-[0.1em] text-[#0F172A] uppercase truncate">
               AIMETRA
             </span>
           )}
@@ -88,7 +88,7 @@ export function ResponsiveSidebar({
         {!isMobileDrawer && onToggleCollapse && (
           <button
             onClick={onToggleCollapse}
-            className="p-1 rounded-md text-[#777777] hover:text-[#111111] hover:bg-[#F5F5F5] transition-colors"
+            className="p-1 rounded-md text-[#667A93] hover:text-[#0F172A] hover:bg-[#EDF4FC] transition-colors"
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
@@ -123,8 +123,8 @@ export function ResponsiveSidebar({
                   ? "justify-center p-2.5"
                   : "justify-between px-3 py-2",
                 isActive
-                  ? "bg-[#111111] text-white"
-                  : "text-[#555555] hover:bg-[#F5F5F5] hover:text-[#111111]"
+                  ? "bg-[#0F172A] text-white"
+                  : "text-[#526783] hover:bg-[#EDF4FC] hover:text-[#0F172A]"
               )}
             >
               <div className="flex items-center gap-2.5 min-w-0">
@@ -133,7 +133,7 @@ export function ResponsiveSidebar({
                     "w-4 h-4 shrink-0",
                     isActive
                       ? "text-white"
-                      : "text-[#777777] group-hover:text-[#111111]"
+                      : "text-[#667A93] group-hover:text-[#0F172A]"
                   )}
                 />
                 {(!collapsed || isMobileDrawer) && (
@@ -147,7 +147,7 @@ export function ResponsiveSidebar({
                     "text-[10px] px-1.5 py-0.2 rounded-full font-semibold shrink-0 ml-1.5",
                     isActive
                       ? "bg-white/20 text-white"
-                      : "bg-[#E5E5E5] text-[#333333]"
+                      : "bg-[#DCE5F1] text-[#34465E]"
                   )}
                 >
                   {item.badge}
@@ -159,10 +159,10 @@ export function ResponsiveSidebar({
       </div>
 
       {/* User Profile Footer */}
-      <div className="p-2 border-t border-[#E5E5E5]">
+      <div className="p-2 border-t border-[#DCE5F1]">
         <div
           className={cn(
-            "flex items-center rounded-lg hover:bg-[#FAFAFA] transition-colors",
+            "flex items-center rounded-lg hover:bg-[#F6F8FC] transition-colors",
             collapsed && !isMobileDrawer
               ? "justify-center p-2"
               : "justify-between p-2"
@@ -174,15 +174,15 @@ export function ResponsiveSidebar({
             title={collapsed && !isMobileDrawer ? getDisplayName() : undefined}
             className="flex items-center gap-2.5 min-w-0 flex-1"
           >
-            <div className="w-8 h-8 rounded-full bg-[#111111] text-white flex items-center justify-center font-medium text-xs shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-medium text-xs shrink-0">
               {getDisplayName().charAt(0)}
             </div>
             {(!collapsed || isMobileDrawer) && (
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-semibold text-[#111111] truncate">
+                <div className="text-xs font-semibold text-[#0F172A] truncate">
                   {getDisplayName()}
                 </div>
-                <div className="text-[10px] text-[#777777] truncate">
+                <div className="text-[10px] text-[#667A93] truncate">
                   AIMETRA Portal
                 </div>
               </div>
@@ -192,7 +192,7 @@ export function ResponsiveSidebar({
           {(!collapsed || isMobileDrawer) && (
             <button
               onClick={logout}
-              className="p-1.5 text-[#888888] hover:text-[#DC2626] rounded-md transition-colors"
+              className="p-1.5 text-[#71849B] hover:text-[#DC2626] rounded-md transition-colors"
               title="Log Out"
             >
               <LogOut className="w-4 h-4" />

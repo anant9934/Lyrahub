@@ -42,21 +42,21 @@ export default function OpportunityApplicantsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F2F2F1] py-12 px-4 max-w-5xl mx-auto">
-        <div className="h-40 bg-white rounded-3xl border border-[#D6D6D6] animate-pulse mb-8" />
-        <div className="h-64 bg-white rounded-2xl border border-[#D6D6D6] animate-pulse" />
+      <div className="min-h-screen bg-[#F6F8FC] py-12 px-4 max-w-5xl mx-auto">
+        <div className="h-40 bg-white rounded-3xl border border-[#DCE5F1] animate-pulse mb-8" />
+        <div className="h-64 bg-white rounded-2xl border border-[#DCE5F1] animate-pulse" />
       </div>
     );
   }
 
   if (error || !opp) {
     return (
-      <div className="min-h-screen bg-[#F2F2F1] p-8 flex items-center justify-center">
-        <div className="bg-white rounded-2xl border border-[#D6D6D6] p-8 text-center max-w-md shadow-sm">
+      <div className="min-h-screen bg-[#F6F8FC] p-8 flex items-center justify-center">
+        <div className="bg-white rounded-2xl border border-[#DCE5F1] p-8 text-center max-w-md shadow-sm">
           <AlertCircle className="w-12 h-12 text-[#B85C5C] mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-[#1E1E1E] mb-2">Access Denied or Not Found</h2>
-          <p className="text-sm text-[#5C5C5C] mb-6">{error || 'You must be the listing creator or an administrator to view applicants.'}</p>
-          <Link href="/opportunities" className="px-4 py-2 rounded-xl bg-[#1E1E1E] text-white text-sm font-semibold">
+          <h2 className="text-xl font-bold text-[#0F172A] mb-2">Access Denied or Not Found</h2>
+          <p className="text-sm text-[#526783] mb-6">{error || 'You must be the listing creator or an administrator to view applicants.'}</p>
+          <Link href="/opportunities" className="px-4 py-2 rounded-xl bg-[#0F172A] text-white text-sm font-semibold">
             Back to Opportunities
           </Link>
         </div>
@@ -65,13 +65,13 @@ export default function OpportunityApplicantsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F2F1] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F6F8FC] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Link
             href={`/opportunities/${opp.slug}`}
-            className="inline-flex items-center gap-1.5 text-xs text-[#7A7A7A] hover:text-[#1E1E1E] transition-colors mb-3 font-medium"
+            className="inline-flex items-center gap-1.5 text-xs text-[#667A93] hover:text-[#0F172A] transition-colors mb-3 font-medium"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Opportunity Listing</span>
@@ -80,20 +80,20 @@ export default function OpportunityApplicantsPage() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#F2F2F1] text-[#1E1E1E]">
+                <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#F6F8FC] text-[#0F172A]">
                   {opp.opportunity_type}
                 </span>
-                <span className="text-xs text-[#7A7A7A]">{opp.organization}</span>
+                <span className="text-xs text-[#667A93]">{opp.organization}</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-[#1E1E1E]">
+              <h1 className="text-2xl md:text-3xl font-bold text-[#0F172A]">
                 Applicant Pipeline: {opp.title}
               </h1>
-              <p className="text-xs md:text-sm text-[#7A7A7A] mt-1">
+              <p className="text-xs md:text-sm text-[#667A93] mt-1">
                 Manage candidate submissions and update statuses across selection stages
               </p>
             </div>
 
-            <div className="px-4 py-2 rounded-xl bg-white border border-[#D6D6D6] text-xs font-bold text-[#1E1E1E]">
+            <div className="px-4 py-2 rounded-xl bg-white border border-[#DCE5F1] text-xs font-bold text-[#0F172A]">
               Total Applicants: {applicants.length}
             </div>
           </div>

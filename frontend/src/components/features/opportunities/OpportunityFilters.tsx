@@ -29,17 +29,17 @@ export const OpportunityFilters: React.FC<OpportunityFiltersProps> = ({
   const hasActiveFilters = search || opportunityType !== 'all' || mode !== 'all' || verifiedOnly;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#D6D6D6] p-4 md:p-5 mb-8 shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#DCE5F1] p-4 md:p-5 mb-8 shadow-sm">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Search */}
         <div className="relative">
-          <Search className="w-4 h-4 text-[#7A7A7A] absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-[#667A93] absolute left-3.5 top-3" />
           <input
             type="text"
             placeholder="Search company, title, keywords..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs md:text-sm rounded-xl border border-[#D6D6D6] focus:outline-none focus:border-[#1E1E1E] bg-[#F2F2F1]/40"
+            className="w-full pl-9 pr-4 py-2 text-xs md:text-sm rounded-xl border border-[#DCE5F1] focus:outline-none focus:border-[#0F172A] bg-[#F6F8FC]/40"
           />
         </div>
 
@@ -48,7 +48,7 @@ export const OpportunityFilters: React.FC<OpportunityFiltersProps> = ({
           <select
             value={opportunityType}
             onChange={(e) => onOpportunityTypeChange(e.target.value)}
-            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#D6D6D6] focus:outline-none focus:border-[#1E1E1E] bg-white text-[#1E1E1E]"
+            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#DCE5F1] focus:outline-none focus:border-[#0F172A] bg-white text-[#0F172A]"
           >
             <option value="all">All Opportunities</option>
             <option value="internship">Internship</option>
@@ -65,7 +65,7 @@ export const OpportunityFilters: React.FC<OpportunityFiltersProps> = ({
           <select
             value={mode}
             onChange={(e) => onModeChange(e.target.value)}
-            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#D6D6D6] focus:outline-none focus:border-[#1E1E1E] bg-white text-[#1E1E1E]"
+            className="w-full px-3 py-2 text-xs md:text-sm rounded-xl border border-[#DCE5F1] focus:outline-none focus:border-[#0F172A] bg-white text-[#0F172A]"
           >
             <option value="all">All Working Modes</option>
             <option value="remote">Remote</option>
@@ -76,12 +76,12 @@ export const OpportunityFilters: React.FC<OpportunityFiltersProps> = ({
 
         {/* Verified checkbox & Reset */}
         <div className="flex items-center justify-between gap-2 px-1">
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#1E1E1E]">
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#0F172A]">
             <input
               type="checkbox"
               checked={verifiedOnly}
               onChange={(e) => onVerifiedOnlyChange(e.target.checked)}
-              className="rounded border-[#D6D6D6] text-[#1E1E1E]"
+              className="rounded border-[#DCE5F1] text-[#0F172A]"
             />
             <span>Verified only</span>
           </label>
@@ -89,7 +89,7 @@ export const OpportunityFilters: React.FC<OpportunityFiltersProps> = ({
           {hasActiveFilters && (
             <button
               onClick={onReset}
-              className="p-1.5 text-xs text-[#7A7A7A] hover:text-[#1E1E1E] hover:bg-[#F2F2F1] rounded-lg transition-colors flex items-center gap-1"
+              className="p-1.5 text-xs text-[#667A93] hover:text-[#0F172A] hover:bg-[#F6F8FC] rounded-lg transition-colors flex items-center gap-1"
             >
               <X className="w-3.5 h-3.5" />
               <span>Reset</span>

@@ -156,20 +156,12 @@ export default function LeadershipProfileView({ role }: LeadershipProfileViewPro
       </div>
 
       {/* Hero Section */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 shadow-sm">
+      <div className="overflow-hidden rounded-[30px] border border-[#dce5f1] bg-[#e9f5ff] p-8 shadow-[0_18px_48px_rgba(8,26,57,0.09)] sm:p-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           {/* Photo: 3:4 ratio rounded card */}
           <div className="md:col-span-4 flex justify-center">
-            <div className="relative w-56 sm:w-64 aspect-[3/4] rounded-3xl overflow-hidden border-4 border-slate-100 shadow-md group">
-              <img
-                src={
-                  profile.photo_url ||
-                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800"
-                }
-                alt={profile.display_title}
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
+            <div className="relative flex w-56 aspect-[3/4] items-center justify-center overflow-hidden rounded-[28px] border-4 border-white bg-gradient-to-br from-[#1478ef] to-[#071b3d] text-6xl font-black text-white shadow-xl sm:w-64">
+              {profile.photo_url ? <img src={profile.photo_url} alt={profile.display_title} className="h-full w-full object-cover object-center" /> : profile.display_title.charAt(0)}
             </div>
           </div>
 
@@ -177,10 +169,10 @@ export default function LeadershipProfileView({ role }: LeadershipProfileViewPro
           <div className="md:col-span-8 space-y-4">
             <div>
               {getRoleBadge(profile.role)}
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mt-2">
+              <h1 className="mt-2 text-4xl font-black tracking-[-0.055em] text-[#081a39] sm:text-5xl">
                 {profile.display_title}
               </h1>
-              <p className="text-base text-[#0F766E] font-medium mt-1">
+              <p className="mt-2 text-base font-bold text-[#1478ef]">
                 Department of Artificial Intelligence & Machine Learning
               </p>
             </div>
@@ -206,7 +198,7 @@ export default function LeadershipProfileView({ role }: LeadershipProfileViewPro
               {profile.email && (
                 <a
                   href={`mailto:${profile.email}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl text-xs font-semibold transition shadow-sm"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#081a39] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#1478ef]"
                 >
                   <Mail className="w-3.5 h-3.5" /> Email Office
                 </a>

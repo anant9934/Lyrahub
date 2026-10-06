@@ -91,14 +91,14 @@ export default function AlumniRegistrationPage() {
   };
 
   return (
-    <div className="p-8 max-w-3xl mx-auto space-y-6 bg-[#F2F2F1] min-h-screen">
-      <Link href="/alumni" className="text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E]">
+    <div className="p-8 max-w-3xl mx-auto space-y-6 bg-[#F6F8FC] min-h-screen">
+      <Link href="/alumni" className="text-xs font-semibold text-[#526783] hover:text-[#0F172A]">
         ← Back to Alumni Directory
       </Link>
 
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-8 shadow-sm">
-        <h1 className="text-2xl font-extrabold text-[#1E1E1E]">Register as Department Alumni</h1>
-        <p className="text-xs text-[#5C5C5C] mt-1 mb-6">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-8 shadow-sm">
+        <h1 className="text-2xl font-extrabold text-[#0F172A]">Register as Department Alumni</h1>
+        <p className="text-xs text-[#526783] mt-1 mb-6">
           Join our global network of AI/ML department alumni. If you provide your college Reg No, academic details will be verified automatically.
         </p>
 
@@ -117,29 +117,29 @@ export default function AlumniRegistrationPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Account credentials */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1E1E1E] mb-3">1. Account Details</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A] mb-3">1. Account Details</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Email Address *</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Email Address *</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="name@company.com"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                   required
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Password *</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Password *</label>
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                   required
                   minLength={6}
                 />
@@ -149,49 +149,49 @@ export default function AlumniRegistrationPage() {
 
           {/* Academic identity */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1E1E1E] mb-3">2. Academic Record</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A] mb-3">2. Academic Record</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Full Name</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Full Name</label>
                 <input
                   type="text"
                   name="full_name"
                   value={formData.full_name}
                   onChange={handleChange}
                   placeholder="e.g. Ananya Sharma"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Original Reg No</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Original Reg No</label>
                 <input
                   type="text"
                   name="reg_no"
                   value={formData.reg_no}
                   onChange={handleChange}
                   placeholder="e.g. RA2211003010001"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Graduation Year *</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Graduation Year *</label>
                 <input
                   type="number"
                   name="graduation_year"
                   value={formData.graduation_year}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                   required
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Program</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Program</label>
                 <input
                   type="text"
                   name="program"
                   value={formData.program}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
             </div>
@@ -199,50 +199,50 @@ export default function AlumniRegistrationPage() {
 
           {/* Professional Current */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1E1E1E] mb-3">3. Current Role</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A] mb-3">3. Current Role</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Current Company</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Current Company</label>
                 <input
                   type="text"
                   name="current_company"
                   value={formData.current_company}
                   onChange={handleChange}
                   placeholder="e.g. Microsoft Research"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Current Role / Title</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Current Role / Title</label>
                 <input
                   type="text"
                   name="current_role"
                   value={formData.current_role}
                   onChange={handleChange}
                   placeholder="e.g. Machine Learning Scientist"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Location</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Location</label>
                 <input
                   type="text"
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
                   placeholder="e.g. Bengaluru, India"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Phone</label>
+                <label className="block text-xs font-semibold text-[#0F172A] mb-1">Phone</label>
                 <input
                   type="text"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+91 9876543210"
-                  className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                  className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
                 />
               </div>
             </div>
@@ -250,7 +250,7 @@ export default function AlumniRegistrationPage() {
 
           {/* Social Links & Bio */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1E1E1E] mb-3">4. Links & Bio</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A] mb-3">4. Links & Bio</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               <input
                 type="url"
@@ -258,7 +258,7 @@ export default function AlumniRegistrationPage() {
                 value={formData.linkedin_url}
                 onChange={handleChange}
                 placeholder="LinkedIn Profile URL"
-                className="px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                className="px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
               />
               <input
                 type="url"
@@ -266,7 +266,7 @@ export default function AlumniRegistrationPage() {
                 value={formData.github_url}
                 onChange={handleChange}
                 placeholder="GitHub Profile URL"
-                className="px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                className="px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
               />
               <input
                 type="url"
@@ -274,7 +274,7 @@ export default function AlumniRegistrationPage() {
                 value={formData.portfolio_url}
                 onChange={handleChange}
                 placeholder="Portfolio URL"
-                className="px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                className="px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
               />
             </div>
             <textarea
@@ -283,15 +283,15 @@ export default function AlumniRegistrationPage() {
               onChange={handleChange}
               rows={3}
               placeholder="Short bio about your career path since graduation..."
-              className="w-full px-3.5 py-2 text-sm bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+              className="w-full px-3.5 py-2 text-sm bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
             />
           </div>
 
           {/* Preferences */}
-          <div className="pt-2 border-t border-[#D6D6D6] space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1E1E1E]">5. Engagement & Privacy</h3>
+          <div className="pt-2 border-t border-[#DCE5F1] space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">5. Engagement & Privacy</h3>
             <div className="flex flex-wrap gap-6">
-              <label className="flex items-center gap-2 text-xs font-semibold text-[#1E1E1E] cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-semibold text-[#0F172A] cursor-pointer">
                 <input
                   type="checkbox"
                   name="open_to_mentorship"
@@ -300,7 +300,7 @@ export default function AlumniRegistrationPage() {
                 />
                 Open to Mentoring Students
               </label>
-              <label className="flex items-center gap-2 text-xs font-semibold text-[#1E1E1E] cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-semibold text-[#0F172A] cursor-pointer">
                 <input
                   type="checkbox"
                   name="open_to_hiring"
@@ -311,12 +311,12 @@ export default function AlumniRegistrationPage() {
               </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Directory Privacy Level</label>
+              <label className="block text-xs font-semibold text-[#0F172A] mb-1">Directory Privacy Level</label>
               <select
                 name="privacy_level"
                 value={formData.privacy_level}
                 onChange={handleChange}
-                className="px-3 py-2 text-xs bg-[#F2F2F1] border border-[#D6D6D6] rounded-xl focus:outline-none"
+                className="px-3 py-2 text-xs bg-[#F6F8FC] border border-[#DCE5F1] rounded-xl focus:outline-none"
               >
                 <option value="public">Public (Visible to all students & visitors)</option>
                 <option value="alumni_only">Alumni Only (Visible to fellow alumni & admin)</option>
@@ -325,11 +325,11 @@ export default function AlumniRegistrationPage() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#D6D6D6] flex justify-end">
+          <div className="pt-4 border-t border-[#DCE5F1] flex justify-end">
             <button
               type="submit"
               disabled={loading || success}
-              className="px-6 py-2.5 bg-[#1E1E1E] text-white text-xs font-bold rounded-xl hover:bg-gray-800 disabled:opacity-50 shadow-sm"
+              className="px-6 py-2.5 bg-[#0F172A] text-white text-xs font-bold rounded-xl hover:bg-gray-800 disabled:opacity-50 shadow-sm"
             >
               {loading ? "Registering..." : "Submit Registration"}
             </button>

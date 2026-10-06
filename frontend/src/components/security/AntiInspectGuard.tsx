@@ -169,7 +169,7 @@ export function AntiInspectGuard() {
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       }`}
     >
-      <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#111111] text-white shadow-2xl border border-neutral-800 text-xs font-medium tracking-normal select-none">
+      <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#0F172A] text-white shadow-2xl border border-neutral-800 text-xs font-medium tracking-normal select-none">
         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
         <span>{notification}</span>
       </div>

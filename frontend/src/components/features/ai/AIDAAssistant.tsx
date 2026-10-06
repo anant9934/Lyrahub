@@ -1,23 +1,24 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import {
-  Sparkles,
   X,
   Send,
   Download,
-  Eye,
   BarChart2,
   AlertCircle,
   Cpu,
   Cloud,
   Zap,
   BookOpen,
-  Layers,
-  ChevronDown,
-  ChevronRight,
-  Database,
   Search,
+  Database,
+  Users,
+  Trophy,
+  Calendar,
+  Briefcase,
+  ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import api from "@/lib/api"
@@ -57,58 +58,33 @@ interface Message {
   loading?: boolean
 }
 
-// ─── Route & Mode Badge ───────────────────────────────────────────────────────
+// ─── Route Badge ──────────────────────────────────────────────────────────────
 
 function RouteBadge({ route, mode, provider }: { route?: string; mode?: string; provider?: string }) {
   if (!route && !mode) return null
 
-  // Palette mapped to Unidale status styling
   let bg = "#F5F5F5"
   let color = "#5C5C5C"
   let icon = <Database className="w-2.5 h-2.5" />
 
   switch (route) {
     case "deterministic":
-      bg = "#EEF3EE"
-      color = "#2E5E35"
-      icon = <Zap className="w-2.5 h-2.5" />
-      break
+      bg = "#EEF3EE"; color = "#2E5E35"; icon = <Zap className="w-2.5 h-2.5" />; break
     case "cache":
-      bg = "#EAF0F3"
-      color = "#1E40AF"
-      icon = <Zap className="w-2.5 h-2.5" />
-      break
+      bg = "#EAF0F3"; color = "#1E40AF"; icon = <Zap className="w-2.5 h-2.5" />; break
     case "okf":
-      bg = "#F3E8FF"
-      color = "#6B21A8"
-      icon = <BookOpen className="w-2.5 h-2.5" />
-      break
+      bg = "#F3E8FF"; color = "#6B21A8"; icon = <BookOpen className="w-2.5 h-2.5" />; break
     case "rag":
-      bg = "#EDE9FE"
-      color = "#5B21B6"
-      icon = <Search className="w-2.5 h-2.5" />
-      break
+      bg = "#EDE9FE"; color = "#5B21B6"; icon = <Search className="w-2.5 h-2.5" />; break
     case "local_llm":
-      bg = "#E0F2FE"
-      color = "#0369A1"
-      icon = <Cpu className="w-2.5 h-2.5" />
-      break
+      bg = "#E0F2FE"; color = "#0369A1"; icon = <Cpu className="w-2.5 h-2.5" />; break
     case "browser_slm":
-      bg = "#FEF3C7"
-      color = "#92400E"
-      icon = <Cpu className="w-2.5 h-2.5" />
-      break
+      bg = "#FEF3C7"; color = "#92400E"; icon = <Cpu className="w-2.5 h-2.5" />; break
     case "cloud_llm":
-      bg = "#DBEAFE"
-      color = "#1E40AF"
-      icon = <Cloud className="w-2.5 h-2.5" />
-      break
+      bg = "#DBEAFE"; color = "#1E40AF"; icon = <Cloud className="w-2.5 h-2.5" />; break
     case "blocked":
     case "quota_exceeded":
-      bg = "#FEE2E2"
-      color = "#991B1B"
-      icon = <AlertCircle className="w-2.5 h-2.5" />
-      break
+      bg = "#FEE2E2"; color = "#991B1B"; icon = <AlertCircle className="w-2.5 h-2.5" />; break
   }
 
   const label = mode || (route ? route.replace("_", " ").toUpperCase() : "AIDA")
@@ -127,6 +103,15 @@ function RouteBadge({ route, mode, provider }: { route?: string; mode?: string; 
   )
 }
 
+// ─── Quick Action Tiles ───────────────────────────────────────────────────────
+
+const quickActions = [
+  { label: "Faculty spotlight", icon: Users,    query: "Who are the top faculty members?",       color: "#1478ef", bg: "#EDF5FF" },
+  { label: "Placement status", icon: Trophy,    query: "Placement eligibility criteria?",          color: "#D97706", bg: "#FFF8E8" },
+  { label: "Upcoming events",  icon: Calendar,  query: "What events are happening soon?",          color: "#7C3AED", bg: "#F3EEFF" },
+  { label: "Opportunities",    icon: Briefcase, query: "Show available opportunities",             color: "#0D9488", bg: "#E6FAFA" },
+]
+
 // ─── Main AIDA Component ──────────────────────────────────────────────────────
 
 export function AIDAAssistant({
@@ -136,16 +121,8 @@ export function AIDAAssistant({
   isOpen: boolean
   onClose: () => void
 }) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      sender: "aida",
-      text: "Hello! I'm AIDA — the AI & ML Department Intelligent Assistant.\n\nI answer queries deterministically and via institutional knowledge without unnecessary cloud usage. Ask me about students, rankings, curriculum, attendance rules, placement policies, or faculty.",
-      route: "okf",
-      ai_mode: "Department Intelligence",
-    },
-  ])
-
+  const [messages, setMessages] = useState<Message[]>([])
+  const [chatStarted, setChatStarted] = useState(false)
   const [input, setInput] = useState("")
   const [activeMode, setActiveMode] = useState<AIDAMode>("hybrid")
   const [isLoading, setIsLoading] = useState(false)
@@ -182,6 +159,8 @@ export function AIDAAssistant({
     const textToSend = queryText.trim()
     if (!textToSend || isLoading) return
 
+    if (!chatStarted) setChatStarted(true)
+
     const mode = modeOverride || activeMode
     const userMsg: Message = { id: Date.now().toString(), sender: "user", text: textToSend }
     const loadingMsg: Message = { id: `loading-${Date.now()}`, sender: "aida", text: "", loading: true }
@@ -214,7 +193,7 @@ export function AIDAAssistant({
               latency_ms: slmResult.latency_ms,
             })
           )
-        } catch (err: any) {
+        } catch {
           setMessages((prev) =>
             prev.filter((m) => !m.loading).concat({
               id: Date.now().toString(),
@@ -240,7 +219,6 @@ export function AIDAAssistant({
         }
       }
 
-      // Determine if staff can escalate to cloud
       const canEscalate =
         Boolean(quota?.cloud_ai_allowed && (quota?.limit ?? 0) > 0) &&
         !forceCloud &&
@@ -265,7 +243,6 @@ export function AIDAAssistant({
         query: textToSend,
       }
 
-      // Update quota if cloud was consumed
       if (data.cloud_calls_used != null) {
         setQuota((prev) =>
           prev
@@ -305,10 +282,7 @@ export function AIDAAssistant({
   }, [isOpen, onClose])
 
   const handleSend = () => sendQuery(input)
-
-  const handleEscalateCloud = (originalQuery: string) => {
-    sendQuery(originalQuery, "advanced", true)
-  }
+  const handleEscalateCloud = (originalQuery: string) => sendQuery(originalQuery, "advanced", true)
 
   if (!isOpen) return null
 
@@ -319,312 +293,324 @@ export function AIDAAssistant({
       aria-modal="true"
       aria-label="AIDA Intelligence Assistant"
     >
-      {/* Mobile / Desktop Backdrop */}
+      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      {/* Slide-over Container */}
-      <div className="relative z-10 w-full sm:w-[500px] h-[100dvh] max-h-[100dvh] bg-white border-l border-[#D6D6D6] shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
-        {/* ── Header ──────────────────────────────────────────────────────────── */}
-        <div className="p-4 border-b border-[#D6D6D6] flex items-center justify-between bg-white shrink-0">
-          <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-[#1E1E1E] text-white flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-[#EEBE1E]" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-[#1E1E1E] tracking-tight">
-                AIDA Intelligence
-              </h3>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 bg-[#F2F2F1] text-[#5C5C5C] rounded">
-                Hybrid 7-Tier
-              </span>
-            </div>
-            <p className="text-[11px] text-[#7A7A7A]">
-              Deterministic • OKF • RAG • Local SLM • Cloud Fallback
-            </p>
-          </div>
-        </div>
-        <button
-          onClick={onClose}
-          className="p-1.5 text-[#7A7A7A] hover:text-[#1E1E1E] hover:bg-[#F2F2F1] rounded-md transition-colors"
-          title="Close drawer"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
+      {/* Panel */}
+      <div className="relative z-10 flex h-[100dvh] max-h-[100dvh] w-full flex-col bg-white shadow-2xl animate-in slide-in-from-right duration-250 sm:w-[460px]">
 
-      {/* ── Mode Selector Tabs (§32) ────────────────────────────────────────── */}
-      <div className="px-4 py-2 bg-[#F2F2F1] border-b border-[#D6D6D6] flex items-center gap-1.5 text-[11px] overflow-x-auto">
-        <span className="text-[10px] uppercase tracking-wider text-[#7A7A7A] font-medium mr-1">
-          Mode:
-        </span>
-        {(
-          [
-            { id: "hybrid", label: "Auto", desc: "Cheapest capable route" },
-            { id: "fast", label: "⚡ Fast", desc: "SQL tools + cache only" },
-            { id: "knowledge", label: "📚 Knowledge", desc: "OKF + RAG docs" },
-            { id: "analytics", label: "📊 Analytics", desc: "SQL stats & aggregates" },
-            { id: "advanced", label: "✨ Advanced", desc: "Local synthesis + Cloud" },
-          ] as const
-        ).map((m) => (
+        {/* ── Hero Header with Robot ─────────────────────────────────────────── */}
+        <div className="relative shrink-0 overflow-hidden bg-[#071b3d] px-6 pt-5 pb-0">
+          {/* Background glows */}
+          <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[#0967d1] blur-[80px] opacity-60" />
+          <div className="absolute -left-10 bottom-0 h-48 w-48 rounded-full bg-[#b4731c] blur-[60px] opacity-40" />
+          <span aria-hidden="true" className="absolute right-[45%] top-4 text-2xl text-[#5ac9ff] opacity-70">✦</span>
+
+          {/* Close button */}
           <button
-            key={m.id}
-            onClick={() => setActiveMode(m.id)}
-            title={m.desc}
-            className={`px-2.5 py-1 rounded-full font-medium transition-all ${
-              activeMode === m.id
-                ? "bg-[#1E1E1E] text-white shadow-xs"
-                : "bg-white text-[#5C5C5C] border border-[#D6D6D6] hover:text-[#1E1E1E]"
-            }`}
+            onClick={onClose}
+            className="absolute right-4 top-4 z-20 rounded-xl p-1.5 text-[#C4D7EF] transition-colors hover:bg-white/15 hover:text-white"
+            title="Close AIDA"
           >
-            {m.label}
+            <X className="w-5 h-5" />
           </button>
-        ))}
-      </div>
 
-      {/* ── Quota Bar (§40) ─────────────────────────────────────────────────── */}
-      {quota && quota.cloud_ai_allowed && quota.limit > 0 ? (
-        <div className="px-4 py-2 bg-white border-b border-[#D6D6D6] flex items-center justify-between text-[11px]">
-          <span className="text-[#5C5C5C] flex items-center gap-1">
-            <Cloud className="w-3.5 h-3.5 text-[#1E40AF]" />
-            <span>Advanced AI Cloud Quota:</span>
-          </span>
-          <div className="flex items-center gap-2">
-            <div className="bg-[#E5E5E5] rounded-full h-1.5 w-20 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-300"
-                style={{
-                  width: `${Math.min(100, (quota.used / quota.limit) * 100)}%`,
-                  background: quota.used >= quota.limit ? "#B85C5C" : "#94B0B8",
-                }}
+          {/* Header text + robot side-by-side */}
+          <div className="relative z-10 flex items-end justify-between">
+            <div className="pb-5 max-w-[58%]">
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#72b7ff]">✦ Ask the Department</p>
+              <h2 className="mt-1.5 text-[1.45rem] font-black leading-tight tracking-[-0.04em] text-white">
+                Hi! I&apos;m <span className="text-[#ffda48]">AIDA</span>
+              </h2>
+              <p className="mt-1 text-[11px] leading-relaxed text-[#bbd2ef] max-w-[200px]">
+                Your AI department assistant. Ask me anything about AIMETRA.
+              </p>
+
+              {/* Mode tabs (compact) */}
+              <div className="mt-3 flex gap-1 flex-wrap">
+                {(["hybrid","fast","knowledge","analytics"] as const).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => setActiveMode(m)}
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-semibold transition-all ${
+                      activeMode === m
+                        ? "bg-[#ffda48] text-[#071b3d]"
+                        : "bg-white/10 text-[#bbd2ef] hover:bg-white/20"
+                    }`}
+                  >
+                    {m === "hybrid" ? "Auto" : m === "fast" ? "⚡ Quick" : m === "knowledge" ? "📚 Know" : "📊 Data"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* AIDA Robot — large, persistent, bottom-anchored */}
+            <div className="relative h-[165px] w-[130px] shrink-0 self-end">
+              <Image
+                src="/images/aida-mascot.png"
+                alt="AIDA robot assistant"
+                fill
+                priority
+                sizes="130px"
+                className="object-contain object-bottom drop-shadow-[0_8px_20px_rgba(9,103,209,0.35)]"
               />
             </div>
-            <span className="font-mono text-[#1E1E1E] text-[10px]">
-              {quota.used} / {quota.limit} today
-            </span>
           </div>
         </div>
-      ) : (
-        <div className="px-4 py-1.5 bg-[#FAF3E2] border-b border-[#D6D6D6] flex items-center gap-2 text-[10px] text-[#92400E]">
-          <Cpu className="w-3 h-3 text-[#EEBE1E] shrink-0" />
-          <span>Local Department Intelligence active. Zero cloud consumption required.</span>
-        </div>
-      )}
 
-      {/* ── Quick Prompts ───────────────────────────────────────────────────── */}
-      <div className="p-2.5 bg-white border-b border-[#D6D6D6] flex gap-1.5 overflow-x-auto text-[11px]">
-        {[
-          "What is the attendance policy?",
-          "Placement eligibility criteria?",
-          "Who is the HOD?",
-          "How many students enrolled?",
-          "Top 10 ranked students",
-          "Show AIML core courses",
-        ].map((chip) => (
-          <button
-            key={chip}
-            onClick={() => sendQuery(chip)}
-            className="px-2.5 py-1 rounded-md bg-[#F2F2F1] text-[#3A3A3A] hover:bg-[#1E1E1E] hover:text-white whitespace-nowrap transition-colors text-[10px]"
-          >
-            {chip}
-          </button>
-        ))}
-      </div>
+        {/* ── Quota / Status strip ─────────────────────────────────────────────── */}
+        {quota && quota.cloud_ai_allowed && quota.limit > 0 ? (
+          <div className="flex shrink-0 items-center justify-between border-b border-[#DCE5F1] bg-white px-4 py-2 text-[11px]">
+            <span className="text-[#526783] flex items-center gap-1">
+              <Cloud className="w-3.5 h-3.5 text-[#1E40AF]" />
+              <span>Advanced AI quota:</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <div className="bg-[#DCE5F1] rounded-full h-1.5 w-20 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-300"
+                  style={{
+                    width: `${Math.min(100, (quota.used / quota.limit) * 100)}%`,
+                    background: quota.used >= quota.limit ? "#B85C5C" : "#94B0B8",
+                  }}
+                />
+              </div>
+              <span className="font-mono text-[#0F172A] text-[10px]">{quota.used}/{quota.limit}</span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex shrink-0 items-center gap-2 border-b border-[#DCE5F1] bg-[#FAF3E2] px-4 py-1.5 text-[10px] text-[#92400E]">
+            <Cpu className="w-3 h-3 text-[#EEBE1E] shrink-0" />
+            <span>Local Department Intelligence — zero cloud required.</span>
+          </div>
+        )}
 
-      {/* ── Messages Scroll Area ────────────────────────────────────────────── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F2F2F1]/30">
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`flex flex-col ${m.sender === "user" ? "items-end" : "items-start"}`}
-          >
-            {m.sender === "user" ? (
-              <div className="max-w-[85%] rounded-2xl bg-[#1E1E1E] text-white px-4 py-2.5 text-xs font-normal shadow-xs">
-                {m.text}
-              </div>
-            ) : m.loading ? (
-              <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-[#D6D6D6] shadow-xs">
-                <div className="w-5 h-5 rounded-full bg-[#1E1E1E] text-white flex items-center justify-center text-[10px]">
-                  A
-                </div>
-                <div className="flex gap-1">
-                  {[0, 150, 300].map((delay) => (
-                    <div
-                      key={delay}
-                      className="w-1.5 h-1.5 rounded-full bg-[#94B0B8] animate-bounce"
-                      style={{ animationDelay: `${delay}ms` }}
-                    />
-                  ))}
-                </div>
-                <span className="text-[10px] text-[#7A7A7A] ml-1">Routing query...</span>
-              </div>
-            ) : (
-              <div className="w-full space-y-2">
-                <div className="flex items-start gap-2.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#1E1E1E] text-white flex items-center justify-center text-[11px] font-bold mt-0.5 shrink-0 shadow-xs">
-                    A
-                  </div>
-                  <div className="flex-1 bg-white p-3.5 rounded-xl border border-[#D6D6D6] shadow-xs">
-                    <p
-                      className={`text-xs leading-relaxed whitespace-pre-wrap ${
-                        m.error ? "text-[#B85C5C]" : "text-[#1E1E1E]"
-                      }`}
+        {/* ── Main Content Area ─────────────────────────────────────────────── */}
+        {!chatStarted ? (
+          /* Welcome / Quick Actions Screen */
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Quick action tiles — matches mockup panel 20 */}
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#9ab5d0] mb-3">Quick Actions</p>
+              <div className="grid grid-cols-2 gap-2">
+                {quickActions.map((action) => (
+                  <button
+                    key={action.label}
+                    onClick={() => sendQuery(action.query)}
+                    className="group flex flex-col gap-2 rounded-2xl border border-[#E8F0FB] bg-white p-3 text-left transition-all hover:-translate-y-0.5 hover:border-current hover:shadow-[0_4px_16px_rgba(9,25,54,0.10)]"
+                    style={{ borderColor: undefined }}
+                  >
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all group-hover:scale-110"
+                      style={{ background: action.bg, color: action.color }}
                     >
-                      {m.text}
-                    </p>
+                      <action.icon className="w-4 h-4" />
+                    </span>
+                    <span className="text-[11px] font-bold leading-tight text-[#091936]">{action.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                    {/* Sources Citations (§42) */}
-                    {m.sources && m.sources.length > 0 && (
-                      <div className="mt-2.5 pt-2.5 border-t border-[#D6D6D6] space-y-1">
-                        <div className="text-[10px] font-semibold text-[#7A7A7A] uppercase tracking-wider flex items-center gap-1">
-                          <BookOpen className="w-3 h-3 text-[#94B0B8]" />
-                          <span>Sources & Documents</span>
-                        </div>
-                        <div className="space-y-1">
-                          {m.sources.map((src, sIdx) => (
-                            <div
-                              key={sIdx}
-                              className="text-[11px] text-[#3A3A3A] flex items-center justify-between bg-[#F2F2F1] px-2 py-1 rounded"
-                            >
-                              <span className="font-medium truncate mr-2">
-                                • {src.title || JSON.stringify(src)}
-                              </span>
-                              {src.category && (
-                                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-white text-[#5C5C5C] font-mono shrink-0">
-                                  {src.category}
-                                </span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Explicit Cloud Escalation (§39) */}
-                    {m.can_escalate_cloud && m.query && (
-                      <div className="mt-3 pt-2.5 border-t border-dashed border-[#D6D6D6] flex items-center justify-between bg-[#FAF3E2]/50 p-2 rounded-lg">
-                        <div className="text-[10px] text-[#5C5C5C]">
-                          <span className="font-medium text-[#1E1E1E]">Authorized Staff:</span> Need deeper cross-department synthesis?
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEscalateCloud(m.query!)}
-                          disabled={isLoading}
-                          className="h-6 text-[10px] gap-1 px-2 border-[#D6D6D6] bg-white hover:bg-[#1E1E1E] hover:text-white"
-                        >
-                          <Sparkles className="w-2.5 h-2.5 text-[#EEBE1E]" />
-                          Use Advanced AI
-                        </Button>
-                      </div>
-                    )}
-
-                    {/* Route badge and latency metrics */}
-                    <div className="flex items-center justify-between mt-2 pt-1 border-t border-[#F2F2F1]">
-                      <RouteBadge route={m.route} mode={m.ai_mode} provider={m.provider} />
-                      {m.latency_ms != null && (
-                        <span className="text-[10px] font-mono text-[#9A9A9A]">
-                          {m.latency_ms}ms
-                          {m.tokens_out ? ` · ${m.tokens_out} toks` : ""}
-                        </span>
-                      )}
-                    </div>
+            {/* Suggested prompts */}
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#9ab5d0] mb-3">Try asking…</p>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  "What is the attendance policy?",
+                  "Placement eligibility criteria?",
+                  "Who is the HOD?",
+                  "How many students enrolled?",
+                  "Top 10 ranked students",
+                  "Show AIML core courses",
+                  "Upcoming events this month",
+                ].map((chip) => (
+                  <button
+                    key={chip}
+                    onClick={() => sendQuery(chip)}
+                    className="rounded-full border border-[#D4E0F0] bg-[#F8FBFF] px-3 py-1.5 text-[11px] font-medium text-[#3D5A80] transition-all hover:border-[#1478ef] hover:bg-[#1478ef] hover:text-white"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Chat Messages */
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3.5" style={{ background: "#F4F8FD" }}>
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={`flex flex-col ${m.sender === "user" ? "items-end" : "items-start"}`}
+              >
+                {m.sender === "user" ? (
+                  <div className="max-w-[85%] rounded-[18px] rounded-tr-sm bg-gradient-to-br from-[#071b3d] to-[#0d2d5e] text-white px-4 py-2.5 text-[12px] leading-relaxed shadow-[0_2px_8px_rgba(7,27,61,0.25)]">
+                    {m.text}
                   </div>
-                </div>
+                ) : m.loading ? (
+                  <div className="flex items-center gap-2.5 rounded-2xl border border-[#D4E0F0] bg-white px-3.5 py-2.5 shadow-sm">
+                    <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full bg-[#DDEFFF] shadow-inner">
+                      <Image src="/images/aida-mascot.png" alt="" fill sizes="28px" className="object-cover object-top" />
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {[0, 150, 300].map((delay) => (
+                        <div
+                          key={delay}
+                          className="w-2 h-2 rounded-full bg-[#1478ef]/40 animate-bounce"
+                          style={{ animationDelay: `${delay}ms` }}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-[#9ab5d0]">AIDA is thinking…</span>
+                  </div>
+                ) : (
+                  <div className="w-full space-y-2">
+                    <div className="flex items-start gap-2.5">
+                      <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full bg-[#DDEFFF] mt-0.5 shadow-[0_2px_6px_rgba(20,120,239,0.2)]">
+                        <Image src="/images/aida-mascot.png" alt="" fill sizes="32px" className="object-cover object-top" />
+                      </div>
+                      <div className="flex-1 rounded-[18px] rounded-tl-sm border border-[#D4E0F0] bg-white p-3.5 shadow-sm">
+                        <p
+                          className={`text-xs leading-relaxed whitespace-pre-wrap ${
+                            m.error ? "text-[#B85C5C]" : "text-[#0F172A]"
+                          }`}
+                        >
+                          {m.text}
+                        </p>
 
-                {/* Tabular Data View */}
-                {m.table && (
-                  <div className="rounded-xl border border-[#D6D6D6] overflow-hidden bg-white text-xs shadow-xs ml-0 sm:ml-8 my-2">
-                    <div className="max-h-60 overflow-x-auto overflow-y-auto scrollbar-thin">
-                      <table className="w-full text-left">
-                        <thead className="bg-[#F2F2F1] border-b border-[#D6D6D6] text-[10px] font-semibold text-[#5C5C5C] uppercase tracking-wider sticky top-0">
-                          <tr>
-                            {m.table.headers.map((h, i) => (
-                              <th key={i} className="p-2 font-medium">
-                                {h}
-                              </th>
+                        {/* Sources */}
+                        {m.sources && m.sources.length > 0 && (
+                          <div className="mt-2.5 pt-2.5 border-t border-[#DCE5F1] space-y-1">
+                            <div className="text-[10px] font-semibold text-[#667A93] uppercase tracking-wider flex items-center gap-1">
+                              <BookOpen className="w-3 h-3 text-[#94B0B8]" />
+                              <span>Sources</span>
+                            </div>
+                            {m.sources.map((src, sIdx) => (
+                              <div
+                                key={sIdx}
+                                className="text-[11px] text-[#34465E] flex items-center justify-between bg-[#F6F8FC] px-2 py-1 rounded"
+                              >
+                                <span className="font-medium truncate mr-2">• {src.title || JSON.stringify(src)}</span>
+                                {src.category && (
+                                  <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-white text-[#526783] font-mono shrink-0">
+                                    {src.category}
+                                  </span>
+                                )}
+                              </div>
                             ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#D6D6D6]">
-                          {m.table.rows.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-[#F2F2F1]/50">
-                              {row.map((cell, cIdx) => (
-                                <td
-                                  key={cIdx}
-                                  className={`p-2 text-[11px] ${
-                                    cIdx === 0
-                                      ? "font-medium text-[#7A7A7A]"
-                                      : "text-[#1E1E1E]"
-                                  }`}
-                                >
-                                  {cell}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </div>
+                        )}
+
+                        {/* Cloud escalation */}
+                        {m.can_escalate_cloud && m.query && (
+                          <div className="mt-3 pt-2.5 border-t border-dashed border-[#DCE5F1] flex items-center justify-between bg-[#FAF3E2]/50 p-2 rounded-lg">
+                            <div className="text-[10px] text-[#526783]">
+                              <span className="font-medium text-[#0F172A]">Authorized Staff:</span> Need deeper synthesis?
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEscalateCloud(m.query!)}
+                              disabled={isLoading}
+                              className="h-6 text-[10px] gap-1 px-2 border-[#DCE5F1] bg-white hover:bg-[#071b3d] hover:text-white"
+                            >
+                              Use Advanced AI
+                            </Button>
+                          </div>
+                        )}
+
+                        {/* Route badge */}
+                        <div className="flex items-center justify-between mt-2 pt-1 border-t border-[#F6F8FC]">
+                          <RouteBadge route={m.route} mode={m.ai_mode} provider={m.provider} />
+                          {m.latency_ms != null && (
+                            <span className="text-[10px] font-mono text-[#71849B]">
+                              {m.latency_ms}ms{m.tokens_out ? ` · ${m.tokens_out} toks` : ""}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="p-2 border-t border-[#D6D6D6] bg-[#F2F2F1] flex flex-wrap gap-1.5">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-6 text-[10px] gap-1 px-2 bg-white border border-[#D6D6D6]"
-                      >
-                        <Download className="w-2.5 h-2.5" /> Export CSV
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-6 text-[10px] gap-1 px-2 bg-white border border-[#D6D6D6]"
-                      >
-                        <BarChart2 className="w-2.5 h-2.5" /> View Insights
-                      </Button>
-                    </div>
+                    {/* Tabular Data */}
+                    {m.table && (
+                      <div className="rounded-xl border border-[#DCE5F1] overflow-hidden bg-white text-xs shadow-sm ml-8 my-2">
+                        <div className="max-h-60 overflow-x-auto overflow-y-auto">
+                          <table className="w-full text-left">
+                            <thead className="bg-[#F6F8FC] border-b border-[#DCE5F1] text-[10px] font-semibold text-[#526783] uppercase tracking-wider sticky top-0">
+                              <tr>
+                                {m.table.headers.map((h, i) => (
+                                  <th key={i} className="p-2 font-medium">{h}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-[#D6D6D6]">
+                              {m.table.rows.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-[#F6F8FC]/50">
+                                  {row.map((cell, cIdx) => (
+                                    <td
+                                      key={cIdx}
+                                      className={`p-2 text-[11px] ${cIdx === 0 ? "font-medium text-[#667A93]" : "text-[#0F172A]"}`}
+                                    >
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="p-2 border-t border-[#DCE5F1] bg-[#F6F8FC] flex flex-wrap gap-1.5">
+                          <Button size="sm" variant="secondary" className="h-6 text-[10px] gap-1 px-2 bg-white border border-[#DCE5F1]">
+                            <Download className="w-2.5 h-2.5" /> Export CSV
+                          </Button>
+                          <Button size="sm" variant="secondary" className="h-6 text-[10px] gap-1 px-2 bg-white border border-[#DCE5F1]">
+                            <BarChart2 className="w-2.5 h-2.5" /> View Insights
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
-      </div>
+        )}
 
-      {/* ── Input Form ──────────────────────────────────────────────────────── */}
-      <div
-        className="p-3 border-t border-[#D6D6D6] bg-white shrink-0"
-        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 0px))" }}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            handleSend()
-          }}
-          className="flex items-center gap-2"
+        {/* ── Input Form ─────────────────────────────────────────────────────── */}
+        <div
+          className="shrink-0 border-t border-[#D4E0F0] bg-white px-3 pt-3"
+          style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 0px))" }}
         >
-          <input
-            type="text"
-            placeholder="Ask AIDA anything about the department..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={isLoading}
-            className="flex-1 h-9 px-3 rounded-lg border border-[#D6D6D6] bg-[#F2F2F1] text-xs text-[#1E1E1E] placeholder:text-[#9A9A9A] focus:bg-white focus:outline-none focus:border-[#1E1E1E] disabled:opacity-50 transition-colors"
-          />
-          <Button
-            type="submit"
-            size="sm"
-            disabled={isLoading || !input.trim()}
-            className="h-9 px-3 bg-[#1E1E1E] text-white hover:bg-neutral-800 disabled:opacity-50 rounded-lg shrink-0"
+          <form
+            onSubmit={(e) => { e.preventDefault(); handleSend() }}
+            className="flex items-center gap-2"
           >
-            <Send className="w-3.5 h-3.5" />
-          </Button>
-        </form>
+            <input
+              type="text"
+              placeholder="Ask AIDA anything about the department…"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={isLoading}
+              className="h-11 flex-1 rounded-2xl border border-[#D4E0F0] bg-[#F0F4FA] px-4 text-[12px] text-[#091936] placeholder:text-[#9ab5d0] transition-all focus:border-[#1478ef] focus:bg-white focus:outline-none focus:shadow-[0_0_0_3px_rgba(20,120,239,0.12)] disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ background: "linear-gradient(135deg, #1478ef, #0f5fcb)" }}
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+          <p className="mt-2 pb-0.5 text-center text-[10px] text-[#b0c4da]">
+            ✦ AIDA · Local department intelligence · Privacy first
+          </p>
+        </div>
       </div>
     </div>
-  </div>
   )
 }

@@ -92,10 +92,10 @@ export default function CreateStoryPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Top Bar */}
-      <div className="flex items-center justify-between border-b border-[#D6D6D6] pb-4">
+      <div className="flex items-center justify-between border-b border-[#DCE5F1] pb-4">
         <Link
           href="/stories"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C5C5C] hover:text-[#1E1E1E]"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#526783] hover:text-[#0F172A]"
         >
           <ArrowLeft className="w-4 h-4" /> Cancel
         </Link>
@@ -105,7 +105,7 @@ export default function CreateStoryPage() {
             type="button"
             disabled={saving}
             onClick={() => handleSubmit(false)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 border border-[#D6D6D6] rounded-lg text-xs font-semibold text-[#1E1E1E] bg-white hover:bg-[#F2F2F1] disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-4 py-2 border border-[#DCE5F1] rounded-lg text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F6F8FC] disabled:opacity-50"
           >
             <Save className="w-3.5 h-3.5" /> Save Draft
           </button>
@@ -113,7 +113,7 @@ export default function CreateStoryPage() {
             type="button"
             disabled={saving}
             onClick={() => handleSubmit(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold disabled:opacity-50 transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] rounded-lg text-xs font-semibold disabled:opacity-50 transition-colors shadow-sm"
           >
             <Send className="w-3.5 h-3.5" /> Publish Story
           </button>
@@ -121,8 +121,8 @@ export default function CreateStoryPage() {
       </div>
 
       <div>
-        <h1 className="text-2xl font-bold text-[#1E1E1E]">Write Success Story</h1>
-        <p className="text-xs text-[#5C5C5C] mt-0.5">
+        <h1 className="text-2xl font-bold text-[#0F172A]">Write Success Story</h1>
+        <p className="text-xs text-[#526783] mt-0.5">
           Highlight remarkable student achievements, research breakthroughs, or alumni career milestones.
         </p>
       </div>
@@ -134,10 +134,10 @@ export default function CreateStoryPage() {
       )}
 
       {/* Main Form */}
-      <div className="bg-white border border-[#D6D6D6] rounded-2xl p-6 md:p-8 space-y-6">
+      <div className="bg-white border border-[#DCE5F1] rounded-2xl p-6 md:p-8 space-y-6">
         {/* Story Type Selector */}
         <div>
-          <label className="block text-xs font-bold text-[#1E1E1E] uppercase tracking-wide mb-2">
+          <label className="block text-xs font-bold text-[#0F172A] uppercase tracking-wide mb-2">
             Story Focus *
           </label>
           <div className="grid grid-cols-2 gap-3 max-w-sm">
@@ -149,8 +149,8 @@ export default function CreateStoryPage() {
               }}
               className={`p-3 rounded-xl border text-center font-semibold text-xs transition-colors ${
                 storyType === 'student'
-                  ? 'bg-[#1E1E1E] text-white border-[#1E1E1E]'
-                  : 'bg-white text-[#5C5C5C] border-[#D6D6D6] hover:bg-[#F2F2F1]'
+                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                  : 'bg-white text-[#526783] border-[#DCE5F1] hover:bg-[#F6F8FC]'
               }`}
             >
               Current Student
@@ -163,8 +163,8 @@ export default function CreateStoryPage() {
               }}
               className={`p-3 rounded-xl border text-center font-semibold text-xs transition-colors ${
                 storyType === 'alumni'
-                  ? 'bg-[#1E1E1E] text-white border-[#1E1E1E]'
-                  : 'bg-white text-[#5C5C5C] border-[#D6D6D6] hover:bg-[#F2F2F1]'
+                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                  : 'bg-white text-[#526783] border-[#DCE5F1] hover:bg-[#F6F8FC]'
               }`}
             >
               Alumni
@@ -182,24 +182,24 @@ export default function CreateStoryPage() {
         {/* Title & Subtitle */}
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Story Title *</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Story Title *</label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g. From Department Hackathons to Staff AI Engineer at DeepMind"
-              className="w-full px-3.5 py-2.5 border border-[#D6D6D6] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3.5 py-2.5 border border-[#DCE5F1] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Subtitle / Key Takeaway</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Subtitle / Key Takeaway</label>
             <input
               type="text"
               value={formData.subtitle}
               onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
               placeholder="e.g. How Ananya led the robotics club and published 3 IEEE papers as an undergrad"
-              className="w-full px-3.5 py-2 border border-[#D6D6D6] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3.5 py-2 border border-[#DCE5F1] rounded-lg text-sm bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
         </div>
@@ -207,42 +207,42 @@ export default function CreateStoryPage() {
         {/* Person metadata fields */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Current Role</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Current Role</label>
             <input
               type="text"
               value={formData.current_role}
               onChange={(e) => setFormData({ ...formData, current_role: e.target.value })}
               placeholder="e.g. Machine Learning Researcher"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Current Company / Institution</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Current Company / Institution</label>
             <input
               type="text"
               value={formData.current_company}
               onChange={(e) => setFormData({ ...formData, current_company: e.target.value })}
               placeholder="e.g. Google DeepMind"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Batch / Graduation Year</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Batch / Graduation Year</label>
             <input
               type="number"
               value={formData.batch_year}
               onChange={(e) => setFormData({ ...formData, batch_year: e.target.value })}
               placeholder="e.g. 2024"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
         </div>
 
         {/* Summary Teaser */}
         <div>
-          <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+          <label className="block text-xs font-semibold text-[#0F172A] mb-1">
             Short Summary Teaser (approx 200 chars)
           </label>
           <textarea
@@ -250,13 +250,13 @@ export default function CreateStoryPage() {
             value={formData.summary}
             onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
             placeholder="A compelling 2-sentence hook displayed on cards and search results..."
-            className="w-full p-3 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+            className="w-full p-3 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
           />
         </div>
 
         {/* Markdown Rich Editor */}
         <div>
-          <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">
+          <label className="block text-xs font-semibold text-[#0F172A] mb-1">
             Full Story Content (Markdown) *
           </label>
           <MarkdownEditor
@@ -268,27 +268,27 @@ export default function CreateStoryPage() {
         {/* Media & Tags */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Featured Cover Image URL</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Featured Cover Image URL</label>
             <div className="relative">
-              <ImageIcon className="w-4 h-4 text-[#7A7A7A] absolute left-3 top-2.5" />
+              <ImageIcon className="w-4 h-4 text-[#667A93] absolute left-3 top-2.5" />
               <input
                 type="text"
                 value={formData.featured_image_url}
                 onChange={(e) => setFormData({ ...formData, featured_image_url: e.target.value })}
                 placeholder="https://example.com/cover.jpg"
-                className="w-full pl-9 pr-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+                className="w-full pl-9 pr-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#1E1E1E] mb-1">Tags (comma-separated)</label>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1">Tags (comma-separated)</label>
             <input
               type="text"
               value={formData.tags}
               onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
               placeholder="e.g. nlp, google, researcher, placements"
-              className="w-full px-3 py-2 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full px-3 py-2 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
           </div>
         </div>

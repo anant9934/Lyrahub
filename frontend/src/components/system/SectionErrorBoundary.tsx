@@ -48,14 +48,14 @@ export class SectionErrorBoundary extends Component<
         <div
           role="alert"
           aria-live="polite"
-          className="p-6 rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] text-center space-y-3 my-4"
+          className="p-6 rounded-xl border border-[#DCE5F1] bg-[#F6F8FC] text-center space-y-3 my-4"
         >
-          <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white border border-[#E5E5E5] text-[#555555]">
-            <AlertCircle className="w-4 h-4 text-[#111111]" />
+          <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white border border-[#DCE5F1] text-[#526783]">
+            <AlertCircle className="w-4 h-4 text-[#0F172A]" />
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold text-[#111111]">
+            <h3 className="text-sm font-semibold text-[#0F172A]">
               {this.props.fallbackTitle || "This section couldn't load."}
             </h3>
             <p className="text-xs text-[#666666] max-w-sm mx-auto">
@@ -68,7 +68,7 @@ export class SectionErrorBoundary extends Component<
             <button
               type="button"
               onClick={this.handleReset}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#111111] text-white hover:bg-neutral-800 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-400"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#0F172A] text-white hover:bg-neutral-800 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-400"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Try Again

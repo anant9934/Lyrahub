@@ -11,14 +11,14 @@ export function RankingTable({ items, isLoading }: { items: any[], isLoading: bo
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-[#D6D6D6] bg-white">
+    <div className="overflow-x-auto rounded-lg border border-[#DCE5F1] bg-white">
       <table className="min-w-full divide-y divide-[#D6D6D6]">
-        <thead className="bg-[#F2F2F1]">
+        <thead className="bg-[#F6F8FC]">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-[#1E1E1E] uppercase tracking-wider">Rank</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-[#1E1E1E] uppercase tracking-wider">Reg No</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-[#1E1E1E] uppercase tracking-wider">CGPA</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-[#1E1E1E] uppercase tracking-wider">Score</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-[#0F172A] uppercase tracking-wider">Rank</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-[#0F172A] uppercase tracking-wider">Reg No</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-[#0F172A] uppercase tracking-wider">CGPA</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-[#0F172A] uppercase tracking-wider">Score</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-[#D6D6D6]">
@@ -30,9 +30,9 @@ export function RankingTable({ items, isLoading }: { items: any[], isLoading: bo
             else rowClass = "border-l-4 border-l-transparent";
 
             return (
-              <tr key={item.student_id} className={`hover:bg-[#F2F2F1] transition-colors ${rowClass}`}>
+              <tr key={item.student_id} className={`hover:bg-[#F6F8FC] transition-colors ${rowClass}`}>
                 <td className="px-6 py-4 whitespace-nowrap"><RankBadge rank={item.rank} /></td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-[#1E1E1E] font-medium">{item.breakdown?.reg_no || "N/A"}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-[#0F172A] font-medium">{item.breakdown?.reg_no || "N/A"}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.breakdown?.cgpa?.toFixed(2) || "0.00"}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-bold">{item.score.toFixed(2)}</td>
               </tr>

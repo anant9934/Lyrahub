@@ -24,21 +24,21 @@ export function AlumniFilters({
   onMentorshipChange,
 }: AlumniFiltersProps) {
   return (
-    <div className="bg-white border border-[#D6D6D6] rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row gap-3 items-center">
+    <div className="bg-white border border-[#DCE5F1] rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row gap-3 items-center">
       <div className="relative flex-1 w-full">
         <input
           type="text"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search by name, company, role, or keywords..."
-          className="w-full px-3.5 py-2 text-sm text-[#1E1E1E] bg-[#F2F2F1] border border-[#D6D6D6] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1E1E1E]"
+          className="w-full px-3.5 py-2 text-sm text-[#0F172A] bg-[#F6F8FC] border border-[#DCE5F1] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#0F172A]"
         />
       </div>
       <div className="flex flex-wrap gap-2 w-full md:w-auto items-center">
         <select
           value={year}
           onChange={(e) => onYearChange(e.target.value)}
-          className="px-3 py-2 text-sm text-[#1E1E1E] bg-white border border-[#D6D6D6] rounded-lg focus:outline-none"
+          className="px-3 py-2 text-sm text-[#0F172A] bg-white border border-[#DCE5F1] rounded-lg focus:outline-none"
         >
           <option value="">All Batches</option>
           <option value="2026">2026</option>
@@ -52,14 +52,14 @@ export function AlumniFilters({
           value={company}
           onChange={(e) => onCompanyChange(e.target.value)}
           placeholder="Company..."
-          className="px-3 py-2 text-sm text-[#1E1E1E] bg-white border border-[#D6D6D6] rounded-lg focus:outline-none w-32"
+          className="px-3 py-2 text-sm text-[#0F172A] bg-white border border-[#DCE5F1] rounded-lg focus:outline-none w-32"
         />
-        <label className="flex items-center gap-2 text-xs font-semibold text-[#1E1E1E] cursor-pointer ml-1 select-none">
+        <label className="flex items-center gap-2 text-xs font-semibold text-[#0F172A] cursor-pointer ml-1 select-none">
           <input
             type="checkbox"
             checked={mentorshipOnly}
             onChange={(e) => onMentorshipChange(e.target.checked)}
-            className="rounded border-[#D6D6D6] text-[#1E1E1E] focus:ring-0"
+            className="rounded border-[#DCE5F1] text-[#0F172A] focus:ring-0"
           />
           Mentors Only
         </label>

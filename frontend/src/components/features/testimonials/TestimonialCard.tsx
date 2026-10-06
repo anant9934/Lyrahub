@@ -42,9 +42,9 @@ export const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testim
       case 'faculty':
         return <BookOpen className="w-3.5 h-3.5 text-[#7A9A7E]" />;
       case 'recruiter':
-        return <Briefcase className="w-3.5 h-3.5 text-[#1E1E1E]" />;
+        return <Briefcase className="w-3.5 h-3.5 text-[#0F172A]" />;
       default:
-        return <User className="w-3.5 h-3.5 text-[#7A7A7A]" />;
+        return <User className="w-3.5 h-3.5 text-[#667A93]" />;
     }
   };
 
@@ -52,19 +52,19 @@ export const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testim
     <div
       className={`rounded-2xl bg-white p-6 border flex flex-col justify-between transition-all hover:shadow-md ${
         testimonial.is_featured
-          ? 'border-[#EEBE1E] bg-gradient-to-b from-[#FAF3E2]/30 to-white shadow-sm'
-          : 'border-[#D6D6D6]'
+          ? 'border-[#FACC15] bg-gradient-to-b from-[#FAF3E2]/30 to-white shadow-sm'
+          : 'border-[#DCE5F1]'
       }`}
     >
       <div>
         {/* Top bar with context & rating */}
         <div className="flex items-center justify-between gap-2 mb-4">
           <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-medium bg-[#F2F2F1] text-[#5C5C5C] px-2.5 py-0.5 rounded-full capitalize">
+            <span className="text-[11px] font-medium bg-[#F6F8FC] text-[#526783] px-2.5 py-0.5 rounded-full capitalize">
               {getContextLabel(testimonial.context)}
             </span>
             {testimonial.is_featured && (
-              <span className="text-[11px] bg-[#FAF3E2] text-[#1E1E1E] border border-[#EEBE1E] px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
+              <span className="text-[11px] bg-[#FAF3E2] text-[#0F172A] border border-[#FACC15] px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-[#EEBE1E] fill-current" /> Featured
               </span>
             )}
@@ -78,7 +78,7 @@ export const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testim
                   className={`w-3.5 h-3.5 ${
                     i < (testimonial.rating || 0)
                       ? 'text-[#EEBE1E] fill-[#EEBE1E]'
-                      : 'text-[#D6D6D6]'
+                      : 'text-[#DCE5F1]'
                   }`}
                 />
               ))}
@@ -89,32 +89,32 @@ export const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testim
         {/* Quote icon & text */}
         <div className="relative mb-6">
           <Quote className="w-8 h-8 text-[#94B0B8]/30 absolute -top-2 -left-1 -z-0 pointer-events-none" />
-          <p className="text-sm text-[#1E1E1E] leading-relaxed relative z-10 italic">
+          <p className="text-sm text-[#0F172A] leading-relaxed relative z-10 italic">
             &ldquo;{testimonial.text}&rdquo;
           </p>
         </div>
       </div>
 
       {/* Author info */}
-      <div className="flex items-center gap-3 pt-4 border-t border-[#D6D6D6]">
+      <div className="flex items-center gap-3 pt-4 border-t border-[#DCE5F1]">
         {testimonial.author_photo_url ? (
           <img
             src={testimonial.author_photo_url}
             alt={testimonial.author_name}
-            className="w-10 h-10 rounded-full object-cover border border-[#D6D6D6]"
+            className="w-10 h-10 rounded-full object-cover border border-[#DCE5F1]"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-[#F2F2F1] border border-[#D6D6D6] flex items-center justify-center font-bold text-sm text-[#1E1E1E]">
+          <div className="w-10 h-10 rounded-full bg-[#F6F8FC] border border-[#DCE5F1] flex items-center justify-center font-bold text-sm text-[#0F172A]">
             {testimonial.author_name ? testimonial.author_name.charAt(0) : 'U'}
           </div>
         )}
 
         <div>
-          <div className="font-bold text-sm text-[#1E1E1E] flex items-center gap-1.5">
+          <div className="font-bold text-sm text-[#0F172A] flex items-center gap-1.5">
             {testimonial.author_name}
             <span title={testimonial.author_type}>{getAuthorIcon(testimonial.author_type)}</span>
           </div>
-          <div className="text-xs text-[#5C5C5C]">{testimonial.author_role || testimonial.author_type}</div>
+          <div className="text-xs text-[#526783]">{testimonial.author_role || testimonial.author_type}</div>
         </div>
       </div>
     </div>

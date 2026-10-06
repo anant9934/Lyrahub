@@ -1,96 +1,128 @@
-"use client";
+"use client"
 
-import React from "react";
-import Link from "next/link";
+import React from "react"
+import Link from "next/link"
+import { ArrowUpRight, GitBranch, User } from "lucide-react"
 
 interface ProjectCardProps {
   project: {
-    id: string;
-    title: string;
-    slug: string;
-    summary?: string;
-    tech_stack?: string[];
-    domain?: string;
-    status: string;
-    mentor_name?: string;
-    cover_image_url?: string;
-  };
+    id: string
+    title: string
+    slug: string
+    summary?: string
+    tech_stack?: string[]
+    domain?: string
+    status: string
+    mentor_name?: string
+    cover_image_url?: string
+  }
+}
+
+const DOMAIN_META: Record<string, { label: string; color: string; bg: string }> = {
+  cv:        { label: "Computer Vision", color: "#0D9488", bg: "#E6FAFA" },
+  nlp:       { label: "NLP",             color: "#D97706", bg: "#FFF8E8" },
+  llm:       { label: "LLM",             color: "#7C3AED", bg: "#F3EEFF" },
+  mlops:     { label: "MLOps",           color: "#E11D48", bg: "#FFF0F3" },
+  robotics:  { label: "Robotics",        color: "#1478ef", bg: "#EDF5FF" },
+  ai_ml:     { label: "AI & ML",         color: "#1478ef", bg: "#EDF5FF" },
+  research:  { label: "Research",        color: "#D97706", bg: "#FFF8E8" },
+  web:       { label: "Web & Apps",      color: "#0D9488", bg: "#E6FAFA" },
+  genai:     { label: "GenAI",           color: "#E11D48", bg: "#FFF0F3" },
+}
+
+const STATUS_META: Record<string, { label: string; color: string; bg: string; dot: string }> = {
+  ongoing:   { label: "Active",    color: "#15803D", bg: "#DCFCE7", dot: "#22C55E" },
+  completed: { label: "Done",      color: "#1D4ED8", bg: "#DBEAFE", dot: "#3B82F6" },
+  abandoned: { label: "Paused",    color: "#B91C1C", bg: "#FEE2E2", dot: "#EF4444" },
+  archived:  { label: "Archived",  color: "#526783", bg: "#F0F4FA", dot: "#9ab5d0" },
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const domainColors: Record<string, string> = {
-    cv: "bg-[#94B0B8]/20 text-[#2C4A52]",
-    nlp: "bg-[#EAF0F3] text-[#6B8FA3]",
-    llm: "bg-[#EEBE1E]/20 text-[#855B00]",
-    mlops: "bg-[#1E1E1E] text-white",
-    robotics: "bg-[#FAF3E2] text-[#B37F1D]",
-  };
-
-  const statusColors: Record<string, string> = {
-    ongoing: "bg-[#94B0B8]/20 text-[#2C4A52]",
-    completed: "bg-[#EEF3EE] text-[#7A9A7E]",
-    abandoned: "bg-[#F5EAEA] text-[#B85C5C]",
-    archived: "bg-gray-100 text-[#5C5C5C]",
-  };
-
-  const domainBadge = domainColors[project.domain?.toLowerCase() || ""] || "bg-gray-100 text-gray-700";
-  const statusBadge = statusColors[project.status?.toLowerCase() || "ongoing"] || "bg-gray-100 text-gray-700";
+  const domainKey = project.domain?.toLowerCase() || ""
+  const statusKey = project.status?.toLowerCase() || "ongoing"
+  const domain = DOMAIN_META[domainKey] || { label: project.domain || "AI/ML", color: "#526783", bg: "#F0F4FA" }
+  const status = STATUS_META[statusKey] || STATUS_META.ongoing
 
   return (
-    <div className="responsive-card bg-white border border-[#D6D6D6] rounded-xl overflow-hidden hover:shadow-md transition duration-200 flex flex-col justify-between">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-[#D4E0F0] bg-white shadow-[0_1px_3px_rgba(9,25,54,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(9,25,54,0.10)] hover:border-[#A8C8FF]">
+      {/* Cover image / placeholder */}
       <div
-        className="h-36 bg-gray-100 bg-cover bg-center border-b border-[#D6D6D6]"
-        style={{
-          backgroundImage: `url(${project.cover_image_url || "/placeholder-project.jpg"})`,
-        }}
-      />
-      <div className="p-5 flex-1 flex flex-col justify-between">
-        <div>
-          <div className="flex flex-wrap justify-between items-center gap-2 mb-3">
-            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider ${domainBadge}`}>
-              {project.domain || "AI/ML"}
-            </span>
-            <span className={`text-xs font-medium px-2.5 py-1 rounded-full capitalize ${statusBadge}`}>
-              {project.status || "ongoing"}
-            </span>
+        className="relative h-36 shrink-0 overflow-hidden bg-gradient-to-br from-[#E8F0FB] to-[#F0F4FA]"
+        style={project.cover_image_url ? { backgroundImage: `url(${project.cover_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+      >
+        {!project.cover_image_url && (
+          <div className="flex h-full items-center justify-center">
+            <GitBranch className="h-12 w-12 text-[#D4E0F0]" />
           </div>
-
-          <h3 className="text-base sm:text-lg font-bold text-[#1E1E1E] mb-1.5 leading-snug line-clamp-2">{project.title}</h3>
-          <p className="text-xs text-[#5C5C5C] mb-3 line-clamp-2">
-            {project.summary || "No project summary provided."}
-          </p>
-
-          {project.tech_stack && project.tech_stack.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {project.tech_stack.slice(0, 4).map((tech, idx) => (
-                <span
-                  key={idx}
-                  className="text-[11px] font-mono bg-[#F2F2F1] text-[#1E1E1E] px-2 py-0.5 rounded border border-[#D6D6D6]"
-                >
-                  {tech}
-                </span>
-              ))}
-              {project.tech_stack.length > 4 && (
-                <span className="text-[11px] text-[#5C5C5C] px-1 self-center">
-                  +{project.tech_stack.length - 4}
-                </span>
-              )}
-            </div>
-          )}
+        )}
+        {/* Status badge overlay */}
+        <div
+          className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold shadow-sm"
+          style={{ background: status.bg, color: status.color }}
+        >
+          <span className="h-1.5 w-1.5 rounded-full" style={{ background: status.dot }} />
+          {status.label}
         </div>
+      </div>
 
-        <div className="pt-3 border-t border-[#D6D6D6]/60 flex items-center justify-between mt-auto gap-2">
-          <div className="text-xs text-[#5C5C5C] truncate flex-1 min-w-0">
-            {project.mentor_name ? `Mentor: ${project.mentor_name}` : "Self-guided"}
+      {/* Body */}
+      <div className="flex flex-1 flex-col p-4">
+        {/* Domain badge */}
+        <span
+          className="mb-2 self-start rounded-full px-2.5 py-0.5 text-[10px] font-bold"
+          style={{ background: domain.bg, color: domain.color }}
+        >
+          {domain.label}
+        </span>
+
+        {/* Title */}
+        <h3 className="line-clamp-2 text-[14px] font-black leading-tight text-[#091936] group-hover:text-[#1478ef] transition-colors">
+          {project.title}
+        </h3>
+
+        {/* Summary */}
+        {project.summary && (
+          <p className="mt-1.5 line-clamp-2 text-[11px] leading-relaxed text-[#526783]">
+            {project.summary}
+          </p>
+        )}
+
+        {/* Tech stack */}
+        {project.tech_stack && project.tech_stack.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1">
+            {project.tech_stack.slice(0, 4).map((tech, i) => (
+              <span
+                key={i}
+                className="rounded-lg border border-[#E8F0FB] bg-[#F8FBFF] px-2 py-0.5 font-mono text-[10px] text-[#3D5A80]"
+              >
+                {tech}
+              </span>
+            ))}
+            {project.tech_stack.length > 4 && (
+              <span className="self-center text-[10px] text-[#9ab5d0]">
+                +{project.tech_stack.length - 4}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="mt-auto flex items-center justify-between border-t border-[#F0F4FA] pt-3 gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <User className="h-3.5 w-3.5 shrink-0 text-[#9ab5d0]" />
+            <span className="truncate text-[11px] text-[#526783]">
+              {project.mentor_name || "Self-guided"}
+            </span>
           </div>
           <Link
             href={`/projects/${project.slug}`}
-            className="text-xs font-semibold px-3 py-1.5 bg-[#1E1E1E] text-white rounded-lg hover:bg-gray-800 transition shrink-0"
+            className="flex shrink-0 items-center gap-1 rounded-xl bg-[#071b3d] px-3 py-1.5 text-[11px] font-bold text-white transition-all hover:bg-[#1478ef] group-hover:bg-[#1478ef]"
           >
-            Details →
+            View
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
       </div>
     </div>
-  );
+  )
 }

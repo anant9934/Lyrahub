@@ -63,7 +63,7 @@ export const JoinButton: React.FC<JoinButtonProps> = ({
     return (
       <a
         href="/login"
-        className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors"
+        className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] rounded-lg text-xs font-semibold transition-colors"
       >
         Sign in to Join
       </a>
@@ -87,7 +87,7 @@ export const JoinButton: React.FC<JoinButtonProps> = ({
           type="button"
           disabled={loading}
           onClick={handleLeave}
-          className="inline-flex items-center gap-1.5 px-4 py-2 border border-[#D6D6D6] hover:border-[#B85C5C] hover:bg-[#F5EAEA] text-[#5C5C5C] hover:text-[#B85C5C] rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-4 py-2 border border-[#DCE5F1] hover:border-[#B85C5C] hover:bg-[#F5EAEA] text-[#526783] hover:text-[#B85C5C] rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
         >
           <UserMinus className="w-3.5 h-3.5" />
           {loading ? 'Processing...' : 'Leave Group'}
@@ -97,7 +97,7 @@ export const JoinButton: React.FC<JoinButtonProps> = ({
           type="button"
           disabled={loading || !membershipOpen}
           onClick={handleJoin}
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1E1E1E] text-white hover:bg-[#EEBE1E] hover:text-[#1E1E1E] rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 shadow-sm"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white hover:bg-[#FACC15] hover:text-[#0F172A] rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 shadow-sm"
         >
           <UserPlus className="w-3.5 h-3.5" />
           {loading

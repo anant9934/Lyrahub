@@ -86,8 +86,8 @@ export const ModerationActions: React.FC<ModerationActionsProps> = ({
           onClick={handleToggleFeature}
           className={`inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg border font-semibold transition-colors ${
             isFeatured
-              ? 'bg-[#EEBE1E] text-[#1E1E1E] border-[#EEBE1E]'
-              : 'bg-white hover:bg-[#FAF3E2] text-[#1E1E1E] border-[#D6D6D6]'
+              ? 'bg-[#FACC15] text-[#0F172A] border-[#FACC15]'
+              : 'bg-white hover:bg-[#FAF3E2] text-[#0F172A] border-[#DCE5F1]'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5 fill-current" />
@@ -98,22 +98,22 @@ export const ModerationActions: React.FC<ModerationActionsProps> = ({
       {/* Reject Modal */}
       {showRejectModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-xl border border-[#D6D6D6]">
-            <h3 className="text-base font-bold text-[#1E1E1E]">Reject Testimonial</h3>
-            <p className="text-xs text-[#5C5C5C]">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-xl border border-[#DCE5F1]">
+            <h3 className="text-base font-bold text-[#0F172A]">Reject Testimonial</h3>
+            <p className="text-xs text-[#526783]">
               Please state why this testimonial is being rejected for the department audit log:
             </p>
             <textarea
               rows={3}
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
-              className="w-full p-2.5 border border-[#D6D6D6] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
+              className="w-full p-2.5 border border-[#DCE5F1] rounded-lg text-xs bg-white focus:outline-none focus:border-[#94B0B8]"
             />
             <div className="flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setShowRejectModal(false)}
-                className="px-3 py-1.5 text-xs text-[#5C5C5C] hover:text-[#1E1E1E]"
+                className="px-3 py-1.5 text-xs text-[#526783] hover:text-[#0F172A]"
               >
                 Cancel
               </button>

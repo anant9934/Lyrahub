@@ -24,18 +24,18 @@ export function AidaErrorState({
     <div
       role="region"
       aria-label="AIDA Intelligence Error"
-      className="p-6 rounded-2xl border border-[#E5E5E5] bg-white shadow-sm space-y-4 text-center max-w-lg mx-auto my-6"
+      className="p-6 rounded-2xl border border-[#DCE5F1] bg-white shadow-sm space-y-4 text-center max-w-lg mx-auto my-6"
     >
-      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#FAFAFA] text-[#111111] border border-[#E5E5E5]">
-        <Sparkles className="w-3.5 h-3.5 text-[#111111]" />
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#F6F8FC] text-[#0F172A] border border-[#DCE5F1]">
+        <Sparkles className="w-3.5 h-3.5 text-[#0F172A]" />
         <span>AIDA Intelligence Layer</span>
       </div>
 
       <div className="space-y-1.5">
-        <h3 className="text-base font-semibold text-[#111111] tracking-tight">
+        <h3 className="text-base font-semibold text-[#0F172A] tracking-tight">
           {title}
         </h3>
-        <p className="text-xs text-[#555555] leading-relaxed max-w-sm mx-auto">
+        <p className="text-xs text-[#526783] leading-relaxed max-w-sm mx-auto">
           {description}
         </p>
       </div>
@@ -45,7 +45,7 @@ export function AidaErrorState({
           <button
             type="button"
             onClick={onRetry}
-            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-md bg-[#111111] text-white hover:bg-neutral-800 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-400"
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-md bg-[#0F172A] text-white hover:bg-neutral-800 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-400"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Try Again
@@ -55,9 +55,9 @@ export function AidaErrorState({
           <button
             type="button"
             onClick={onReset}
-            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-md border border-[#E5E5E5] bg-white text-[#333333] hover:bg-[#FAFAFA] text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-200"
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-md border border-[#DCE5F1] bg-white text-[#34465E] hover:bg-[#F6F8FC] text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-200"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-[#777777]" />
+            <ArrowLeft className="w-3.5 h-3.5 text-[#667A93]" />
             Return to AIDA
           </button>
         )}
@@ -65,7 +65,7 @@ export function AidaErrorState({
 
       {cleanId && (
         <div className="pt-1">
-          <span className="text-[10px] font-mono text-[#888888] bg-[#F7F7F7] px-2 py-0.5 rounded border border-[#EBEBEB]">
+          <span className="text-[10px] font-mono text-[#71849B] bg-[#F7F7F7] px-2 py-0.5 rounded border border-[#EBEBEB]">
             Ref: {cleanId}
           </span>
         </div>

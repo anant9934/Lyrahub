@@ -26,11 +26,11 @@ interface Story {
 
 export const StoryCard: React.FC<{ story: Story }> = ({ story }) => {
   return (
-    <div className="bg-white rounded-xl border border-[#D6D6D6] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between overflow-hidden">
+    <div className="bg-white rounded-xl border border-[#DCE5F1] hover:border-[#94B0B8] transition-all hover:shadow-md flex flex-col justify-between overflow-hidden">
       {/* Cover / Header */}
       <div>
         {story.featured_image_url ? (
-          <div className="h-44 w-full bg-[#F2F2F1] overflow-hidden relative">
+          <div className="h-44 w-full bg-[#F6F8FC] overflow-hidden relative">
             <img
               src={story.featured_image_url}
               alt={story.title}
@@ -38,13 +38,13 @@ export const StoryCard: React.FC<{ story: Story }> = ({ story }) => {
             />
           </div>
         ) : (
-          <div className="h-32 w-full bg-gradient-to-r from-[#F2F2F1] to-[#EAF0F3] p-4 flex items-center gap-3 border-b border-[#D6D6D6]">
-            <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center font-bold text-[#1E1E1E] text-base border border-[#D6D6D6]">
+          <div className="h-32 w-full bg-gradient-to-r from-[#F2F2F1] to-[#EAF0F3] p-4 flex items-center gap-3 border-b border-[#DCE5F1]">
+            <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center font-bold text-[#0F172A] text-base border border-[#DCE5F1]">
               {story.person_name ? story.person_name.charAt(0) : 'S'}
             </div>
             <div>
-              <div className="font-semibold text-sm text-[#1E1E1E]">{story.person_name || 'Spotlight'}</div>
-              <div className="text-xs text-[#7A7A7A]">{story.current_role} {story.current_company ? `@ ${story.current_company}` : ''}</div>
+              <div className="font-semibold text-sm text-[#0F172A]">{story.person_name || 'Spotlight'}</div>
+              <div className="text-xs text-[#667A93]">{story.current_role} {story.current_company ? `@ ${story.current_company}` : ''}</div>
             </div>
           </div>
         )}
@@ -64,17 +64,17 @@ export const StoryCard: React.FC<{ story: Story }> = ({ story }) => {
             </span>
 
             {story.batch_year && (
-              <span className="text-[11px] bg-[#F2F2F1] text-[#5C5C5C] px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+              <span className="text-[11px] bg-[#F6F8FC] text-[#526783] px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
                 <Calendar className="w-3 h-3" /> &apos;{story.batch_year}
               </span>
             )}
           </div>
 
-          <h3 className="text-lg font-bold text-[#1E1E1E] leading-snug mb-1.5 hover:text-[#EEBE1E] transition-colors line-clamp-2">
+          <h3 className="text-lg font-bold text-[#0F172A] leading-snug mb-1.5 hover:text-[#EEBE1E] transition-colors line-clamp-2">
             <Link href={`/stories/${story.slug}`}>{story.title}</Link>
           </h3>
 
-          <p className="text-xs text-[#7A7A7A] line-clamp-3 leading-relaxed mb-3">
+          <p className="text-xs text-[#667A93] line-clamp-3 leading-relaxed mb-3">
             {story.summary || story.subtitle || 'Read more about this success journey.'}
           </p>
 
@@ -84,7 +84,7 @@ export const StoryCard: React.FC<{ story: Story }> = ({ story }) => {
               {story.tags.slice(0, 3).map((tag, i) => (
                 <span
                   key={i}
-                  className="text-[11px] bg-[#F2F2F1] text-[#7A7A7A] px-1.5 py-0.5 rounded"
+                  className="text-[11px] bg-[#F6F8FC] text-[#667A93] px-1.5 py-0.5 rounded"
                 >
                   #{tag}
                 </span>
@@ -95,15 +95,15 @@ export const StoryCard: React.FC<{ story: Story }> = ({ story }) => {
       </div>
 
       {/* Footer */}
-      <div className="px-5 py-3 bg-[#F2F2F1]/50 border-t border-[#D6D6D6] flex items-center justify-between text-xs">
-        <div className="flex items-center gap-1.5 text-[#7A7A7A]">
+      <div className="px-5 py-3 bg-[#F6F8FC]/50 border-t border-[#DCE5F1] flex items-center justify-between text-xs">
+        <div className="flex items-center gap-1.5 text-[#667A93]">
           <Eye className="w-3.5 h-3.5" />
           <span>{story.views_count || 0}</span>
         </div>
 
         <Link
           href={`/stories/${story.slug}`}
-          className="inline-flex items-center gap-1 text-[#1E1E1E] font-semibold hover:text-[#EEBE1E] transition-colors"
+          className="inline-flex items-center gap-1 text-[#0F172A] font-semibold hover:text-[#EEBE1E] transition-colors"
         >
           Read <ArrowRight className="w-3.5 h-3.5" />
         </Link>
